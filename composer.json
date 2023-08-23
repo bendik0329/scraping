@@ -1,0 +1,7 @@
+{
+  "require": {
+    "voku/simple_html_dom": "^4.8",
+    "ext-curl": "*",
+    "php-webdriver/webdriver": "^1.14"
+  }
+}

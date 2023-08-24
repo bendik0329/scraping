@@ -90,8 +90,8 @@ while (true) {
     if (empty($nextPageElement)) {
       break;
     }
-    $nextPageElement->click();
-    sleep(20);
+    $nextPageElement->findElement(WebDriverBy::xpath(".."))->click();
+    sleep(5);
   } else {
     break;
   }

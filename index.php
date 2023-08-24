@@ -44,6 +44,17 @@ $nextPageNum = intval($currentPageNum) + 1;
 
 $nextPageLink = $driver->findElement(WebDriverBy::cssSelector("a[title=\"Page " . strval($nextPageNum) . "\"]"));
 
+if (empty($nextPageLink)) {
+  print_r("not exists");
+  exit();
+} else {
+  $nextPageElement = $nextPageLink->findElement(WebDriverBy::xpath('..'));
+  print_r("next page element");
+  print_r("\n");
+  print_r($nextPageElement);
+  $nextPageElement->click();
+}
+
 print_r("current page->" . $currentPageNum);
 print_r("\n");
 print_r("next page->" . $nextPageNum);

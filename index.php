@@ -86,11 +86,25 @@ while (true) {
     $currentPageNum = $htmlDomParser->findOne("a[aria-pressed=\"true\"]")->text;
     $nextPageNum = intval($currentPageNum) + 1;
 
-    $nextPageElement = $driver->findElement(WebDriverBy::cssSelector("a[title=\"Page " . strval($nextPageNum) . "\"]"));
+    print_r("current page->", $currentPageNum);
+    print_r("next page->", $nextPageNum);
+    print_r("\n");
+    $attributeValue = 'Page 2';
+    $nextPageLink = $driver->findElement(WebDriverBy::xpath("//a[@title='$attributeValue']"));
+    
+    print_r($nextPageLink);
+    print_r("\n");
+
+    // $nextPageLink = $driver->findElement(WebDriverBy::cssSelector("a[title=\"Page " . strval($nextPageNum) . "\"]"));
     if (empty($nextPageElement)) {
       break;
     }
-    $nextPageElement->findElement(WebDriverBy::xpath(".."))->click();
+    $nextPageElement = $nextPageLink->findElement(WebDriverBy::xpath('..'));
+    
+    print_r($nextPageElement);
+    print_r("\n");
+    
+    $nextPageElement->click();
     sleep(5);
   } else {
     break;

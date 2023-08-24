@@ -56,7 +56,6 @@ while (true) {
     }
     $nextPageElement = $nextPageLink->findElement(WebDriverBy::xpath('..'));
     print_r($nextPageElement);
-    exit();
     $nextPageElement->click();
     // debug
     print_r("current page->" . $currentPageNum);

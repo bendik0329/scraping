@@ -1,7 +1,6 @@
 <?php
 
 require_once __DIR__ . '/vendor/autoload.php';
-require_once  __DIR__ . '/utils/config.php';
 require_once  __DIR__ . '/utils/constants.php';
 require_once  __DIR__ . '/utils/scraping.php';
 require_once  __DIR__ . '/utils/database.php';
@@ -12,10 +11,17 @@ use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverKeys;
 
+$envConfig = parse_ini_file(__DIR__ . "/.env");
+
+$host = $envConfig['DB_HOST'];
+$username = $envConfig['DB_USERNAME'];
+$password = $envConfig['DB_PASSWORD'];
+$dbname = $envConfig['DB_DATABASE'];
+
 $db  = new Database();
 
 // Connect to DB
-if (!$db->connect(DB_HOST, DB_USER, DB_PASS, DB_NAME)) {
+if (!$db->connect($host, $username, $password, $dbname)) {
   die("DB Connection failed: " . $conn->connect_error);
 }
 

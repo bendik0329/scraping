@@ -34,7 +34,7 @@ $driver->get('https://api.scrapingdog.com/scrape?api_key=64e5b95985a16a20b0fdf02
 
 $html = $driver->findElement(WebDriverBy::tagName('html'));
 $html->sendKeys(WebDriverKeys::END);
-sleep(20);
+sleep(5);
 
 $htmlContent = $driver->getPageSource();
 $htmlDomParser = HtmlDomParser::str_get_html($htmlContent);
@@ -42,8 +42,8 @@ $htmlDomParser = HtmlDomParser::str_get_html($htmlContent);
 $currentPageNum = $htmlDomParser->findOne("a[aria-pressed=\"true\"]")->text;
 $nextPageNum = intval($currentPageNum) + 1;
 
-print_r("current page->", $currentPageNum);
-print_r("next page->", $nextPageNum);
+print_r("current page->" . $currentPageNum);
+print_r("next page->" . $nextPageNum);
 print_r("\n");
 exit();
 

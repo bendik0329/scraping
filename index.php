@@ -36,24 +36,37 @@ $html = $driver->findElement(WebDriverBy::tagName('html'));
 $html->sendKeys(WebDriverKeys::END);
 sleep(5);
 
-$htmlContent = $driver->getPageSource();
-$htmlDomParser = HtmlDomParser::str_get_html($htmlContent);
+while (true) {
+  $htmlContent = $driver->getPageSource();
+  $htmlDomParser = HtmlDomParser::str_get_html($htmlContent);
 
-$currentPageNum = $htmlDomParser->findOne("a[aria-pressed=\"true\"]")->text;
-$nextPageNum = intval($currentPageNum) + 1;
+  $paginationElements = $htmlDomParser->find("li.PaginationNumberItem-c11n-8-84-3__sc-bnmlxt-0.cA-Ddyj");
+  if (count((array)$paginationElements) > 0) {
+    $currentPageNum = $htmlDomParser->findOne("a[aria-pressed=\"true\"]")->text;
+    $nextPageNum = intval($currentPageNum) + 1;
+    $nextPageLink = $driver->findElement(WebDriverBy::cssSelector("a[title=\"Page " . strval($nextPageNum) . "\"]"));
 
-$nextPageLink = $driver->findElement(WebDriverBy::cssSelector("a[title=\"Page " . strval($nextPageNum) . "\"]"));
-
-if (empty($nextPageLink)) {
-  print_r("not exists");
-  exit();
-} else {
-  $nextPageElement = $nextPageLink->findElement(WebDriverBy::xpath('..'));
-  print_r("next page element");
-  print_r("\n");
-  print_r($nextPageElement);
-  $nextPageElement->click();
+    if (empty($nextPageLink)) {
+      print_r("not exists");
+      break;
+    }
+    $nextPageElement = $nextPageLink->findElement(WebDriverBy::xpath('..'));
+    $nextPageElement->click();
+    // debug
+    print_r("current page->" . $currentPageNum);
+    print_r("\n");
+    print_r("next page->" . $nextPageNum);
+    print_r("\n");
+    print_r($nextPageElement);
+    print_r("\n");
+    sleep(5);
+  } else {
+    print_r("!!!");
+    break;
+  }
 }
+print_r("ended");
+exit();
 
 print_r("current page->" . $currentPageNum);
 print_r("\n");

@@ -42,7 +42,7 @@ $htmlDomParser = HtmlDomParser::str_get_html($htmlContent);
 $currentPageNum = $htmlDomParser->findOne("a[aria-pressed=\"true\"]")->text;
 $nextPageNum = intval($currentPageNum) + 1;
 
-$nextPageLink = $driver->findElement(WebDriverBy::cssSelector("a[@title='Page 2']"));
+$nextPageLink = $driver->findElement(WebDriverBy::cssSelector("a[title=\"Page " . strval($nextPageNum) . "\"]"));
 
 print_r("current page->" . $currentPageNum);
 print_r("\n");

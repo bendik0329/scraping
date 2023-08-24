@@ -32,6 +32,21 @@ $capabilities->setCapability('goog:chromeOptions', ['args' => ["--headless", "--
 $driver = RemoteWebDriver::create($host, $capabilities);
 $driver->get('https://api.scrapingdog.com/scrape?api_key=64e5b95985a16a20b0fdf02c&url=https://www.zillow.com/in/foreclosures/');
 
+$html = $driver->findElement(WebDriverBy::tagName('html'));
+$html->sendKeys(WebDriverKeys::END);
+sleep(5);
+
+$htmlContent = $driver->getPageSource();
+$htmlDomParser = HtmlDomParser::str_get_html($htmlContent);
+
+$currentPageNum = $htmlDomParser->findOne("a[aria-pressed=\"true\"]")->text;
+$nextPageNum = intval($currentPageNum) + 1;
+
+print_r("current page->", $currentPageNum);
+print_r("next page->", $nextPageNum);
+print_r("\n");
+exit();
+
 $result = [];
 while (true) {
   $html = $driver->findElement(WebDriverBy::tagName('html'));
@@ -43,7 +58,7 @@ while (true) {
 
   // scraping properties
   $propertyElements = $htmlDomParser->find("#grid-search-results > ul > li > div > div > article.property-card");
-  
+
   if (count((array)$propertyElements) === 0) {
     break;
   }
@@ -91,7 +106,7 @@ while (true) {
     print_r("\n");
     $attributeValue = 'Page 2';
     $nextPageLink = $driver->findElement(WebDriverBy::xpath("//a[@title='$attributeValue']"));
-    
+
     print_r($nextPageLink);
     print_r("\n");
 
@@ -100,7 +115,7 @@ while (true) {
       break;
     }
     $nextPageElement = $nextPageLink->findElement(WebDriverBy::xpath('..'));
-    
+
     print_r($nextPageElement);
     print_r("\n");
 

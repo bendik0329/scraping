@@ -96,14 +96,14 @@ while (true) {
     print_r("\n");
 
     // $nextPageLink = $driver->findElement(WebDriverBy::cssSelector("a[title=\"Page " . strval($nextPageNum) . "\"]"));
-    if (empty($nextPageElement)) {
+    if (empty($nextPageLink)) {
       break;
     }
     $nextPageElement = $nextPageLink->findElement(WebDriverBy::xpath('..'));
     
     print_r($nextPageElement);
     print_r("\n");
-    
+
     $nextPageElement->click();
     sleep(5);
   } else {

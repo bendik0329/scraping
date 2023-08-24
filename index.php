@@ -91,7 +91,7 @@ while (true) {
       break;
     }
     $nextPageElement->click();
-    sleep(10);
+    sleep(20);
   } else {
     break;
   }

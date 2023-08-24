@@ -20,6 +20,11 @@ $dbname = $envConfig['DB_DATABASE'];
 
 $db  = new Database();
 
+print_r($host);
+print_r($username);
+print_r($password);
+print_r($dbname);
+exit();
 // Connect to DB
 if (!$db->connect($host, $username, $password, $dbname)) {
   die("DB Connection failed: " . $conn->connect_error);

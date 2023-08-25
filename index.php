@@ -90,21 +90,47 @@ if (isset($matches[0])) {
 
 
         $imgList = [];
-        // $imgFolder = __DIR__ . '/download/images/' . $zpid;
-        // if (!file_exists($imgFolder)) {
-        //   mkdir($imgFolder, 0777, true);
-        // }
+        $imgFolder = __DIR__ . '/download/images/' . $zpid;
+        if (!file_exists($imgFolder)) {
+          mkdir($imgFolder, 0777, true);
+        }
 
         $imgElements = $propertyElement->findElements(WebDriverBy::cssSelector("div.StyledPropertyCardPhoto-c11n-8-84-3__sc-ormo34-0.dGCVxQ.StyledPropertyCardPhoto-srp__sc-1gxvsd7-0"));
         foreach ($imgElements as $imgElement) {
           $imgUrl = $imgElement->findElement(WebDriverBy::cssSelector("img.Image-c11n-8-84-3__sc-1rtmhsc-0"))->getAttribute("src");
-          // $imgPath = $imgFolder . "/" . basename($imgUrl);
-          // $imgData = file_get_contents($imgUrl);
-          // if ($imgData !== false && !file_exists($imgPath)) {
-          //   file_put_contents($imgPath, $imgData);
-          // }
+          $imgPath = $imgFolder . "/" . basename($imgUrl);
+          $imgData = file_get_contents($imgUrl);
+          if ($imgData !== false && !file_exists($imgPath)) {
+            file_put_contents($imgPath, $imgData);
+          }
           $imgList[] = $imgUrl;
         }
+
+        $sql = "
+          INSERT INTO properties
+          (
+            zpid, 
+            address,
+            price,
+            beds,
+            baths,
+            images,
+            url,
+            createdAt
+          )
+          VALUES
+          (
+            '" . $db->makeSafe($zpid) . "',
+            '" . $db->makeSafe($address) . "',
+            '" . $db->makeSafe($price) . "',
+            '" . $db->makeSafe($beds) . "',
+            '" . $db->makeSafe($baths) . "',
+            '" . $db->makeSafe(json_encode($imgList)) . "',
+            '" . $db->makeSafe($url) . "',
+            '" . date('Y-m-d H:i:s') . "'
+          )";
+
+        $db->query($sql);
 
         $result[] = array(
           "zpid" => $zpid,

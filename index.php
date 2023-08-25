@@ -41,6 +41,8 @@ $html = $driver->findElement(WebDriverBy::tagName('html'));
 $html->sendKeys(WebDriverKeys::END);
 sleep(5);
 
+print_r("ajsdjflkasdjfl");
+exit();
 $result = [];
 
 // while (true) {

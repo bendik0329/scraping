@@ -42,6 +42,8 @@ $htmlContent = $driver->getPageSource();
 $htmlDomParser = HtmlDomParser::str_get_html($htmlContent);
 
 $nextPageLink = $driver->findElement(WebDriverBy::cssSelector("a[title=\"Page 2\"]"));
+$action = new WebDriverActions($driver);
+$action->click($nextPageLink)->perform();
 print_r($nextPageLink);
 exit();
 

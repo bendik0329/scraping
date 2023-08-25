@@ -35,7 +35,7 @@ $driver = RemoteWebDriver::create($host, $capabilities);
 
 $result = [];
 $url = "https://www.zillow.com/in/foreclosures";
-$driver->get('https://api.scrapingdog.com/scrape?api_key=64e4c5478d07b1208ead57b8&url=https://www.zillow.com/in/foreclosures/&dynamic=false');
+$driver->get('https://api.scrapingdog.com/scrape?api_key=64e4c5478d07b1208ead57b8&url=https://www.zillow.com/in/foreclosures/1_p/&dynamic=false');
 
 $totalCount = $driver->findElement(WebDriverBy::cssSelector("div.ListHeader__NarrowViewWrapping-srp__sc-1rsgqpl-1.idxSRv.search-subtitle span.result-count"))->getText();
 $pattern = '/\d+/';

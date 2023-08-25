@@ -11,6 +11,7 @@ use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverWait;
 use Facebook\WebDriver\WebDriverExpectedCondition;
+use Facebook\WebDriver\Exception\NoSuchElementException;
 use Facebook\WebDriver\WebDriverKeys;
 use Facebook\WebDriver\Interactions\WebDriverActions;
 
@@ -65,23 +66,23 @@ while (true) {
 
   $paginationElements = $htmlDomParser->find("li.PaginationNumberItem-c11n-8-84-3__sc-bnmlxt-0.cA-Ddyj");
   if (count((array)$paginationElements) > 0) {
-    $currentPageNum = $htmlDomParser->findOne("a[aria-pressed=\"true\"]")->text;
-    $nextPageNum = intval($currentPageNum) + 1;
-    $nextPageLink = $driver->findElement(WebDriverBy::cssSelector("a[title=\"Page " . strval($nextPageNum) . "\"]"));
+    try {
+      $currentPageNum = $htmlDomParser->findOne("a[aria-pressed=\"true\"]")->text;
+      $nextPageNum = intval($currentPageNum) + 1;
+      $nextPageLink = $driver->findElement(WebDriverBy::cssSelector("a[title=\"Page " . strval($nextPageNum) . "\"]"));
+      $action = new WebDriverActions($driver);
+      $action->click($nextPageLink)->perform();
 
-    if (empty($nextPageLink)) {
-      print_r("not exists");
+      // debug
+      print_r("current page->" . $currentPageNum);
+      print_r("\n");
+      print_r("next page->" . $nextPageNum);
+      print_r("\n");
+      sleep(5);
+    } catch (NoSuchElementException $e) {
+      print_r($e);
       break;
     }
-
-    $action = new WebDriverActions($driver);
-    $action->click($nextPageLink)->perform();
-    // debug
-    print_r("current page->" . $currentPageNum);
-    print_r("\n");
-    print_r("next page->" . $nextPageNum);
-    print_r("\n");
-    sleep(5);
   } else {
     print_r("!!!");
     break;

@@ -35,25 +35,25 @@ $capabilities->setCapability('goog:chromeOptions', ['args' => ["--headless", "--
 $driver = RemoteWebDriver::create($host, $capabilities);
 $driver->get('https://api.scrapingdog.com/scrape?api_key=64e5b95985a16a20b0fdf02c&url=https://www.zillow.com/in/foreclosures/');
 
-$html = $driver->findElement(WebDriverBy::tagName('html'));
-$html->sendKeys(WebDriverKeys::END);
-sleep(5);
-$htmlContent = $driver->getPageSource();
-$htmlDomParser = HtmlDomParser::str_get_html($htmlContent);
+// $html = $driver->findElement(WebDriverBy::tagName('html'));
+// $html->sendKeys(WebDriverKeys::END);
+// sleep(5);
+// $htmlContent = $driver->getPageSource();
+// $htmlDomParser = HtmlDomParser::str_get_html($htmlContent);
 
-$nextPageLink = $driver->findElement(WebDriverBy::cssSelector("a[title=\"Page 2\"]"));
-$action = new WebDriverActions($driver);
-$action->click($nextPageLink)->perform();
-print_r($nextPageLink);
-exit();
+// $nextPageLink = $driver->findElement(WebDriverBy::cssSelector("a[title=\"Page 2\"]"));
+// $action = new WebDriverActions($driver);
+// $action->click($nextPageLink)->perform();
+// print_r($nextPageLink);
+// exit();
 
-$wait = new WebDriverWait($driver, 10);
-$link = $wait->until(WebDriverExpectedCondition::elementToBeClickable(WebDriverBy::cssSelector("a[title=\"Page 2\"]")));
-$link->click();
+// $wait = new WebDriverWait($driver, 10);
+// $link = $wait->until(WebDriverExpectedCondition::elementToBeClickable(WebDriverBy::cssSelector("a[title=\"Page 2\"]")));
+// $link->click();
 
 
-print_r("jaksdlfjklasdf");
-exit();
+// print_r("jaksdlfjklasdf");
+// exit();
 
 
 while (true) {
@@ -69,24 +69,17 @@ while (true) {
     $nextPageNum = intval($currentPageNum) + 1;
     $nextPageLink = $driver->findElement(WebDriverBy::cssSelector("a[title=\"Page " . strval($nextPageNum) . "\"]"));
 
-    print_r("current page->" . $currentPageNum);
-    print_r("\n");
-    print_r("next page->" . $nextPageNum);
-    print_r("\n");
-
     if (empty($nextPageLink)) {
       print_r("not exists");
       break;
     }
-    $nextPageElement = $nextPageLink->findElement(WebDriverBy::xpath('..'));
-    print_r($nextPageElement);
-    $nextPageElement->click();
+
+    $action = new WebDriverActions($driver);
+    $action->click($nextPageLink)->perform();
     // debug
     print_r("current page->" . $currentPageNum);
     print_r("\n");
     print_r("next page->" . $nextPageNum);
-    print_r("\n");
-    print_r($nextPageElement);
     print_r("\n");
     sleep(5);
   } else {

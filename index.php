@@ -37,10 +37,14 @@ $capabilities->setCapability('goog:chromeOptions', ['args' => ["--user-agent=" .
 $driver = RemoteWebDriver::create($host, $capabilities);
 $driver->get('https://api.scrapingdog.com/scrape?api_key=64e5b95985a16a20b0fdf02c&url=https://www.zillow.com/in/foreclosures/');
 
+$html = $driver->findElement(WebDriverBy::tagName('html'));
+$html->sendKeys(WebDriverKeys::END);
+sleep(5);
+
 $result = [];
 
 // while (true) {
-$propertyElements = $driver->findElements(WebDriverBy::cssSelector("#grid-search-results > ul > li > div > div > article.property-card"));
+$propertyElements = $html->findElements(WebDriverBy::cssSelector("#grid-search-results > ul > li > div > div > article.property-card"));
 if (count($propertyElements) > 0) {
   foreach ($propertyElements as $propertyElement) {
     print_r($propertyElement);

@@ -2,10 +2,7 @@
 
 require_once __DIR__ . '/vendor/autoload.php';
 require_once  __DIR__ . '/utils/constants.php';
-require_once  __DIR__ . '/utils/scraping.php';
 require_once  __DIR__ . '/utils/database.php';
-
-use voku\helper\HtmlDomParser;
 
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverBy;
@@ -41,8 +38,6 @@ $html = $driver->findElement(WebDriverBy::tagName('html'));
 $html->sendKeys(WebDriverKeys::END);
 sleep(5);
 
-print_r("ajsdjflkasdjfl");
-exit();
 $result = [];
 
 // while (true) {

@@ -83,6 +83,23 @@ while ($currentPage <= $maxPage) {
   }
 
   $currentPage++;
+  $paginationElements = $html->findElements(WebDriverBy::cssSelector("li.PaginationNumberItem-c11n-8-84-3__sc-bnmlxt-0.cA-Ddyj"));
+  if (count($paginationElements) > 0) {
+    try {
+      $currentPageNum = $html->findElement(WebDriverBy::cssSelector("a[aria-pressed=\"true\"]"))->getText();
+      $nextPageNum = intval($currentPageNum) + 1;
+      $nextPageLink = $driver->findElement(WebDriverBy::cssSelector("a[title=\"Page " . strval($nextPageNum) . "\"]"));
+      $action = new WebDriverActions($driver);
+      $action->click($nextPageLink)->perform();
+      sleep(5);
+    } catch (NoSuchElementException $e) {
+      break;
+    }
+  } else {
+    break;
+  }
+
+
   // $paginationElements = $html->findElements(WebDriverBy::cssSelector("li.PaginationNumberItem-c11n-8-84-3__sc-bnmlxt-0.cA-Ddyj"));
   // if (count($paginationElements) > 0) {
   //   try {

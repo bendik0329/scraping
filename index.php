@@ -52,13 +52,14 @@ if (isset($matches[0])) {
   var_dump($maxPage);
 
   while ($currentPage <= $maxPage) {
-    // $pageUrl = "https://api.scrapingdog.com/scrape?api_key=64e4c5478d07b1208ead57b8&url=" . $url . "/" . $currentPage . "_p/" . "&dynamic=false";
-    // $driver->executeScript("window.location.href = '$url';");
-    // sleep(5);
+    $pageUrl = "https://api.scrapingdog.com/scrape?api_key=64e4c5478d07b1208ead57b8&url=" . $url . "/" . strval($currentPage) . "_p/" . "&dynamic=false";
+    $driver->executeScript("window.location.href = '$pageUrl';");
+    $wait = new WebDriverWait($driver, 10); // Maximum wait time in seconds
+    $wait->until(WebDriverExpectedCondition::urlContains($newUrl));
 
     $html = $driver->findElement(WebDriverBy::tagName('html'));
     $html->sendKeys(WebDriverKeys::END);
-    sleep(5);
+    $wait->until(WebDriverExpectedCondition::elementToBeClickable(WebDriverBy::tagName('html')));
 
     $propertyElements = $driver->findElements(WebDriverBy::cssSelector("#grid-search-results > ul > li > div > div > article.property-card"));
     if (count($propertyElements) > 0) {

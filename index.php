@@ -38,6 +38,11 @@ $result = [];
 $currentPage = 1;
 $maxPage = 4;
 while ($currentPage <= $maxPage) {
+  print_r($currentPage);
+  $currentPage++;
+}
+exit();
+while ($currentPage <= $maxPage) {
   $html = $driver->findElement(WebDriverBy::tagName('html'));
   $html->sendKeys(WebDriverKeys::END);
   sleep(5);

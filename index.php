@@ -64,7 +64,7 @@ while ($currentPage <= $maxPage) {
         $imgUrl = $imgElement->findElement(WebDriverBy::cssSelector("img.Image-c11n-8-84-3__sc-1rtmhsc-0"))->getAttribute("src");
         $imgPath = $imgFolder . "/" . basename($imgUrl);
         $imgData = file_get_contents($imgUrl);
-        if ($imgData !== false || !file_exists($imgPath)) {
+        if ($imgData !== false && !file_exists($imgPath)) {
           file_put_contents($imgPath, $imgData);
         }
         $imgList[] = $imgUrl;

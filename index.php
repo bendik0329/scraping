@@ -34,6 +34,8 @@ $capabilities->setCapability('goog:chromeOptions', ['args' => ["--headless", "--
 $driver = RemoteWebDriver::create($host, $capabilities);
 $driver->get('https://api.scrapingdog.com/scrape?api_key=64e5b95985a16a20b0fdf02c&url=https://www.zillow.com/in/foreclosures/');
 
+$result = [];
+
 while (true) {
   $html = $driver->findElement(WebDriverBy::tagName('html'));
   $html->sendKeys(WebDriverKeys::END);
@@ -103,6 +105,9 @@ while (true) {
     break;
   }
 }
+
+$driver->close();
+echo json_encode($result);
 exit();
 
 $result = [];

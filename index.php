@@ -12,6 +12,7 @@ use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverWait;
 use Facebook\WebDriver\WebDriverExpectedCondition;
 use Facebook\WebDriver\WebDriverKeys;
+use Facebook\WebDriver\Interactions\WebDriverActions;
 
 $envConfig = parse_ini_file(__DIR__ . "/.env");
 
@@ -36,9 +37,13 @@ $driver->get('https://api.scrapingdog.com/scrape?api_key=64e5b95985a16a20b0fdf02
 
 $html = $driver->findElement(WebDriverBy::tagName('html'));
 $html->sendKeys(WebDriverKeys::END);
-sleep(20);
+sleep(5);
 $htmlContent = $driver->getPageSource();
 $htmlDomParser = HtmlDomParser::str_get_html($htmlContent);
+
+$nextPageLink = $driver->findElement(WebDriverBy::cssSelector("a[title=\"Page 2\"]"));
+print_r($nextPageLink);
+exit();
 
 $wait = new WebDriverWait($driver, 10);
 $link = $wait->until(WebDriverExpectedCondition::elementToBeClickable(WebDriverBy::cssSelector("a[title=\"Page 2\"]")));

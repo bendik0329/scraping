@@ -48,7 +48,7 @@ if (isset($matches[0])) {
   $currentPage = 1;
   $maxPage = ceil($totalCount / $itemsPerPage);
 
-  while ($currentPage <= $maxPage) {
+  while ($currentPage <= 1) {
     $pageUrl = "https://api.scrapingdog.com/scrape?api_key=64e4c5478d07b1208ead57b8&url=" . $url . "/" . $currentPage . "_p/" . "&dynamic=false";
     $driver->executeScript("window.location.href = '$pageUrl';");
     sleep(5);

@@ -59,9 +59,6 @@ $driver->get('https://api.scrapingdog.com/scrape?api_key=64e5b95985a16a20b0fdf02
 
 while (true) {
   $html = $driver->findElement(WebDriverBy::tagName('html'));
-  $wait = new WebDriverWait($driver, 10);
-  $wait->until(WebDriverExpectedCondition::stalenessOf($html));
-
   $html->sendKeys(WebDriverKeys::END);
   sleep(5);
 
@@ -116,18 +113,12 @@ while (true) {
       $action = new WebDriverActions($driver);
       $action->click($nextPageLink)->perform();
       
-      // debug
-      print_r("current page->" . $currentPageNum);
-      print_r("\n");
-      print_r("next page->" . $nextPageNum);
-      print_r("\n");
-      sleep(5);
+      $wait = new WebDriverWait($driver, 10);
+      $wait->until(WebDriverExpectedCondition::stalenessOf($nextPageLink));
     } catch (NoSuchElementException $e) {
-      print_r($e);
       break;
     }
   } else {
-    print_r("!!!");
     break;
   }
 }
@@ -137,7 +128,6 @@ print_r($result);
 
 // Close the WebDriver session
 $driver->quit();
-print_r("ended");
 exit();
 
 print_r("current page->" . $currentPageNum);

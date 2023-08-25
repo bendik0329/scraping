@@ -38,7 +38,7 @@ $result = [];
 $currentPage = 1;
 $maxPage = 4;
 
-while ($currentPage <= $maxPage) {
+// while ($currentPage <= $maxPage) {
   $html = $driver->findElement(WebDriverBy::tagName('html'));
   $html->sendKeys(WebDriverKeys::END);
   sleep(5);
@@ -80,7 +80,7 @@ while ($currentPage <= $maxPage) {
         "images" => $imgList,
       );
     }
-  }
+  // }
 
   $currentPage++;
   // $nextPageLink = $html->findElement(WebDriverBy::cssSelector("a[title=\"Page " . strval($currentPage) . "\"]"));

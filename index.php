@@ -118,7 +118,7 @@ while (true) {
       print_r("\n");
       print_r("next page->" . $nextPageNum);
       print_r("\n");
-      sleep(5);
+      sleep(20);
     } catch (NoSuchElementException $e) {
       print_r($e);
       break;

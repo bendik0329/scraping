@@ -34,6 +34,22 @@ $capabilities->setCapability('goog:chromeOptions', ['args' => ["--headless", "--
 $driver = RemoteWebDriver::create($host, $capabilities);
 $driver->get('https://api.scrapingdog.com/scrape?api_key=64e5b95985a16a20b0fdf02c&url=https://www.zillow.com/in/foreclosures/');
 
+while (true) {
+  $html = $driver->findElement(WebDriverBy::tagName('html'));
+  $html->sendKeys(WebDriverKeys::END);
+  sleep(5);
+
+  $paginationElements = $html->findElements(WebDriverBy::cssSelector("li.PaginationNumberItem-c11n-8-84-3__sc-bnmlxt-0.cA-Ddyj"));
+  if (count($paginationElements) > 0) {
+    print_r("pagination elements exists");
+    break;
+  } else {
+    print_r("pagination elements not exists");
+    break;
+  }
+}
+exit();
+
 $result = [];
 $currentPage = 1;
 $maxPage = 4;

@@ -62,11 +62,11 @@ while ($currentPage <= $maxPage) {
       $imgElements = $propertyElement->findElements(WebDriverBy::cssSelector("div.StyledPropertyCardPhoto-c11n-8-84-3__sc-ormo34-0.dGCVxQ.StyledPropertyCardPhoto-srp__sc-1gxvsd7-0"));
       foreach ($imgElements as $imgElement) {
         $imgUrl = $imgElement->findElement(WebDriverBy::cssSelector("img.Image-c11n-8-84-3__sc-1rtmhsc-0"))->getAttribute("src");
-        // $imgPath = $imgFolder . "/" . basename($imgUrl);
-        // $imgData = file_get_contents($imgUrl);
-        // if ($imgData !== false) {
-        //   file_put_contents($imgPath, $imgData);
-        // }
+        $imgPath = $imgFolder . "/" . basename($imgUrl);
+        $imgData = file_get_contents($imgUrl);
+        if ($imgData !== false || !file_exists($imgPath)) {
+          file_put_contents($imgPath, $imgData);
+        }
         $imgList[] = $imgUrl;
       }
 

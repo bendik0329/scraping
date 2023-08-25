@@ -52,10 +52,11 @@ if (isset($matches[0])) {
   var_dump($maxPage);
   while ($currentPage <= $maxPage) {
     $pageUrl = "https://api.scrapingdog.com/scrape?api_key=64e4c5478d07b1208ead57b8&url=" . $url . "/" . $currentPage . "_p/" . "&dynamic=false";
-    $driver->executeScript("window.location.href = '$pageUrl';");
-    $html = $driver->findElement(WebDriverBy::tagName('html'));
-    $html->sendKeys(WebDriverKeys::END);
-    sleep(5);
+    // $driver->executeScript("window.location.href = '$pageUrl';");
+    // $html = $driver->findElement(WebDriverBy::tagName('html'));
+    // $html->sendKeys(WebDriverKeys::END);
+    // sleep(5);
+    print_r($pageUrl);
     $currentPage++;
   }
   // while ($currentPage <= 1) {

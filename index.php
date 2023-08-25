@@ -33,7 +33,7 @@ if (!$db->connect($host, $username, $password, $dbname)) {
 // Set up Selenium WebDriver
 $host = 'http://localhost:4444/wd/hub';
 $capabilities = \Facebook\WebDriver\Remote\DesiredCapabilities::chrome();
-$capabilities->setCapability('goog:chromeOptions', ['args' => ["--user-agent=" . USER_AGENT]]);
+$capabilities->setCapability('goog:chromeOptions', ['args' => ["--headless", "--user-agent=" . USER_AGENT]]);
 $driver = RemoteWebDriver::create($host, $capabilities);
 $driver->get('https://api.scrapingdog.com/scrape?api_key=64e5b95985a16a20b0fdf02c&url=https://www.zillow.com/in/foreclosures/');
 

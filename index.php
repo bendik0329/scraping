@@ -41,7 +41,7 @@ while (true) {
   $html->sendKeys(WebDriverKeys::END);
   sleep(5);
 
-  $propertyElements = $html->findElements(WebDriverBy::cssSelector("#grid-search-results > ul > li > div > div > article.property-card"));
+  $propertyElements = $driver->findElements(WebDriverBy::cssSelector("#grid-search-results > ul > li > div > div > article.property-card"));
   if (count($propertyElements) > 0) {
     foreach ($propertyElements as $propertyElement) {
       $zpid = str_replace("zpid_", "", $propertyElement->getAttribute("id"));
@@ -80,12 +80,12 @@ while (true) {
     }
   }
 
-  $paginationElements = $html->findElements(WebDriverBy::cssSelector("li.PaginationNumberItem-c11n-8-84-3__sc-bnmlxt-0.cA-Ddyj"));
+  $paginationElements = $driver->findElements(WebDriverBy::cssSelector("li.PaginationNumberItem-c11n-8-84-3__sc-bnmlxt-0.cA-Ddyj"));
   if (count($paginationElements) > 0) {
     try {
-      $currentPageNum = $html->findElement(WebDriverBy::cssSelector("a[aria-pressed=\"true\"]"))->getText();
+      $currentPageNum = $driver->findElement(WebDriverBy::cssSelector("a[aria-pressed=\"true\"]"))->getText();
       $nextPageNum = intval($currentPageNum) + 1;
-      $nextPageLink = $html->findElement(WebDriverBy::cssSelector("a[title=\"Page " . strval($nextPageNum) . "\"]"));
+      $nextPageLink = $driver->findElement(WebDriverBy::cssSelector("a[title=\"Page " . strval($nextPageNum) . "\"]"));
       $action = new WebDriverActions($driver);
       $action->click($nextPageLink)->perform();
 
@@ -119,7 +119,7 @@ while ($currentPage <= $maxPage) {
   $html->sendKeys(WebDriverKeys::END);
   sleep(5);
 
-  $propertyElements = $html->findElements(WebDriverBy::cssSelector("#grid-search-results > ul > li > div > div > article.property-card"));
+  $propertyElements = $driver->findElements(WebDriverBy::cssSelector("#grid-search-results > ul > li > div > div > article.property-card"));
   if (count($propertyElements) > 0) {
     foreach ($propertyElements as $propertyElement) {
       $zpid = str_replace("zpid_", "", $propertyElement->getAttribute("id"));
@@ -159,10 +159,10 @@ while ($currentPage <= $maxPage) {
   }
 
   $currentPage++;
-  $paginationElements = $html->findElements(WebDriverBy::cssSelector("li.PaginationNumberItem-c11n-8-84-3__sc-bnmlxt-0.cA-Ddyj"));
+  $paginationElements = $driver->findElements(WebDriverBy::cssSelector("li.PaginationNumberItem-c11n-8-84-3__sc-bnmlxt-0.cA-Ddyj"));
   if (count($paginationElements) > 0) {
     try {
-      $currentPageNum = $html->findElement(WebDriverBy::cssSelector("a[aria-pressed=\"true\"]"))->getText();
+      $currentPageNum = $driver->findElement(WebDriverBy::cssSelector("a[aria-pressed=\"true\"]"))->getText();
       $nextPageNum = intval($currentPageNum) + 1;
       $nextPageLink = $driver->findElement(WebDriverBy::cssSelector("a[title=\"Page " . strval($nextPageNum) . "\"]"));
       $action = new WebDriverActions($driver);

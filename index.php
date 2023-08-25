@@ -35,8 +35,9 @@ $driver = RemoteWebDriver::create($host, $capabilities);
 $driver->get('https://api.scrapingdog.com/scrape?api_key=64e5b95985a16a20b0fdf02c&url=https://www.zillow.com/in/foreclosures/');
 
 $result = [];
-
-while (true) {
+$currentPage = 1;
+$maxPage = 4;
+while ($currentPage <= $maxPage) {
   $html = $driver->findElement(WebDriverBy::tagName('html'));
   $html->sendKeys(WebDriverKeys::END);
   sleep(5);
@@ -80,20 +81,28 @@ while (true) {
     }
   }
 
-  $paginationElements = $html->findElements(WebDriverBy::cssSelector("li.PaginationNumberItem-c11n-8-84-3__sc-bnmlxt-0.cA-Ddyj"));
-  if (count($paginationElements) > 0) {
-    try {
-      $currentPageNum = $html->findElement(WebDriverBy::cssSelector("a[aria-pressed=\"true\"]"))->getText();
-      $nextPageNum = intval($currentPageNum) + 1;
-      $nextPageLink = $driver->findElement(WebDriverBy::cssSelector("a[title=\"Page " . strval($nextPageNum) . "\"]"));
-      $action = new WebDriverActions($driver);
-      $action->click($nextPageLink)->perform();
-    } catch (NoSuchElementException $e) {
-      break;
-    }
-  } else {
-    break;
-  }
+  $currentPage++;
+  $nextPageLink = $html->findElement(WebDriverBy::cssSelector("a[title=\"Page " . strval($currentPage) . "\"]"));
+  $action = new WebDriverActions($driver);
+  $action->click($nextPageLink)->perform();
+  sleep(5);
+
+
+  // $paginationElements = $html->findElements(WebDriverBy::cssSelector("li.PaginationNumberItem-c11n-8-84-3__sc-bnmlxt-0.cA-Ddyj"));
+  // if (count($paginationElements) > 0) {
+  //   try {
+  //     $currentPageNum = $html->findElement(WebDriverBy::cssSelector("a[aria-pressed=\"true\"]"))->getText();
+  //     $nextPageNum = intval($currentPageNum) + 1;
+  //     $nextPageLink = $driver->findElement(WebDriverBy::cssSelector("a[title=\"Page " . strval($nextPageNum) . "\"]"));
+  //     $action = new WebDriverActions($driver);
+  //     $action->click($nextPageLink)->perform();
+  //     sleep(5);
+  //   } catch (NoSuchElementException $e) {
+  //     break;
+  //   }
+  // } else {
+  //   break;
+  // }
 }
 
 $driver->close();

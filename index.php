@@ -53,7 +53,7 @@ while ($currentPage <= $maxPage) {
       $beds = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data div.StyledPropertyCardDataArea-c11n-8-84-3__sc-yipmu-0.dbDWjx > ul > li:nth-child(1) > b"))->getText();
       $baths = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data div.StyledPropertyCardDataArea-c11n-8-84-3__sc-yipmu-0.dbDWjx > ul > li:nth-child(2) > b"))->getText();
 
-      // $imgList = [];
+      $imgList = [];
       // $imgFolder = __DIR__ . '/download/images/' . $zpid;
       // if (!file_exists($imgFolder)) {
       //   mkdir($imgFolder, 0777, true);

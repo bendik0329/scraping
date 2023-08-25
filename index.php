@@ -82,10 +82,10 @@ while ($currentPage <= $maxPage) {
   }
 
   $currentPage++;
-  $nextPageLink = $html->findElement(WebDriverBy::cssSelector("a[title=\"Page " . strval($currentPage) . "\"]"));
-  $action = new WebDriverActions($driver);
-  $action->click($nextPageLink)->perform();
-  sleep(5);
+  // $nextPageLink = $html->findElement(WebDriverBy::cssSelector("a[title=\"Page " . strval($currentPage) . "\"]"));
+  // $action = new WebDriverActions($driver);
+  // $action->click($nextPageLink)->perform();
+  // sleep(5);
 
 
   // $paginationElements = $html->findElements(WebDriverBy::cssSelector("li.PaginationNumberItem-c11n-8-84-3__sc-bnmlxt-0.cA-Ddyj"));

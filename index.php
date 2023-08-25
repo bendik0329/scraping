@@ -55,7 +55,7 @@ if (isset($matches[0])) {
     $pageUrl = "https://api.scrapingdog.com/scrape?api_key=64e4c5478d07b1208ead57b8&url=" . $url . "/" . strval($currentPage) . "_p/" . "&dynamic=false";
     $driver->executeScript("window.location.href = '$pageUrl';");
     $wait = new WebDriverWait($driver, 10); // Maximum wait time in seconds
-    $wait->until(WebDriverExpectedCondition::urlContains($newUrl));
+    $wait->until(WebDriverExpectedCondition::urlContains($pageUrl));
 
     $html = $driver->findElement(WebDriverBy::tagName('html'));
     $html->sendKeys(WebDriverKeys::END);

@@ -14,6 +14,7 @@ use Facebook\WebDriver\WebDriverExpectedCondition;
 use Facebook\WebDriver\Exception\NoSuchElementException;
 use Facebook\WebDriver\WebDriverKeys;
 use Facebook\WebDriver\Interactions\WebDriverActions;
+use Facebook\WebDriver\WebDriver;
 
 $envConfig = parse_ini_file(__DIR__ . "/.env");
 
@@ -32,193 +33,29 @@ if (!$db->connect($host, $username, $password, $dbname)) {
 // Set up Selenium WebDriver
 $host = 'http://localhost:4444/wd/hub';
 $capabilities = \Facebook\WebDriver\Remote\DesiredCapabilities::chrome();
-$capabilities->setCapability('goog:chromeOptions', ['args' => ["--headless", "--user-agent=" . USER_AGENT]]);
+$capabilities->setCapability('goog:chromeOptions', ['args' => ["--user-agent=" . USER_AGENT]]);
 $driver = RemoteWebDriver::create($host, $capabilities);
 $driver->get('https://api.scrapingdog.com/scrape?api_key=64e5b95985a16a20b0fdf02c&url=https://www.zillow.com/in/foreclosures/');
 
-// $html = $driver->findElement(WebDriverBy::tagName('html'));
-// $html->sendKeys(WebDriverKeys::END);
-// sleep(5);
-// $htmlContent = $driver->getPageSource();
-// $htmlDomParser = HtmlDomParser::str_get_html($htmlContent);
-
-// $nextPageLink = $driver->findElement(WebDriverBy::cssSelector("a[title=\"Page 2\"]"));
-// $action = new WebDriverActions($driver);
-// $action->click($nextPageLink)->perform();
-// print_r($nextPageLink);
-// exit();
-
-// $wait = new WebDriverWait($driver, 10);
-// $link = $wait->until(WebDriverExpectedCondition::elementToBeClickable(WebDriverBy::cssSelector("a[title=\"Page 2\"]")));
-// $link->click();
-
-
-// print_r("jaksdlfjklasdf");
-// exit();
-
-
-while (true) {
-  $html = $driver->findElement(WebDriverBy::tagName('html'));
-  $html->sendKeys(WebDriverKeys::END);
-  sleep(5);
-
-  $htmlContent = $driver->getPageSource();
-  $htmlDomParser = HtmlDomParser::str_get_html($htmlContent);
-
-  // scraping properties
-  $propertyElements = $htmlDomParser->find("#grid-search-results > ul > li > div > div > article.property-card");
-
-  if (count((array)$propertyElements) === 0) {
-    break;
-  }
-
-  foreach ($propertyElements as $propertyElement) {
-    $data = scrapeProperty($propertyElement);
-    $sql = "
-      INSERT INTO properties
-      (
-        zpid, 
-        address,
-        price,
-        beds,
-        baths,
-        hasImage,
-        images,
-        url,
-        createdAt
-      )
-      VALUES
-      (
-        '" . $db->makeSafe($data['zpid']) . "',
-        '" . $db->makeSafe($data['address']) . "',
-        '" . $db->makeSafe($data['price']) . "',
-        '" . $db->makeSafe($data['beds']) . "',
-        '" . $db->makeSafe($data['baths']) . "',
-        '" . $db->makeSafe($data['hasImage'] ? 1 : 0) . "',
-        '" . $db->makeSafe(json_encode($data['images'])) . "',
-        '" . $db->makeSafe($data['url']) . "',
-        '" . date('Y-m-d H:i:s') . "'
-      )";
-
-    $db->query($sql);
-    $result[] = $data;
-  }
-
-  $paginationElements = $htmlDomParser->find("li.PaginationNumberItem-c11n-8-84-3__sc-bnmlxt-0.cA-Ddyj");
-  if (count((array)$paginationElements) > 0) {
-    try {
-      $currentPageNum = $htmlDomParser->findOne("a[aria-pressed=\"true\"]")->text;
-      $nextPageNum = intval($currentPageNum) + 1;
-      $nextPageLink = $driver->findElement(WebDriverBy::cssSelector("a[title=\"Page " . strval($nextPageNum) . "\"]"));
-      $action = new WebDriverActions($driver);
-      $action->click($nextPageLink)->perform();
-      
-      $wait = new WebDriverWait($driver, 10);
-      $wait->until(WebDriverExpectedCondition::stalenessOf($nextPageLink));
-    } catch (NoSuchElementException $e) {
-      break;
-    }
-  } else {
-    break;
-  }
-}
-
-$result = json_encode($result);
-print_r($result);
-
-// Close the WebDriver session
-$driver->quit();
-exit();
-
-print_r("current page->" . $currentPageNum);
-print_r("\n");
-print_r("next page->" . $nextPageNum);
-print_r("\n");
-print_r($nextPageLink);
-print_r("\n");
-exit();
-
 $result = [];
-while (true) {
-  $html = $driver->findElement(WebDriverBy::tagName('html'));
-  $html->sendKeys(WebDriverKeys::END);
-  sleep(5);
 
-  $htmlContent = $driver->getPageSource();
-  $htmlDomParser = HtmlDomParser::str_get_html($htmlContent);
-
-  // scraping properties
-  $propertyElements = $htmlDomParser->find("#grid-search-results > ul > li > div > div > article.property-card");
-
-  if (count((array)$propertyElements) === 0) {
-    break;
-  }
-
+// while (true) {
+$propertyElements = $driver->findElements(WebDriverBy::cssSelector("#grid-search-results > ul > li > div > div > article.property-card"));
+if (count($propertyElements) > 0) {
   foreach ($propertyElements as $propertyElement) {
-    $data = scrapeProperty($propertyElement);
-    $sql = "
-      INSERT INTO properties
-      (
-        zpid, 
-        address,
-        price,
-        beds,
-        baths,
-        hasImage,
-        images,
-        url,
-        createdAt
-      )
-      VALUES
-      (
-        '" . $db->makeSafe($data['zpid']) . "',
-        '" . $db->makeSafe($data['address']) . "',
-        '" . $db->makeSafe($data['price']) . "',
-        '" . $db->makeSafe($data['beds']) . "',
-        '" . $db->makeSafe($data['baths']) . "',
-        '" . $db->makeSafe($data['hasImage'] ? 1 : 0) . "',
-        '" . $db->makeSafe(json_encode($data['images'])) . "',
-        '" . $db->makeSafe($data['url']) . "',
-        '" . date('Y-m-d H:i:s') . "'
-      )";
-
-    $db->query($sql);
-    $result[] = $data;
-  }
-
-  // pagination
-  $paginationElements = $htmlDomParser->find("li.PaginationNumberItem-c11n-8-84-3__sc-bnmlxt-0.cA-Ddyj");
-  if (count((array)$paginationElements) > 0) {
-    $currentPageNum = $htmlDomParser->findOne("a[aria-pressed=\"true\"]")->text;
-    $nextPageNum = intval($currentPageNum) + 1;
-
-    print_r("current page->", $currentPageNum);
-    print_r("next page->", $nextPageNum);
-    print_r("\n");
-    $attributeValue = 'Page 2';
-    $nextPageLink = $driver->findElement(WebDriverBy::xpath("//a[@title='$attributeValue']"));
-
-    print_r($nextPageLink);
-    print_r("\n");
-
-    // $nextPageLink = $driver->findElement(WebDriverBy::cssSelector("a[title=\"Page " . strval($nextPageNum) . "\"]"));
-    if (empty($nextPageLink)) {
-      break;
-    }
-    $nextPageElement = $nextPageLink->findElement(WebDriverBy::xpath('..'));
-
-    print_r($nextPageElement);
-    print_r("\n");
-
-    $nextPageElement->click();
-    sleep(5);
-  } else {
-    break;
+    print_r($propertyElement);
+    $zpid = $propertyElement->getAttribute("id");
+    $url = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");
+    $address = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data > a > address"))->getText();
+    $price = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data span.PropertyCardWrapper__StyledPriceLine-srp__sc-16e8gqd-1"))->getText();
+    $result[] = array(
+      "zpid" => $zpid,
+      "url" => $url,
+      "address" => $address,
+      "price" => $price,
+    );
   }
 }
-
-$result = json_encode($result);
-print_r($result);
-
-// Close the WebDriver session
-$driver->quit();
+// }
+$driver->close();
+echo json_encode($result);

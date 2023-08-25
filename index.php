@@ -37,11 +37,7 @@ $driver->get('https://api.scrapingdog.com/scrape?api_key=64e5b95985a16a20b0fdf02
 $result = [];
 $currentPage = 1;
 $maxPage = 4;
-while ($currentPage <= $maxPage) {
-  print_r($currentPage);
-  $currentPage++;
-}
-exit();
+
 while ($currentPage <= $maxPage) {
   $html = $driver->findElement(WebDriverBy::tagName('html'));
   $html->sendKeys(WebDriverKeys::END);

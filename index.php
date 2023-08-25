@@ -44,7 +44,6 @@ $result = [];
 $propertyElements = $html->findElements(WebDriverBy::cssSelector("#grid-search-results > ul > li > div > div > article.property-card"));
 if (count($propertyElements) > 0) {
   foreach ($propertyElements as $propertyElement) {
-    print_r($propertyElement);
     $zpid = $propertyElement->getAttribute("id");
     $url = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");
     $address = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data > a > address"))->getText();

@@ -43,7 +43,13 @@ while (true) {
   if (count($paginationElements) > 0) {
     print_r("pagination elements exists");
     $currentPageNum = $html->findElement(WebDriverBy::cssSelector("a[aria-pressed=\"true\"]"))->getText();
+    $nextPageNum = intval($currentPageNum) + 1;
+    $nextPageLink = $html->findElement(WebDriverBy::cssSelector("a[title=\"Page " . strval($nextPageNum) . "\"]"));
+    $action = new WebDriverActions($driver);
+    $action->click($nextPageLink)->perform();
+
     print_r($currentPageNum);
+    print_r($nextPageNum);
     break;
   } else {
     print_r("pagination elements not exists");

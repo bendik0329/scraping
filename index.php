@@ -42,6 +42,8 @@ while (true) {
   $paginationElements = $html->findElements(WebDriverBy::cssSelector("li.PaginationNumberItem-c11n-8-84-3__sc-bnmlxt-0.cA-Ddyj"));
   if (count($paginationElements) > 0) {
     print_r("pagination elements exists");
+    $currentPageNum = $html->findElement(WebDriverBy::cssSelector("a[aria-pressed=\"true\"]"))->getText();
+    print_r($currentPageNum);
     break;
   } else {
     print_r("pagination elements not exists");

@@ -52,9 +52,19 @@ if (count($propertyElements) > 0) {
     $baths = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data div.StyledPropertyCardDataArea-c11n-8-84-3__sc-yipmu-0.dbDWjx > ul > li:nth-child(2) > b"))->getText();
 
     $imgList = [];
+    $imgFolder = __DIR__ . '/download/images/' . $zpid;
+    if (!file_exists($imgFolder)) {
+      mkdir($imgFolder, 0777, true);
+    }
+
     $imgElements = $propertyElement->findElements(WebDriverBy::cssSelector("div.StyledPropertyCardPhoto-c11n-8-84-3__sc-ormo34-0.dGCVxQ.StyledPropertyCardPhoto-srp__sc-1gxvsd7-0"));
-    foreach($imgElements as $imgElement) {
+    foreach ($imgElements as $imgElement) {
       $imgUrl = $imgElement->findElement(WebDriverBy::cssSelector("img.Image-c11n-8-84-3__sc-1rtmhsc-0"))->getAttribute("src");
+      $imgPath = $imgFolder . "/" . basename($imgUrl);
+      $imgData = file_get_contents($imgUrl);
+      if ($imgData !== false) {
+        file_put_contents($imgPath, $imgData);
+      }
       $imgList[] = $imgUrl;
     }
 

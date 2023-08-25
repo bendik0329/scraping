@@ -59,12 +59,14 @@ if (isset($matches[0])) {
     }
 
     $driver->executeScript("window.location.href = '$pageUrl';");
-    $wait = new WebDriverWait($driver, 10); // Maximum wait time in seconds
-    $wait->until(WebDriverExpectedCondition::urlContains($pageUrl));
+    // $wait = new WebDriverWait($driver, 10); // Maximum wait time in seconds
+    // $wait->until(WebDriverExpectedCondition::urlContains($pageUrl));
+    sleep(5);
 
     $html = $driver->findElement(WebDriverBy::tagName('html'));
     $html->sendKeys(WebDriverKeys::END);
-    $wait->until(WebDriverExpectedCondition::elementToBeClickable(WebDriverBy::tagName('html')));
+    sleep(5);
+    // $wait->until(WebDriverExpectedCondition::elementToBeClickable(WebDriverBy::tagName('html')));
 
     $propertyElements = $driver->findElements(WebDriverBy::cssSelector("#grid-search-results > ul > li > div > div > article.property-card"));
     if (count($propertyElements) > 0) {

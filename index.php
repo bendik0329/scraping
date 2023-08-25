@@ -41,16 +41,18 @@ while (true) {
 
   $paginationElements = $html->findElements(WebDriverBy::cssSelector("li.PaginationNumberItem-c11n-8-84-3__sc-bnmlxt-0.cA-Ddyj"));
   if (count($paginationElements) > 0) {
-    print_r("pagination elements exists");
-    $currentPageNum = $html->findElement(WebDriverBy::cssSelector("a[aria-pressed=\"true\"]"))->getText();
-    $nextPageNum = intval($currentPageNum) + 1;
-    $nextPageLink = $html->findElement(WebDriverBy::cssSelector("a[title=\"Page " . strval($nextPageNum) . "\"]"));
-    $action = new WebDriverActions($driver);
-    $action->click($nextPageLink)->perform();
+    try {
+      $currentPageNum = $html->findElement(WebDriverBy::cssSelector("a[aria-pressed=\"true\"]"))->getText();
+      $nextPageNum = intval($currentPageNum) + 1;
+      $nextPageLink = $html->findElement(WebDriverBy::cssSelector("a[title=\"Page " . strval($nextPageNum) . "\"]"));
+      $action = new WebDriverActions($driver);
+      $action->click($nextPageLink)->perform();
 
-    print_r($currentPageNum);
-    print_r($nextPageNum);
-    break;
+      print_r($currentPageNum);
+      print_r($nextPageNum);
+    } catch (NoSuchElementException $e) {
+      break;
+    }
   } else {
     print_r("pagination elements not exists");
     break;

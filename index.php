@@ -35,7 +35,7 @@ $driver = RemoteWebDriver::create($host, $capabilities);
 
 $result = [];
 $url = "https://www.zillow.com/in/foreclosures";
-$driver->get('https://api.scrapingdog.com/scrape?api_key=64e4c5478d07b1208ead57b8&url=https://www.zillow.com/in/foreclosures/1_p/&dynamic=false');
+$driver->get('https://api.scrapingdog.com/scrape?api_key=64e4c5478d07b1208ead57b8&url=https://www.zillow.com/in/foreclosures/&dynamic=false');
 
 $totalCount = $driver->findElement(WebDriverBy::cssSelector("div.ListHeader__NarrowViewWrapping-srp__sc-1rsgqpl-1.idxSRv.search-subtitle span.result-count"))->getText();
 $pattern = '/\d+/';
@@ -51,62 +51,62 @@ if (isset($matches[0])) {
   var_dump($totalCount);
   var_dump($maxPage);
 
-  // while ($currentPage <= $maxPage) {
-  //   if ($currentPage === 1) {
-  //     $pageUrl = "https://api.scrapingdog.com/scrape?api_key=64e4c5478d07b1208ead57b8&url=" . $url . "&dynamic=false";
-  //   } else {
-  //     $pageUrl = "https://api.scrapingdog.com/scrape?api_key=64e4c5478d07b1208ead57b8&url=" . $url . "/" . strval($currentPage) . "_p/" . "&dynamic=false";
-  //   }
-    
-  //   $driver->executeScript("window.location.href = '$pageUrl';");
-  //   $wait = new WebDriverWait($driver, 10); // Maximum wait time in seconds
-  //   $wait->until(WebDriverExpectedCondition::urlContains($pageUrl));
+  while ($currentPage <= $maxPage) {
+    if ($currentPage === 1) {
+      $pageUrl = 'https://api.scrapingdog.com/scrape?api_key=64e4c5478d07b1208ead57b8&url=https://www.zillow.com/in/foreclosures/&dynamic=false';
+    } else {
+      $pageUrl = 'https://api.scrapingdog.com/scrape?api_key=64e4c5478d07b1208ead57b8&url=https://www.zillow.com/in/foreclosures/' . strval($currentPage) . '_p/&dynamic=false';
+    }
 
-  //   $html = $driver->findElement(WebDriverBy::tagName('html'));
-  //   $html->sendKeys(WebDriverKeys::END);
-  //   $wait->until(WebDriverExpectedCondition::elementToBeClickable(WebDriverBy::tagName('html')));
+    $driver->executeScript("window.location.href = '$pageUrl';");
+    $wait = new WebDriverWait($driver, 10); // Maximum wait time in seconds
+    $wait->until(WebDriverExpectedCondition::urlContains($pageUrl));
 
-  //   $propertyElements = $driver->findElements(WebDriverBy::cssSelector("#grid-search-results > ul > li > div > div > article.property-card"));
-  //   if (count($propertyElements) > 0) {
-  //     foreach ($propertyElements as $propertyElement) {
-  //       $zpid = str_replace("zpid_", "", $propertyElement->getAttribute("id"));
-  //       $url = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");
-  //       $address = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data > a > address"))->getText();
-  //       $price = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data span.PropertyCardWrapper__StyledPriceLine-srp__sc-16e8gqd-1"))->getText();
-  //       $beds = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data div.StyledPropertyCardDataArea-c11n-8-84-3__sc-yipmu-0.dbDWjx > ul > li:nth-child(1) > b"))->getText();
-  //       $baths = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data div.StyledPropertyCardDataArea-c11n-8-84-3__sc-yipmu-0.dbDWjx > ul > li:nth-child(2) > b"))->getText();
+    $html = $driver->findElement(WebDriverBy::tagName('html'));
+    $html->sendKeys(WebDriverKeys::END);
+    $wait->until(WebDriverExpectedCondition::elementToBeClickable(WebDriverBy::tagName('html')));
 
-  //       $imgList = [];
-  //       // $imgFolder = __DIR__ . '/download/images/' . $zpid;
-  //       // if (!file_exists($imgFolder)) {
-  //       //   mkdir($imgFolder, 0777, true);
-  //       // }
+    $propertyElements = $driver->findElements(WebDriverBy::cssSelector("#grid-search-results > ul > li > div > div > article.property-card"));
+    if (count($propertyElements) > 0) {
+      foreach ($propertyElements as $propertyElement) {
+        $zpid = str_replace("zpid_", "", $propertyElement->getAttribute("id"));
+        $url = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");
+        $address = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data > a > address"))->getText();
+        $price = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data span.PropertyCardWrapper__StyledPriceLine-srp__sc-16e8gqd-1"))->getText();
+        $beds = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data div.StyledPropertyCardDataArea-c11n-8-84-3__sc-yipmu-0.dbDWjx > ul > li:nth-child(1) > b"))->getText();
+        $baths = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data div.StyledPropertyCardDataArea-c11n-8-84-3__sc-yipmu-0.dbDWjx > ul > li:nth-child(2) > b"))->getText();
 
-  //       $imgElements = $propertyElement->findElements(WebDriverBy::cssSelector("div.StyledPropertyCardPhoto-c11n-8-84-3__sc-ormo34-0.dGCVxQ.StyledPropertyCardPhoto-srp__sc-1gxvsd7-0"));
-  //       foreach ($imgElements as $imgElement) {
-  //         $imgUrl = $imgElement->findElement(WebDriverBy::cssSelector("img.Image-c11n-8-84-3__sc-1rtmhsc-0"))->getAttribute("src");
-  //         // $imgPath = $imgFolder . "/" . basename($imgUrl);
-  //         // $imgData = file_get_contents($imgUrl);
-  //         // if ($imgData !== false && !file_exists($imgPath)) {
-  //         //   file_put_contents($imgPath, $imgData);
-  //         // }
-  //         $imgList[] = $imgUrl;
-  //       }
+        $imgList = [];
+        // $imgFolder = __DIR__ . '/download/images/' . $zpid;
+        // if (!file_exists($imgFolder)) {
+        //   mkdir($imgFolder, 0777, true);
+        // }
 
-  //       $result[] = array(
-  //         "zpid" => $zpid,
-  //         "url" => $url,
-  //         "address" => $address,
-  //         "price" => $price,
-  //         "beds" => $beds,
-  //         "baths" => $baths,
-  //         "images" => $imgList,
-  //       );
-  //     }
-  //   }
+        $imgElements = $propertyElement->findElements(WebDriverBy::cssSelector("div.StyledPropertyCardPhoto-c11n-8-84-3__sc-ormo34-0.dGCVxQ.StyledPropertyCardPhoto-srp__sc-1gxvsd7-0"));
+        foreach ($imgElements as $imgElement) {
+          $imgUrl = $imgElement->findElement(WebDriverBy::cssSelector("img.Image-c11n-8-84-3__sc-1rtmhsc-0"))->getAttribute("src");
+          // $imgPath = $imgFolder . "/" . basename($imgUrl);
+          // $imgData = file_get_contents($imgUrl);
+          // if ($imgData !== false && !file_exists($imgPath)) {
+          //   file_put_contents($imgPath, $imgData);
+          // }
+          $imgList[] = $imgUrl;
+        }
 
-  //   $currentPage++;
-  // }
+        $result[] = array(
+          "zpid" => $zpid,
+          "url" => $url,
+          "address" => $address,
+          "price" => $price,
+          "beds" => $beds,
+          "baths" => $baths,
+          "images" => $imgList,
+        );
+      }
+    }
+
+    $currentPage++;
+  }
 }
 
 echo json_encode($result);

@@ -48,6 +48,11 @@ while (true) {
       $action = new WebDriverActions($driver);
       $action->click($nextPageLink)->perform();
 
+      $wait = new WebDriverWait($driver, 10); // Maximum wait time of 10 seconds
+      $wait->until(function ($driver) {
+        return count($driver->findElements(WebDriverBy::className('list-loading-message-cover'))) === 0;
+      });
+
       print_r($currentPageNum);
       print_r($nextPageNum);
     } catch (NoSuchElementException $e) {

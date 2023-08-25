@@ -44,15 +44,28 @@ $result = [];
 $propertyElements = $html->findElements(WebDriverBy::cssSelector("#grid-search-results > ul > li > div > div > article.property-card"));
 if (count($propertyElements) > 0) {
   foreach ($propertyElements as $propertyElement) {
-    $zpid = $propertyElement->getAttribute("id");
+    $zpid = str_replace("zpid_", "", $propertyElement->getAttribute("id"));
     $url = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");
     $address = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data > a > address"))->getText();
     $price = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data span.PropertyCardWrapper__StyledPriceLine-srp__sc-16e8gqd-1"))->getText();
+    $beds = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data div.StyledPropertyCardDataArea-c11n-8-84-3__sc-yipmu-0.dbDWjx > ul > li:nth-child(1) > b"))->getText();
+    $baths = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data div.StyledPropertyCardDataArea-c11n-8-84-3__sc-yipmu-0.dbDWjx > ul > li:nth-child(2) > b"))->getText();
+
+    $imgList = [];
+    $imgElements = $propertyElement->findElements(WebDriverBy::cssSelector("div.StyledPropertyCardPhoto-c11n-8-84-3__sc-ormo34-0.dGCVxQ.StyledPropertyCardPhoto-srp__sc-1gxvsd7-0"));
+    foreach($imgElements as $imgElement) {
+      $imgUrl = $imgElement->findElement(WebDriverBy::cssSelector("img.Image-c11n-8-84-3__sc-1rtmhsc-0"))->getAttribute("src");
+      $imgList[] = $imgUrl;
+    }
+
     $result[] = array(
       "zpid" => $zpid,
       "url" => $url,
       "address" => $address,
       "price" => $price,
+      "beds" => $beds,
+      "baths" => $baths,
+      "images" => $imgList,
     );
   }
 }

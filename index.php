@@ -48,9 +48,6 @@ if (isset($matches[0])) {
   $currentPage = 1;
   $maxPage = ceil($totalCount / $itemsPerPage);
 
-  var_dump($totalCount);
-  var_dump($maxPage);
-
   while ($currentPage <= $maxPage) {
     if ($currentPage === 1) {
       $pageUrl = 'https://api.scrapingdog.com/scrape?api_key=64e4c5478d07b1208ead57b8&url=https://www.zillow.com/in/foreclosures/&dynamic=false';
@@ -76,9 +73,21 @@ if (isset($matches[0])) {
         $zpid = str_replace("zpid_", "", $propertyElement->getAttribute("id"));
         $url = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");
         $address = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data > a > address"))->getText();
+
+        try {
+          $beds = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data div.StyledPropertyCardDataArea-c11n-8-84-3__sc-yipmu-0.dbDWjx > ul > li:nth-child(1) > b"))->getText();
+        } catch (NoSuchElementException $e) {
+          $beds = 0;
+        }
+
+        try {
+          $baths = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data div.StyledPropertyCardDataArea-c11n-8-84-3__sc-yipmu-0.dbDWjx > ul > li:nth-child(2) > b"))->getText();
+        } catch (NoSuchElementException $e) {
+          $baths = 0;
+        }
+
         $price = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data span.PropertyCardWrapper__StyledPriceLine-srp__sc-16e8gqd-1"))->getText();
-        // $beds = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data div.StyledPropertyCardDataArea-c11n-8-84-3__sc-yipmu-0.dbDWjx > ul > li:nth-child(1) > b"))->getText();
-        // $baths = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data div.StyledPropertyCardDataArea-c11n-8-84-3__sc-yipmu-0.dbDWjx > ul > li:nth-child(2) > b"))->getText();
+
 
         $imgList = [];
         // $imgFolder = __DIR__ . '/download/images/' . $zpid;
@@ -102,14 +111,13 @@ if (isset($matches[0])) {
           "url" => $url,
           "address" => $address,
           "price" => $price,
-          // "beds" => $beds,
-          // "baths" => $baths,
+          "beds" => intval($beds),
+          "baths" => intval($baths),
           "images" => $imgList,
         );
       }
     }
 
-    print_r($pageUrl);
     $currentPage++;
   }
 }

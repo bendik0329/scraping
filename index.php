@@ -9,6 +9,8 @@ use voku\helper\HtmlDomParser;
 
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\WebDriverWait;
+use Facebook\WebDriver\WebDriverExpectedCondition;
 use Facebook\WebDriver\WebDriverKeys;
 
 $envConfig = parse_ini_file(__DIR__ . "/.env");
@@ -37,8 +39,12 @@ $html->sendKeys(WebDriverKeys::END);
 sleep(5);
 $htmlContent = $driver->getPageSource();
 $htmlDomParser = HtmlDomParser::str_get_html($htmlContent);
-$nextPageLink = $driver->findElement(WebDriverBy::cssSelector("a[title=\"Page 2\"]"));
-$nextPageLink->click();
+
+$wait = new WebDriverWait($driver, 10);
+$link = $wait->until(WebDriverExpectedCondition::elementToBeClickable(WebDriverBy::cssSelector("a[title=\"Page 2\"]")));
+$link->click();
+
+
 print_r("jaksdlfjklasdf");
 exit();
 

@@ -59,6 +59,7 @@ $driver->get('https://api.scrapingdog.com/scrape?api_key=64e5b95985a16a20b0fdf02
 
 while (true) {
   $html = $driver->findElement(WebDriverBy::tagName('html'));
+  $wait = new WebDriverWait($driver, 10);
   $wait->until(WebDriverExpectedCondition::stalenessOf($html));
 
   $html->sendKeys(WebDriverKeys::END);

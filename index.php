@@ -38,7 +38,7 @@ $result = [];
 $currentPage = 1;
 $maxPage = 4;
 
-// while (true) {
+while ($currentPage <= $maxPage) {
   $html = $driver->findElement(WebDriverBy::tagName('html'));
   $html->sendKeys(WebDriverKeys::END);
   sleep(5);
@@ -82,6 +82,7 @@ $maxPage = 4;
     }
   }
 
+  $currentPage++;
   // $paginationElements = $html->findElements(WebDriverBy::cssSelector("li.PaginationNumberItem-c11n-8-84-3__sc-bnmlxt-0.cA-Ddyj"));
   // if (count($paginationElements) > 0) {
   //   try {
@@ -97,7 +98,7 @@ $maxPage = 4;
   // } else {
   //   break;
   // }
-// }
+}
 
 $driver->close();
 echo json_encode($result);

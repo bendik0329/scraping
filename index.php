@@ -36,7 +36,7 @@ $driver->get('https://api.scrapingdog.com/scrape?api_key=64e5b95985a16a20b0fdf02
 
 $html = $driver->findElement(WebDriverBy::tagName('html'));
 $html->sendKeys(WebDriverKeys::END);
-sleep(5);
+sleep(20);
 $htmlContent = $driver->getPageSource();
 $htmlDomParser = HtmlDomParser::str_get_html($htmlContent);
 

@@ -61,8 +61,48 @@ while (true) {
   $html = $driver->findElement(WebDriverBy::tagName('html'));
   $html->sendKeys(WebDriverKeys::END);
   sleep(5);
+
   $htmlContent = $driver->getPageSource();
   $htmlDomParser = HtmlDomParser::str_get_html($htmlContent);
+
+  // scraping properties
+  $propertyElements = $htmlDomParser->find("#grid-search-results > ul > li > div > div > article.property-card");
+
+  if (count((array)$propertyElements) === 0) {
+    break;
+  }
+
+  foreach ($propertyElements as $propertyElement) {
+    $data = scrapeProperty($propertyElement);
+    $sql = "
+      INSERT INTO properties
+      (
+        zpid, 
+        address,
+        price,
+        beds,
+        baths,
+        hasImage,
+        images,
+        url,
+        createdAt
+      )
+      VALUES
+      (
+        '" . $db->makeSafe($data['zpid']) . "',
+        '" . $db->makeSafe($data['address']) . "',
+        '" . $db->makeSafe($data['price']) . "',
+        '" . $db->makeSafe($data['beds']) . "',
+        '" . $db->makeSafe($data['baths']) . "',
+        '" . $db->makeSafe($data['hasImage'] ? 1 : 0) . "',
+        '" . $db->makeSafe(json_encode($data['images'])) . "',
+        '" . $db->makeSafe($data['url']) . "',
+        '" . date('Y-m-d H:i:s') . "'
+      )";
+
+    $db->query($sql);
+    $result[] = $data;
+  }
 
   $paginationElements = $htmlDomParser->find("li.PaginationNumberItem-c11n-8-84-3__sc-bnmlxt-0.cA-Ddyj");
   if (count((array)$paginationElements) > 0) {
@@ -88,6 +128,12 @@ while (true) {
     break;
   }
 }
+
+$result = json_encode($result);
+print_r($result);
+
+// Close the WebDriver session
+$driver->quit();
 print_r("ended");
 exit();
 

@@ -119,79 +119,80 @@ try {
 
           if ($zpid) {
             $exists = $db->query("SELECT COUNT(*) AS count FROM properties WHERE zpid = $zpid");
+            print_r($zpid);
+            print_r($exists);
+            // if ($exists['count'] === 0) {
+            //   $url = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");
+            //   $address = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data > a > address"))->getText();
 
-            if ($exists['count'] === 0) {
-              $url = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");
-              $address = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data > a > address"))->getText();
+            //   try {
+            //     $beds = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data div.StyledPropertyCardDataArea-c11n-8-84-3__sc-yipmu-0.dbDWjx > ul > li:nth-child(1) > b"))->getText();
+            //   } catch (NoSuchElementException $e) {
+            //     $beds = 0;
+            //   }
 
-              try {
-                $beds = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data div.StyledPropertyCardDataArea-c11n-8-84-3__sc-yipmu-0.dbDWjx > ul > li:nth-child(1) > b"))->getText();
-              } catch (NoSuchElementException $e) {
-                $beds = 0;
-              }
+            //   try {
+            //     $baths = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data div.StyledPropertyCardDataArea-c11n-8-84-3__sc-yipmu-0.dbDWjx > ul > li:nth-child(2) > b"))->getText();
+            //   } catch (NoSuchElementException $e) {
+            //     $baths = 0;
+            //   }
 
-              try {
-                $baths = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data div.StyledPropertyCardDataArea-c11n-8-84-3__sc-yipmu-0.dbDWjx > ul > li:nth-child(2) > b"))->getText();
-              } catch (NoSuchElementException $e) {
-                $baths = 0;
-              }
-
-              $price = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data span.PropertyCardWrapper__StyledPriceLine-srp__sc-16e8gqd-1"))->getText();
+            //   $price = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data span.PropertyCardWrapper__StyledPriceLine-srp__sc-16e8gqd-1"))->getText();
 
 
-              $imgList = [];
-              // $imgFolder = __DIR__ . '/download/images/' . $zpid;
-              // if (!file_exists($imgFolder)) {
-              //   mkdir($imgFolder, 0777, true);
-              // }
+            //   $imgList = [];
+            //   // $imgFolder = __DIR__ . '/download/images/' . $zpid;
+            //   // if (!file_exists($imgFolder)) {
+            //   //   mkdir($imgFolder, 0777, true);
+            //   // }
 
-              $imgElements = $propertyElement->findElements(WebDriverBy::cssSelector("div.StyledPropertyCardPhoto-c11n-8-84-3__sc-ormo34-0.dGCVxQ.StyledPropertyCardPhoto-srp__sc-1gxvsd7-0"));
-              foreach ($imgElements as $imgElement) {
-                $imgUrl = $imgElement->findElement(WebDriverBy::cssSelector("img.Image-c11n-8-84-3__sc-1rtmhsc-0"))->getAttribute("src");
-                // $imgPath = $imgFolder . "/" . basename($imgUrl);
-                // $imgData = file_get_contents($imgUrl);
-                // if ($imgData !== false && !file_exists($imgPath)) {
-                //   file_put_contents($imgPath, $imgData);
-                // }
-                $imgList[] = $imgUrl;
-              }
+            //   $imgElements = $propertyElement->findElements(WebDriverBy::cssSelector("div.StyledPropertyCardPhoto-c11n-8-84-3__sc-ormo34-0.dGCVxQ.StyledPropertyCardPhoto-srp__sc-1gxvsd7-0"));
+            //   foreach ($imgElements as $imgElement) {
+            //     $imgUrl = $imgElement->findElement(WebDriverBy::cssSelector("img.Image-c11n-8-84-3__sc-1rtmhsc-0"))->getAttribute("src");
+            //     // $imgPath = $imgFolder . "/" . basename($imgUrl);
+            //     // $imgData = file_get_contents($imgUrl);
+            //     // if ($imgData !== false && !file_exists($imgPath)) {
+            //     //   file_put_contents($imgPath, $imgData);
+            //     // }
+            //     $imgList[] = $imgUrl;
+            //   }
 
-              $sql = "
-                INSERT INTO properties
-                (
-                  zpid, 
-                  address,
-                  price,
-                  beds,
-                  baths,
-                  images,
-                  url,
-                  createdAt
-                )
-                VALUES
-                (
-                  '" . $db->makeSafe($zpid) . "',
-                  '" . $db->makeSafe($address) . "',
-                  '" . $db->makeSafe($price) . "',
-                  '" . $db->makeSafe($beds) . "',
-                  '" . $db->makeSafe($baths) . "',
-                  '" . $db->makeSafe(json_encode($imgList)) . "',
-                  '" . $db->makeSafe($url) . "',
-                  '" . date('Y-m-d H:i:s') . "'
-                )";
+            //   $sql = "
+            //     INSERT INTO properties
+            //     (
+            //       zpid, 
+            //       address,
+            //       price,
+            //       beds,
+            //       baths,
+            //       images,
+            //       url,
+            //       createdAt
+            //     )
+            //     VALUES
+            //     (
+            //       '" . $db->makeSafe($zpid) . "',
+            //       '" . $db->makeSafe($address) . "',
+            //       '" . $db->makeSafe($price) . "',
+            //       '" . $db->makeSafe($beds) . "',
+            //       '" . $db->makeSafe($baths) . "',
+            //       '" . $db->makeSafe(json_encode($imgList)) . "',
+            //       '" . $db->makeSafe($url) . "',
+            //       '" . date('Y-m-d H:i:s') . "'
+            //     )";
 
-              $db->query($sql);
+            //   $db->query($sql);
 
-              $result[] = array(
-                "zpid" => $zpid,
-                "url" => $url,
-                "address" => $address,
-                "price" => $price,
-                "beds" => intval($beds),
-                "baths" => intval($baths),
-                "images" => $imgList,
-              );
-            }
+            //   $result[] = array(
+            //     "zpid" => $zpid,
+            //     "url" => $url,
+            //     "address" => $address,
+            //     "price" => $price,
+            //     "beds" => intval($beds),
+            //     "baths" => intval($baths),
+            //     "images" => $imgList,
+            //   );
+            // }
           }
         }
       }

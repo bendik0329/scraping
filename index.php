@@ -141,10 +141,12 @@ try {
               foreach ($imgElements as $imgElement) {
                 $imgUrl = $imgElement->findElement(WebDriverBy::cssSelector("img.Image-c11n-8-84-3__sc-1rtmhsc-0"))->getAttribute("src");
 
-                $imgExist = $db->query(`SELECT COUNT(*) AS count FROM images WHERE zpid = $zpid AND url = "$imgUrl"`);
+                $imgExist = $db->query(`SELECT COUNT(*) AS count FROM images WHERE zpid = $zpid AND url = '$imgUrl'`);
+                print_r($imgExist);
+                exit();
                 $imgExistRow = $imgExist->fetch_assoc();
 
-                if ($existRow['count'] == 0) {
+                if ($imgExistRow['count'] == 0) {
                   $sql = "
                     INSERT INTO images
                     (

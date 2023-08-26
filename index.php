@@ -30,7 +30,7 @@ if (!$db->connect($host, $username, $password, $dbname)) {
 // Set up Selenium WebDriver
 $host = 'http://localhost:4444/wd/hub';
 $capabilities = \Facebook\WebDriver\Remote\DesiredCapabilities::chrome();
-$capabilities->setCapability('goog:chromeOptions', ['args' => ["--headless", "--user-agent=" . USER_AGENT]]);
+$capabilities->setCapability('goog:chromeOptions', ['args' => ["--user-agent=" . USER_AGENT]]);
 $driver = RemoteWebDriver::create($host, $capabilities);
 
 $result = [];
@@ -78,9 +78,7 @@ $query = array(
 
 $queryString = json_encode($query);
 $searchQueryState = urlencode($queryString);
-$url = "https://api.scrapingdog.com/scrape?api_key=64e4c5478d07b1208ead57b8&url=https://www.zillow.com/ca/?searchQueryState=$searchQueryState";
-print_r($url);
-exit();
+$url = "https://api.scrapingdog.com/scrape?api_key=64ea0a7c389c1c508e3bb43b&url=https://www.zillow.com/ca/?searchQueryState=$searchQueryState";
 $driver->get($url);
 
 try {
@@ -105,7 +103,7 @@ try {
 
       $queryString = json_encode($query);
       $searchQueryState = urlencode($queryString);
-      $pageUrl = "https://api.scrapingdog.com/scrape?api_key=64e4c5478d07b1208ead57b8&url=https://www.zillow.com/ca/?searchQueryState=$searchQueryState";
+      $pageUrl = "https://api.scrapingdog.com/scrape?api_key=64ea0a7c389c1c508e3bb43b&url=https://www.zillow.com/ca/?searchQueryState=$searchQueryState";
       $driver->get($pageUrl);
       sleep(5);
 

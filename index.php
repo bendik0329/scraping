@@ -226,6 +226,30 @@ try {
 echo json_encode($result);
 $driver->close();
 
+$query = "SELECT * FROM images";
+$images = $db->query("SELECT * FROM images");
+
+if ($images) {
+  if ($images->num_rows > 0) {
+    while ($row = $images->fetch_assoc()) {
+      $id = $row['id'];
+      $zpid = $row['zpid'];
+      $imgUrl = $row['url'];
+
+      $imgFolder = __DIR__ . '/download/images/' . $zpid;
+      if (!file_exists($imgFolder)) {
+        mkdir($imgFolder, 0777, true);
+      }
+
+      $imgPath = $imgFolder . "/" . basename($imgUrl);
+      $imgData = file_get_contents($imgUrl);
+      if ($imgData !== false && !file_exists($imgPath)) {
+        file_put_contents($imgPath, $imgData);
+      }
+    }
+  }
+}
+
 exit();
 
 

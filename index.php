@@ -80,7 +80,7 @@ $queryString = json_encode($query);
 $searchQueryState = urlencode($queryString);
 $url = "https://api.scrapingdog.com/scrape?api_key=64ea0a7c389c1c508e3bb43b&url=https://www.zillow.com/ca/?searchQueryState=$searchQueryState";
 $driver->get($url);
-
+print_r($url);
 try {
   $totalCount = $driver->findElement(WebDriverBy::cssSelector("div.ListHeader__NarrowViewWrapping-srp__sc-1rsgqpl-1.idxSRv.search-subtitle span.result-count"))->getText();
   $pattern = '/\d+/';

@@ -120,8 +120,8 @@ try {
           if ($zpid) {
             $exist = $db->query("SELECT COUNT(*) AS count FROM properties WHERE zpid = $zpid");
             $existRow = $exist->fetch_assoc();
-            
-            if ($existRow['count'] === 0) {
+
+            if ($existRow['count'] == 0) {
               $url = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");
               $address = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data > a > address"))->getText();
 
@@ -155,9 +155,24 @@ try {
                 //   file_put_contents($imgPath, $imgData);
                 // }
                 $imgList[] = $imgUrl;
+
+                $sql = "
+                  INSERT INTO images
+                  (
+                    zpid, 
+                    url,
+                    createdAt
+                  )
+                  VALUES
+                  (
+                    '" . $db->makeSafe($zpid) . "',
+                    '" . $db->makeSafe($imgUrl) . "',
+                    '" . date('Y-m-d H:i:s') . "'
+                  )";
+                  $db->query($sql);
               }
 
-              $sql = "
+              $sql1 = "
                 INSERT INTO properties
                 (
                   zpid, 
@@ -181,7 +196,7 @@ try {
                   '" . date('Y-m-d H:i:s') . "'
                 )";
 
-              $db->query($sql);
+              $db->query($sql1);
 
               $result[] = array(
                 "zpid" => $zpid,

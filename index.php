@@ -141,7 +141,7 @@ try {
               foreach ($imgElements as $imgElement) {
                 $imgUrl = $imgElement->findElement(WebDriverBy::cssSelector("img.Image-c11n-8-84-3__sc-1rtmhsc-0"))->getAttribute("src");
                 $imgExist = $db->query("SELECT COUNT(*) AS count FROM images WHERE zpid = $zpid AND url = $imgUrl");
-                $imgExistRow = $exist->fetch_assoc();
+                $imgExistRow = $imgExist->fetch_assoc();
 
                 if ($imgExistRow['count'] == 0) {
                   $sql = "
@@ -212,6 +212,7 @@ try {
 echo json_encode($result);
 $driver->close();
 
+exit();
 // download images
 $query = "SELECT * FROM images";
 $images = $db->query("SELECT * FROM images");
@@ -365,7 +366,7 @@ foreach (STATE_LIST as $key => $state) {
                       foreach ($imgElements as $imgElement) {
                         $imgUrl = $imgElement->findElement(WebDriverBy::cssSelector("img.Image-c11n-8-84-3__sc-1rtmhsc-0"))->getAttribute("src");
                         $imgExist = $db->query("SELECT COUNT(*) AS count FROM images WHERE zpid = $zpid AND url = $imgUrl");
-                        $imgExistRow = $exist->fetch_assoc();
+                        $imgExistRow = $imgExist->fetch_assoc();
 
                         if ($imgExistRow['count'] == 0) {
                           $sql = "

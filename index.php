@@ -114,10 +114,9 @@ try {
           $zpid = intval($zpid);
 
           if ($zpid) {
-            $exist = $db->query("SELECT COUNT(*) AS count FROM properties WHERE zpid = $zpid");
-            $existRow = $exist->fetch_assoc();
+            $exist = $db->query(`SELECT COUNT(*) AS count FROM properties WHERE zpid = $zpid`);
 
-            if ($existRow['count'] == 0) {
+            if ($exist->num_rows == 0) {
               $url = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");
               $address = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data > a > address"))->getText();
 
@@ -142,11 +141,8 @@ try {
                 $imgUrl = $imgElement->findElement(WebDriverBy::cssSelector("img.Image-c11n-8-84-3__sc-1rtmhsc-0"))->getAttribute("src");
 
                 $imgExist = $db->query(`SELECT COUNT(*) AS count FROM images WHERE zpid = $zpid AND url = '$imgUrl'`);
-                print_r($imgExist);
-                exit();
-                $imgExistRow = $imgExist->fetch_assoc();
 
-                if ($imgExistRow['count'] == 0) {
+                if ($imgExist->num_rows == 0) {
                   $sql = "
                     INSERT INTO images
                     (

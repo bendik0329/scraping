@@ -323,7 +323,7 @@ foreach (STATE_LIST as $key => $state) {
 
               $queryString = json_encode($query);
               $searchQueryState = urlencode($queryString);
-              $url = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/$stateAlias/?searchQueryState=$searchQueryState";
+              $pageUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/$stateAlias/?searchQueryState=$searchQueryState";
               $driver->get($pageUrl);
               sleep(5);
 

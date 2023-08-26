@@ -19,7 +19,7 @@ $host = $envConfig['DB_HOST'];
 $username = $envConfig['DB_USERNAME'];
 $password = $envConfig['DB_PASSWORD'];
 $dbname = $envConfig['DB_DATABASE'];
-
+$apiKey = $envConfig['API_KEY'];
 $db  = new Database();
 
 // Connect to DB
@@ -300,7 +300,7 @@ foreach (STATE_LIST as $key => $state) {
 
         $queryString = json_encode($query);
         $searchQueryState = urlencode($queryString);
-        $url = "https://api.scrapingdog.com/scrape?api_key=64e4c5478d07b1208ead57b8&url=https://www.zillow.com/$stateAlias/?searchQueryState=$searchQueryState";
+        $url = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/$stateAlias/?searchQueryState=$searchQueryState";
         $driver->get($url);
 
         // $driver->get('https://api.scrapingdog.com/scrape?api_key=64e4c5478d07b1208ead57b8&url=https://www.zillow.com/in/foreclosures/&dynamic=false');
@@ -327,7 +327,7 @@ foreach (STATE_LIST as $key => $state) {
 
               $queryString = json_encode($query);
               $searchQueryState = urlencode($queryString);
-              $pageUrl = "https://api.scrapingdog.com/scrape?api_key=64ea0a7c389c1c508e3bb43b&url=https://www.zillow.com/$stateAlias/?searchQueryState=$searchQueryState";
+              $pageUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/$stateAlias/?searchQueryState=$searchQueryState";
               $driver->get($pageUrl);
               sleep(5);
 

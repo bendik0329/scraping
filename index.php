@@ -118,11 +118,10 @@ try {
           $zpid = intval($zpid);
 
           if ($zpid) {
-            $exists = $db->query("SELECT COUNT(*) AS count FROM properties WHERE zpid = $zpid");
-            $row = $exists->fetch_assoc();
-            print_r($row);
-            print_r($exists);
-            if ($exists['count'] === 0) {
+            $exist = $db->query("SELECT COUNT(*) AS count FROM properties WHERE zpid = $zpid");
+            $existRow = $exist->fetch_assoc();
+            
+            if ($existRow['count'] === 0) {
               $url = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");
               $address = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data > a > address"))->getText();
 

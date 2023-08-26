@@ -114,6 +114,7 @@ try {
           $zpid = intval($zpid);
 
           if ($zpid) {
+            print_r($zpid);
             $exist = $db->query(`SELECT * FROM properties WHERE zpid = $zpid`);
 
             print_r($exist);

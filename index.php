@@ -154,22 +154,26 @@ try {
                 // if ($imgData !== false && !file_exists($imgPath)) {
                 //   file_put_contents($imgPath, $imgData);
                 // }
-                $imgList[] = $imgUrl;
+                $imgExist = $db->query("SELECT COUNT(*) AS count FROM images WHERE zpid = $zpid AND url = $imgUrl");
+                $imgExistRow = $exist->fetch_assoc();
 
-                $sql = "
-                  INSERT INTO images
-                  (
-                    zpid, 
-                    url,
-                    createdAt
-                  )
-                  VALUES
-                  (
-                    '" . $db->makeSafe($zpid) . "',
-                    '" . $db->makeSafe($imgUrl) . "',
-                    '" . date('Y-m-d H:i:s') . "'
-                  )";
+                if ($imgExistRow['count'] == 0) {
+                  $sql = "
+                    INSERT INTO images
+                    (
+                      zpid, 
+                      url,
+                      createdAt
+                    )
+                    VALUES
+                    (
+                      '" . $db->makeSafe($zpid) . "',
+                      '" . $db->makeSafe($imgUrl) . "',
+                      '" . date('Y-m-d H:i:s') . "'
+                    )";
                   $db->query($sql);
+                }
+                $imgList[] = $imgUrl;
               }
 
               $sql1 = "

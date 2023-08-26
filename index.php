@@ -93,6 +93,9 @@ try {
     $currentPage = 1;
     $maxPage = ceil($totalCount / $itemsPerPage);
 
+    print_r($totalCount);
+    print_r($maxPage);
+    
     while ($currentPage <= $maxPage) {
       if ($currentPage !== 1) {
         $pagination = array(

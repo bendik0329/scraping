@@ -140,10 +140,13 @@ try {
               $imgElements = $propertyElement->findElements(WebDriverBy::cssSelector("div.StyledPropertyCardPhoto-c11n-8-84-3__sc-ormo34-0.dGCVxQ.StyledPropertyCardPhoto-srp__sc-1gxvsd7-0"));
               foreach ($imgElements as $imgElement) {
                 $imgUrl = $imgElement->findElement(WebDriverBy::cssSelector("img.Image-c11n-8-84-3__sc-1rtmhsc-0"))->getAttribute("src");
+
+
                 $imgExist = $db->query("SELECT COUNT(*) AS count FROM images WHERE zpid = $zpid AND url = $imgUrl");
                 $imgExistRow = $imgExist->fetch_assoc();
 
-                if ($imgExistRow['count'] == 0) {
+                print_r($imgExistRow);
+                if ($existRow['count'] == 0) {
                   $sql = "
                     INSERT INTO images
                     (
@@ -159,6 +162,7 @@ try {
                     )";
                   $db->query($sql);
                 }
+
                 $imgList[] = $imgUrl;
               }
 
@@ -212,7 +216,6 @@ try {
 echo json_encode($result);
 $driver->close();
 
-exit();
 // download images
 $query = "SELECT * FROM images";
 $images = $db->query("SELECT * FROM images");

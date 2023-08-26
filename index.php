@@ -242,9 +242,11 @@ if ($images) {
       }
 
       $imgPath = $imgFolder . "/" . basename($imgUrl);
-      $imgData = file_get_contents($imgUrl);
-      if ($imgData !== false && !file_exists($imgPath)) {
-        file_put_contents($imgPath, $imgData);
+      if (!file_exists($imgPath)) {
+        $imgData = file_get_contents($imgUrl);
+        if ($imgData !== false) {
+          file_put_contents($imgPath, $imgData);
+        }
       }
     }
   }

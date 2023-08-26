@@ -116,88 +116,90 @@ try {
           if ($zpid) {
             $exist = $db->query(`SELECT COUNT(*) AS count FROM properties WHERE zpid = $zpid`);
 
-            if ($exist->num_rows == 0) {
-              $url = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");
-              $address = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data > a > address"))->getText();
+            print_r($exist);
+            exit();
+            // if ($exist->num_rows == 0) {
+            //   $url = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");
+            //   $address = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data > a > address"))->getText();
 
-              try {
-                $beds = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data div.StyledPropertyCardDataArea-c11n-8-84-3__sc-yipmu-0.dbDWjx > ul > li:nth-child(1) > b"))->getText();
-              } catch (NoSuchElementException $e) {
-                $beds = 0;
-              }
+            //   try {
+            //     $beds = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data div.StyledPropertyCardDataArea-c11n-8-84-3__sc-yipmu-0.dbDWjx > ul > li:nth-child(1) > b"))->getText();
+            //   } catch (NoSuchElementException $e) {
+            //     $beds = 0;
+            //   }
 
-              try {
-                $baths = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data div.StyledPropertyCardDataArea-c11n-8-84-3__sc-yipmu-0.dbDWjx > ul > li:nth-child(2) > b"))->getText();
-              } catch (NoSuchElementException $e) {
-                $baths = 0;
-              }
+            //   try {
+            //     $baths = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data div.StyledPropertyCardDataArea-c11n-8-84-3__sc-yipmu-0.dbDWjx > ul > li:nth-child(2) > b"))->getText();
+            //   } catch (NoSuchElementException $e) {
+            //     $baths = 0;
+            //   }
 
-              $price = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data span.PropertyCardWrapper__StyledPriceLine-srp__sc-16e8gqd-1"))->getText();
+            //   $price = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data span.PropertyCardWrapper__StyledPriceLine-srp__sc-16e8gqd-1"))->getText();
 
 
-              $imgList = [];
-              $imgElements = $propertyElement->findElements(WebDriverBy::cssSelector("div.StyledPropertyCardPhoto-c11n-8-84-3__sc-ormo34-0.dGCVxQ.StyledPropertyCardPhoto-srp__sc-1gxvsd7-0"));
-              foreach ($imgElements as $imgElement) {
-                $imgUrl = $imgElement->findElement(WebDriverBy::cssSelector("img.Image-c11n-8-84-3__sc-1rtmhsc-0"))->getAttribute("src");
+            //   $imgList = [];
+            //   $imgElements = $propertyElement->findElements(WebDriverBy::cssSelector("div.StyledPropertyCardPhoto-c11n-8-84-3__sc-ormo34-0.dGCVxQ.StyledPropertyCardPhoto-srp__sc-1gxvsd7-0"));
+            //   foreach ($imgElements as $imgElement) {
+            //     $imgUrl = $imgElement->findElement(WebDriverBy::cssSelector("img.Image-c11n-8-84-3__sc-1rtmhsc-0"))->getAttribute("src");
 
-                $imgExist = $db->query(`SELECT COUNT(*) AS count FROM images WHERE zpid = $zpid AND url = '$imgUrl'`);
+            //     $imgExist = $db->query(`SELECT COUNT(*) AS count FROM images WHERE zpid = $zpid AND url = '$imgUrl'`);
 
-                if ($imgExist->num_rows == 0) {
-                  $sql = "
-                    INSERT INTO images
-                    (
-                      zpid, 
-                      url,
-                      createdAt
-                    )
-                    VALUES
-                    (
-                      '" . $db->makeSafe($zpid) . "',
-                      '" . $db->makeSafe($imgUrl) . "',
-                      '" . date('Y-m-d H:i:s') . "'
-                    )";
-                  $db->query($sql);
-                }
+            //     if ($imgExist->num_rows == 0) {
+            //       $sql = "
+            //         INSERT INTO images
+            //         (
+            //           zpid, 
+            //           url,
+            //           createdAt
+            //         )
+            //         VALUES
+            //         (
+            //           '" . $db->makeSafe($zpid) . "',
+            //           '" . $db->makeSafe($imgUrl) . "',
+            //           '" . date('Y-m-d H:i:s') . "'
+            //         )";
+            //       $db->query($sql);
+            //     }
 
-                $imgList[] = $imgUrl;
-              }
+            //     $imgList[] = $imgUrl;
+            //   }
 
-              $sql1 = "
-                INSERT INTO properties
-                (
-                  zpid, 
-                  address,
-                  price,
-                  beds,
-                  baths,
-                  images,
-                  url,
-                  createdAt
-                )
-                VALUES
-                (
-                  '" . $db->makeSafe($zpid) . "',
-                  '" . $db->makeSafe($address) . "',
-                  '" . $db->makeSafe($price) . "',
-                  '" . $db->makeSafe($beds) . "',
-                  '" . $db->makeSafe($baths) . "',
-                  '" . $db->makeSafe(json_encode($imgList)) . "',
-                  '" . $db->makeSafe($url) . "',
-                  '" . date('Y-m-d H:i:s') . "'
-                )";
+            //   $sql1 = "
+            //     INSERT INTO properties
+            //     (
+            //       zpid, 
+            //       address,
+            //       price,
+            //       beds,
+            //       baths,
+            //       images,
+            //       url,
+            //       createdAt
+            //     )
+            //     VALUES
+            //     (
+            //       '" . $db->makeSafe($zpid) . "',
+            //       '" . $db->makeSafe($address) . "',
+            //       '" . $db->makeSafe($price) . "',
+            //       '" . $db->makeSafe($beds) . "',
+            //       '" . $db->makeSafe($baths) . "',
+            //       '" . $db->makeSafe(json_encode($imgList)) . "',
+            //       '" . $db->makeSafe($url) . "',
+            //       '" . date('Y-m-d H:i:s') . "'
+            //     )";
 
-              $db->query($sql1);
+            //   $db->query($sql1);
 
-              $result[] = array(
-                "zpid" => $zpid,
-                "url" => $url,
-                "address" => $address,
-                "price" => $price,
-                "beds" => intval($beds),
-                "baths" => intval($baths),
-                "images" => $imgList,
-              );
-            }
+            //   $result[] = array(
+            //     "zpid" => $zpid,
+            //     "url" => $url,
+            //     "address" => $address,
+            //     "price" => $price,
+            //     "beds" => intval($beds),
+            //     "baths" => intval($baths),
+            //     "images" => $imgList,
+            //   );
+            // }
           }
         }
       }

@@ -71,7 +71,7 @@ $filterState = array(
 
 $query = array(
   "pagination" => new stdClass(),
-  "usersSearchTerm" => $key,
+  "usersSearchTerm" => 'CA',
   "filterState" => $filterState,
   "isListVisible" => true
 );

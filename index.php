@@ -117,7 +117,7 @@ try {
             print_r($zpid);
             $exist = $db->query("SELECT * FROM properties WHERE zpid = $zpid");
 
-            print_r($exist);
+            print_r($exist->num_rows);
             exit();
             // if ($exist->num_rows == 0) {
             //   $url = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");

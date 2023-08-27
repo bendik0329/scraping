@@ -35,7 +35,7 @@ $propertiesSql = "CREATE TABLE IF NOT EXISTS properties (
   `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 
 )";
 
-$imagesSql = "CREATE TABLE IF NOT EXISTS properties (
+$imagesSql = "CREATE TABLE IF NOT EXISTS images (
   `id` INT ( 6 ) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   `zpid` VARCHAR ( 255 ) NOT NULL,
   `url` VARCHAR ( 255 ) NOT NULL,
@@ -329,7 +329,7 @@ foreach (STATE_LIST as $key => $state) {
         $searchQueryState = urlencode($queryString);
         $url = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/$stateAlias/?searchQueryState=$searchQueryState";
         echo $url;
-        
+
         $driver->get($url);
 
         // $driver->get('https://api.scrapingdog.com/scrape?api_key=64e4c5478d07b1208ead57b8&url=https://www.zillow.com/in/foreclosures/&dynamic=false');

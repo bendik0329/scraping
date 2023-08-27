@@ -54,22 +54,6 @@ if ($db->query($imagesSql) === TRUE) {
   die("Error creating table: " . $conn->error);
 }
 
-// Create SQL query
-$sql = "SHOW TABLES";
-
-// Execute SQL query
-$result = $db->query($sql);
-
-if ($result->num_rows > 0) {
-  // Output data of each row
-  while ($row = $result->fetch_assoc()) {
-    print_r($row);
-  }
-} else {
-  echo "0 results";
-}
-
-exit();
 // Set up Selenium WebDriver
 $host = 'http://localhost:4444/wd/hub';
 $capabilities = \Facebook\WebDriver\Remote\DesiredCapabilities::chrome();
@@ -344,6 +328,8 @@ foreach (STATE_LIST as $key => $state) {
         $queryString = json_encode($query);
         $searchQueryState = urlencode($queryString);
         $url = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/$stateAlias/?searchQueryState=$searchQueryState";
+        echo $url;
+        
         $driver->get($url);
 
         // $driver->get('https://api.scrapingdog.com/scrape?api_key=64e4c5478d07b1208ead57b8&url=https://www.zillow.com/in/foreclosures/&dynamic=false');

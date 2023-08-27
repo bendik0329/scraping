@@ -23,24 +23,40 @@ if (!$db->connect($host, $username, $password, $dbname)) {
   die("DB Connection failed: " . $conn->connect_error);
 }
 
+// Create SQL query
+$sql = "SHOW TABLES";
+
+// Execute SQL query
+$result = $db->query($sql);
+
+if ($result->num_rows > 0) {
+  // Output data of each row
+  while ($row = $result->fetch_assoc()) {
+    echo $row[0] . "<br>";
+  }
+} else {
+  echo "0 results";
+}
+
+exit();
+
 $propertiesSql = "CREATE TABLE IF NOT EXISTS properties (
-  `id` INT(6) UNSIGNED NOT NULL AUTO_INCREMENT, PRIMARY KEY,
-  `zpid` INT(11) NOT NULL,
-  `url` VARCHAR(255),
-  `address` VARCHAR(255),
-  `price` VARCHAR(255),
-  `beds` VARCHAR(255),
-  `baths` VARCHAR(255),
+  `id` INT ( 6 ) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `zpid` VARCHAR ( 255 ) NOT NULL UNIQUE,
+  `url` VARCHAR ( 255 ) NOT NULL,
+  `address` VARCHAR ( 255 ),
+  `price` VARCHAR ( 255 ),
+  `beds` VARCHAR ( 255 ),
+  `bath` VARCHAR ( 255 ),
   `images` TEXT,
-  'createdAt' TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 
 )";
 
-
-$imagesSql = "CREATE TABLE IF NOT EXISTS images (
-  `id` INT(6) UNSIGNED NOT NULL AUTO_INCREMENT, PRIMARY KEY,
-  `zpid` INT(11) NOT NULL,
-  `url` VARCHAR(255),
-  'createdAt' TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+$imagesSql = "CREATE TABLE IF NOT EXISTS properties (
+  `id` INT ( 6 ) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `zpid` VARCHAR ( 255 ) NOT NULL,
+  `url` VARCHAR ( 255 ) NOT NULL,
+  `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 
 )";
 
 if ($db->query($propertiesSql) === TRUE) {
@@ -63,8 +79,8 @@ $result = $db->query($sql);
 
 if ($result->num_rows > 0) {
   // Output data of each row
-  while($row = $result->fetch_assoc()) {
-    echo $row[0]."<br>";
+  while ($row = $result->fetch_assoc()) {
+    echo $row[0] . "<br>";
   }
 } else {
   echo "0 results";

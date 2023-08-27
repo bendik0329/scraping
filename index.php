@@ -59,7 +59,7 @@ if ($db->query($imagesSql) === TRUE) {
 $sql = "SHOW TABLES";
 
 // Execute SQL query
-$result = $conn->query($sql);
+$result = $db->query($sql);
 
 if ($result->num_rows > 0) {
   // Output data of each row

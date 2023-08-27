@@ -23,35 +23,47 @@ if (!$db->connect($host, $username, $password, $dbname)) {
   die("DB Connection failed: " . $conn->connect_error);
 }
 
-$propertiesSql = "CREATE TABLE IF NOT EXISTS properties (
-  `id` INT ( 6 ) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  `zpid` VARCHAR ( 255 ) NOT NULL UNIQUE,
-  `url` VARCHAR ( 255 ) NOT NULL,
-  `address` VARCHAR ( 255 ),
-  `price` VARCHAR ( 255 ),
-  `beds` VARCHAR ( 255 ),
-  `bath` VARCHAR ( 255 ),
-  `images` TEXT,
-  `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 
-)";
+$dropPropertiesSql = "DROP TABLE IF EXISTS properties";
 
-$imagesSql = "CREATE TABLE IF NOT EXISTS images (
-  `id` INT ( 6 ) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  `zpid` VARCHAR ( 255 ) NOT NULL,
-  `url` VARCHAR ( 255 ) NOT NULL,
-  `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 
-)";
+if ($db->query($dropPropertiesSql) === TRUE) {
+  $createPropertiesSql = "CREATE TABLE IF NOT EXISTS properties (
+    `id` INT ( 6 ) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `zpid` VARCHAR ( 255 ) NOT NULL UNIQUE,
+    `url` VARCHAR ( 255 ) NOT NULL,
+    `address` VARCHAR ( 255 ),
+    `price` VARCHAR ( 255 ),
+    `beds` VARCHAR ( 255 ),
+    `baths` VARCHAR ( 255 ),
+    `images` TEXT,
+    `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 
+  )";
 
-if ($db->query($propertiesSql) === TRUE) {
-  echo "Table properties created successfully";
+  if ($db->query($createPropertiesSql) === TRUE) {
+    echo "Table properties created successfully <br />";
+  } else {
+    echo "Error creating properties table: " . $conn->error . "<br />";
+  }
 } else {
-  die("Error creating table: " . $conn->error);
+  echo "Error dropping properties table: " . $conn->error . "<br />";
 }
 
-if ($db->query($imagesSql) === TRUE) {
-  echo "Table images created successfully";
+$dropImagesSql = "DROP TABLE IF EXISTS images";
+
+if ($db->query($dropImagesSql) === TRUE) {
+  $imagesSql = "CREATE TABLE IF NOT EXISTS images (
+    `id` INT ( 6 ) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `zpid` VARCHAR ( 255 ) NOT NULL,
+    `url` VARCHAR ( 255 ) NOT NULL,
+    `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 
+  )";
+
+  if ($db->query($imagesSql) === TRUE) {
+    echo "Table images created successfully <br />";
+  } else {
+    echo "Error creating images table: " . $conn->error . "<br />";
+  }
 } else {
-  die("Error creating table: " . $conn->error);
+  echo "Error dropping images table: " . $conn->error . "<br />";
 }
 
 // Set up Selenium WebDriver

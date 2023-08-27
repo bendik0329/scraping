@@ -23,23 +23,6 @@ if (!$db->connect($host, $username, $password, $dbname)) {
   die("DB Connection failed: " . $conn->connect_error);
 }
 
-// Create SQL query
-$sql = "SHOW TABLES";
-
-// Execute SQL query
-$result = $db->query($sql);
-
-if ($result->num_rows > 0) {
-  // Output data of each row
-  while ($row = $result->fetch_assoc()) {
-    echo $row[0] . "<br>";
-  }
-} else {
-  echo "0 results";
-}
-
-exit();
-
 $propertiesSql = "CREATE TABLE IF NOT EXISTS properties (
   `id` INT ( 6 ) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   `zpid` VARCHAR ( 255 ) NOT NULL UNIQUE,

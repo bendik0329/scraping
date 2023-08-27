@@ -63,7 +63,7 @@ $result = $db->query($sql);
 if ($result->num_rows > 0) {
   // Output data of each row
   while ($row = $result->fetch_assoc()) {
-    echo $row . "<br>";
+    print_r($row);
   }
 } else {
   echo "0 results";

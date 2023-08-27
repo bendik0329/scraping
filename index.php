@@ -23,6 +23,54 @@ if (!$db->connect($host, $username, $password, $dbname)) {
   die("DB Connection failed: " . $conn->connect_error);
 }
 
+$propertiesSql = "CREATE TABLE IF NOT EXISTS properties (
+  `id` INT(6) UNSIGNED NOT NULL AUTO_INCREMENT, PRIMARY KEY,
+  `zpid` INT(11) NOT NULL,
+  `url` VARCHAR(255),
+  `address` VARCHAR(255),
+  `price` VARCHAR(255),
+  `beds` VARCHAR(255),
+  `baths` VARCHAR(255),
+  `images` TEXT,
+  'createdAt' TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+)";
+
+
+$imagesSql = "CREATE TABLE IF NOT EXISTS images (
+  `id` INT(6) UNSIGNED NOT NULL AUTO_INCREMENT, PRIMARY KEY,
+  `zpid` INT(11) NOT NULL,
+  `url` VARCHAR(255),
+  'createdAt' TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+)";
+
+if ($db->query($propertiesSql) === TRUE) {
+  echo "Table properties created successfully";
+} else {
+  die("Error creating table: " . $conn->error);
+}
+
+if ($db->query($imagesSql) === TRUE) {
+  echo "Table images created successfully";
+} else {
+  die("Error creating table: " . $conn->error);
+}
+
+// Create SQL query
+$sql = "SHOW TABLES";
+
+// Execute SQL query
+$result = $conn->query($sql);
+
+if ($result->num_rows > 0) {
+  // Output data of each row
+  while($row = $result->fetch_assoc()) {
+    echo $row[0]."<br>";
+  }
+} else {
+  echo "0 results";
+}
+
+exit();
 // Set up Selenium WebDriver
 $host = 'http://localhost:4444/wd/hub';
 $capabilities = \Facebook\WebDriver\Remote\DesiredCapabilities::chrome();
@@ -310,6 +358,8 @@ foreach (STATE_LIST as $key => $state) {
           if (isset($matches[0])) {
             $totalCount = intval($matches[0]);
             $itemsPerPage = 41;
+
+
             $currentPage = 1;
             $maxPage = ceil($totalCount / $itemsPerPage);
 

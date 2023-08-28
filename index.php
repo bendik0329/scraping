@@ -122,6 +122,9 @@ try {
           $zpid = intval($zpid);
 
           $link = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");
+          $detailUrl = "https://api.scrapingdog.com/scrape?api_key=64ea0a7c389c1c508e3bb43b&url=$link";
+          $driver->get($detailUrl);
+          sleep(5);
           
           print_r($zpid);
           print_r("\n");

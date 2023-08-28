@@ -106,10 +106,25 @@ try {
     $currentPage = 1;
     $maxPage = ceil($totalCount / $itemsPerPage);
 
-    print_r($totalCount);
-    print_r("\n");
-    print_r($maxPage);
-    print_r("\n");
+    while ($currentPage <= $maxPage) {
+      $pageUrl = "https://api.scrapingdog.com/scrape?api_key=64ea0a7c389c1c508e3bb43b&url=https://www.zillow.com/ca/?searchQueryState=%7B%22pagination%22%3A%7B%7D%2C%22usersSearchTerm%22%3A%22CA%22%2C%22filterState%22%3A%7B%22beds%22%3A%7B%22min%22%3A1%7D%2C%22baths%22%3A%7B%22min%22%3A1%7D%2C%22sqft%22%3A%7B%22min%22%3A500%2C%22max%22%3A750%7D%2C%22pmf%22%3A%7B%22value%22%3Atrue%7D%2C%22sort%22%3A%7B%22value%22%3A%22globalrelevanceex%22%7D%2C%22nc%22%3A%7B%22value%22%3Afalse%7D%2C%22fsbo%22%3A%7B%22value%22%3Afalse%7D%2C%22cmsn%22%3A%7B%22value%22%3Afalse%7D%2C%22pf%22%3A%7B%22value%22%3Atrue%7D%2C%22fsba%22%3A%7B%22value%22%3Afalse%7D%7D%2C%22isListVisible%22%3Atrue%7D";
+      $driver->get($pageUrl);
+      sleep(5);
+
+      $html = $driver->findElement(WebDriverBy::tagName('html'));
+      $html->sendKeys(WebDriverKeys::END);
+      sleep(5);
+
+      $propertyElements = $driver->findElements(WebDriverBy::cssSelector("#grid-search-results > ul > li > div > div > article.property-card"));
+      if (count($propertyElements) > 0) {
+        foreach ($propertyElements as $propertyElement) {
+          $zpid = str_replace("zpid_", "", $propertyElement->getAttribute("id"));
+          $zpid = intval($zpid);
+          print_r($zpid);
+          print_r("\n");
+        } 
+      }     
+    }
   }
 } catch (NoSuchElementException $e) {
   print_r($e);

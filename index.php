@@ -168,6 +168,7 @@ try {
       $html->sendKeys(WebDriverKeys::END);
       sleep(5);
 
+      $list = array();
       $propertyElements = $driver->findElements(WebDriverBy::cssSelector("#grid-search-results > ul > li > div > div > article.property-card"));
       if (count($propertyElements) > 0) {
         foreach ($propertyElements as $propertyElement) {
@@ -179,14 +180,10 @@ try {
 
             if ($exist->num_rows == 0) {
               $link = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");
-              $detailUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=$link";
 
-              print_r($zpid);
-              print_r("\n");
-
-              $result[] = array(
+              $list[] = array(
                 "zpid" => $zpid,
-                "url" => $link,
+                "link" => $link,
               );
               // try {
               //   $link = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");
@@ -318,6 +315,10 @@ try {
             }
           }
         }
+      }
+
+      foreach ($list as $item) {
+        print_r($item);
       }
 
       $currentPage++;

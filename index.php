@@ -120,7 +120,12 @@ try {
         foreach ($propertyElements as $propertyElement) {
           $zpid = str_replace("zpid_", "", $propertyElement->getAttribute("id"));
           $zpid = intval($zpid);
+
+          $link = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");
+          
           print_r($zpid);
+          print_r("\n");
+          print_r($link);
           print_r("\n");
         } 
       }

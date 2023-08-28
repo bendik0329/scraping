@@ -82,8 +82,6 @@ if (PHP_OS === "Linux") {
   }
 }
 
-exit();
-
 // Set up Selenium WebDriver
 $host = 'http://localhost:4444/wd/hub';
 $capabilities = \Facebook\WebDriver\Remote\DesiredCapabilities::chrome();

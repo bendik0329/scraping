@@ -90,6 +90,34 @@ $driver = RemoteWebDriver::create($host, $capabilities);
 
 $result = [];
 
+$driver->get("https://api.scrapingdog.com/scrape?api_key=64ea0a7c389c1c508e3bb43b&url=https://www.zillow.com/ca/?searchQueryState=%7B%22pagination%22%3A%7B%7D%2C%22usersSearchTerm%22%3A%22CA%22%2C%22filterState%22%3A%7B%22beds%22%3A%7B%22min%22%3A1%7D%2C%22baths%22%3A%7B%22min%22%3A1%7D%2C%22sqft%22%3A%7B%22min%22%3A500%2C%22max%22%3A750%7D%2C%22pmf%22%3A%7B%22value%22%3Atrue%7D%2C%22sort%22%3A%7B%22value%22%3A%22globalrelevanceex%22%7D%2C%22nc%22%3A%7B%22value%22%3Afalse%7D%2C%22fsbo%22%3A%7B%22value%22%3Afalse%7D%2C%22cmsn%22%3A%7B%22value%22%3Afalse%7D%2C%22pf%22%3A%7B%22value%22%3Atrue%7D%2C%22fsba%22%3A%7B%22value%22%3Afalse%7D%7D%2C%22isListVisible%22%3Atrue%7D");
+
+try {
+  $totalCount = $driver->findElement(WebDriverBy::cssSelector("div.ListHeader__NarrowViewWrapping-srp__sc-1rsgqpl-1.idxSRv.search-subtitle span.result-count"))->getText();
+  $pattern = '/\d+/';
+
+  preg_match('/\d+/', $totalCount, $matches);
+
+  if (isset($matches[0])) {
+    $totalCount = intval($matches[0]);
+    $itemsPerPage = 41;
+
+
+    $currentPage = 1;
+    $maxPage = ceil($totalCount / $itemsPerPage);
+
+    print_r($totalCount);
+    print_r("\n");
+    print_r($maxPage);
+    print_r("\n");
+  }
+} catch (NoSuchElementException $e) {
+  print_r($e);
+  print_r("\n");
+}
+
+exit();
+
 $filterState = array(
   "beds" => array(
     "min" => 1
@@ -200,39 +228,39 @@ try {
               //   $pageUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=$link";
               //   print_r($pageUrl);
               //   print_r("\n");
-                // $driver->get($pageUrl);
-                // sleep(5);
+              // $driver->get($pageUrl);
+              // sleep(5);
 
-                // $html = $driver->findElement(WebDriverBy::tagName('html'));
-                // $html->sendKeys(WebDriverKeys::END);
-                // sleep(5);
-                
-                // $detailHtml = $driver->findElement(WebDriverBy::cssSelector("div.detail-page"));
+              // $html = $driver->findElement(WebDriverBy::tagName('html'));
+              // $html->sendKeys(WebDriverKeys::END);
+              // sleep(5);
 
-                // try {
-                //   $price = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-1me8eh6-0.OByUh.fpfhCd > span"))->getText();
-                // } catch (NoSuchElementException $e) {
-                //   $price = 0;
-                // }
+              // $detailHtml = $driver->findElement(WebDriverBy::cssSelector("div.detail-page"));
 
-                // try {
-                //   $address = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container h1.Text-c11n-8-84-3__sc-aiai24-0.hrfydd"))->getText();
-                // } catch (NoSuchElementException $e) {
-                //   $address = "";
-                // }
+              // try {
+              //   $price = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-1me8eh6-0.OByUh.fpfhCd > span"))->getText();
+              // } catch (NoSuchElementException $e) {
+              //   $price = 0;
+              // }
 
-                // try {
-                //   $beds = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container span.Text-c11n-8-84-3__sc-aiai24-0.hrfydd strong"))->getText();
-                // } catch (NoSuchElementException $e) {
-                //   $beds = 0;
-                // }
+              // try {
+              //   $address = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container h1.Text-c11n-8-84-3__sc-aiai24-0.hrfydd"))->getText();
+              // } catch (NoSuchElementException $e) {
+              //   $address = "";
+              // }
 
-                // try {
-                //   $baths = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container span.Text-c11n-8-84-3__sc-aiai24-0 hrfydd"))->getText();
-                // } catch (NoSuchElementException $e) {
-                //   $baths = 0;
-                // }
-                
+              // try {
+              //   $beds = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container span.Text-c11n-8-84-3__sc-aiai24-0.hrfydd strong"))->getText();
+              // } catch (NoSuchElementException $e) {
+              //   $beds = 0;
+              // }
+
+              // try {
+              //   $baths = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container span.Text-c11n-8-84-3__sc-aiai24-0 hrfydd"))->getText();
+              // } catch (NoSuchElementException $e) {
+              //   $baths = 0;
+              // }
+
               //   $result = array(
               //     "zpid" => $zpid,
               //     "url" => $link,

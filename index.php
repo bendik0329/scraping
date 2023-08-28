@@ -73,6 +73,10 @@ if (PHP_OS === "Linux") {
   $checkCommand = "systemctl is-active $serviceName";
   $output = shell_exec($checkCommand);
   print_r($output);
+
+  if (trim($output) !== "active") {
+    print_r("not activealkdfjadsjfkl");
+  }
   // if (trim($output) !== "active") {
   //   $startCommand = "sudo systemctl start $serviceName";
   //   $startOutput = shell_exec($startCommand);

@@ -121,14 +121,14 @@ try {
           $zpid = str_replace("zpid_", "", $propertyElement->getAttribute("id"));
           $zpid = intval($zpid);
 
-          $link = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");
-          $detailUrl = "https://api.scrapingdog.com/scrape?api_key=64ea0a7c389c1c508e3bb43b&url=$link";
-          $driver->get($detailUrl);
+          $cardLinkElement = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data > a.property-card-link"));
+          $cardLink = $cardLinkElement->getAttribute("href");
+          $cardLinkElement->click();
           sleep(5);
-          
+
           print_r($zpid);
           print_r("\n");
-          print_r($link);
+          print_r($cardLink);
           print_r("\n");
         } 
       }

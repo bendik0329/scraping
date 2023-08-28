@@ -336,13 +336,13 @@ try {
           }
 
           try {
-            $beds = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container span.Text-c11n-8-84-3__sc-aiai24-0.hrfydd strong"))->getText();
+            $beds = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container span.Text-c11n-8-84-3__sc-aiai24-0.hrfydd:nth-child(1) strong"))->getText();
           } catch (NoSuchElementException $e) {
             $beds = 0;
           }
 
           try {
-            $baths = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container span.Text-c11n-8-84-3__sc-aiai24-0 hrfydd"))->getText();
+            $baths = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container span.Text-c11n-8-84-3__sc-aiai24-0.hrfydd:nth-child(2) strong"))->getText();
           } catch (NoSuchElementException $e) {
             $baths = 0;
           }

@@ -90,73 +90,6 @@ $driver = RemoteWebDriver::create($host, $capabilities);
 
 $result = [];
 
-$driver->get("https://api.scrapingdog.com/scrape?api_key=64ea0a7c389c1c508e3bb43b&url=https://www.zillow.com/ca/?searchQueryState=%7B%22pagination%22%3A%7B%7D%2C%22usersSearchTerm%22%3A%22CA%22%2C%22filterState%22%3A%7B%22beds%22%3A%7B%22min%22%3A1%7D%2C%22baths%22%3A%7B%22min%22%3A1%7D%2C%22sqft%22%3A%7B%22min%22%3A500%2C%22max%22%3A750%7D%2C%22pmf%22%3A%7B%22value%22%3Atrue%7D%2C%22sort%22%3A%7B%22value%22%3A%22globalrelevanceex%22%7D%2C%22nc%22%3A%7B%22value%22%3Afalse%7D%2C%22fsbo%22%3A%7B%22value%22%3Afalse%7D%2C%22cmsn%22%3A%7B%22value%22%3Afalse%7D%2C%22pf%22%3A%7B%22value%22%3Atrue%7D%2C%22fsba%22%3A%7B%22value%22%3Afalse%7D%7D%2C%22isListVisible%22%3Atrue%7D");
-
-try {
-  $totalCount = $driver->findElement(WebDriverBy::cssSelector("div.ListHeader__NarrowViewWrapping-srp__sc-1rsgqpl-1.idxSRv.search-subtitle span.result-count"))->getText();
-  $pattern = '/\d+/';
-
-  preg_match('/\d+/', $totalCount, $matches);
-
-  if (isset($matches[0])) {
-    $totalCount = intval($matches[0]);
-    $itemsPerPage = 41;
-
-
-    $currentPage = 1;
-    $maxPage = ceil($totalCount / $itemsPerPage);
-
-    while ($currentPage <= $maxPage) {
-      $pageUrl = "https://api.scrapingdog.com/scrape?api_key=64ea0a7c389c1c508e3bb43b&url=https://www.zillow.com/ca/?searchQueryState=%7B%22pagination%22%3A%7B%7D%2C%22usersSearchTerm%22%3A%22CA%22%2C%22filterState%22%3A%7B%22beds%22%3A%7B%22min%22%3A1%7D%2C%22baths%22%3A%7B%22min%22%3A1%7D%2C%22sqft%22%3A%7B%22min%22%3A500%2C%22max%22%3A750%7D%2C%22pmf%22%3A%7B%22value%22%3Atrue%7D%2C%22sort%22%3A%7B%22value%22%3A%22globalrelevanceex%22%7D%2C%22nc%22%3A%7B%22value%22%3Afalse%7D%2C%22fsbo%22%3A%7B%22value%22%3Afalse%7D%2C%22cmsn%22%3A%7B%22value%22%3Afalse%7D%2C%22pf%22%3A%7B%22value%22%3Atrue%7D%2C%22fsba%22%3A%7B%22value%22%3Afalse%7D%7D%2C%22isListVisible%22%3Atrue%7D";
-      $driver->get($pageUrl);
-      sleep(5);
-
-      $html = $driver->findElement(WebDriverBy::tagName('html'));
-      $html->sendKeys(WebDriverKeys::END);
-      sleep(5);
-
-      $propertyElements = $html->findElements(WebDriverBy::cssSelector("#grid-search-results > ul > li > div > div > article.property-card"));
-      foreach ($propertyElements as $propertyElement) {
-        $zpid = str_replace("zpid_", "", $propertyElement->getAttribute("id"));
-        $zpid = intval($zpid);
-        print_r($zpid);
-
-        $detailUrl = "https://api.scrapingdog.com/scrape?api_key=64ea0a7c389c1c508e3bb43b&url=https://www.zillow.com/homedetails/361-W-8th-St-Stockton-CA-95206/15338156_zpid/";
-        $driver->get($detailUrl);
-        sleep(5);
-
-        $detailHtml = $driver->findElement(WebDriverBy::tagName('html'));
-        print_r($detailHtml);
-      }
-
-      // $propertyElements = $driver->findElements(WebDriverBy::cssSelector("#grid-search-results > ul > li > div > div > article.property-card"));
-      // if (count($propertyElements) > 0) {
-      //   foreach ($propertyElements as $propertyElement) {
-      //     $zpid = str_replace("zpid_", "", $propertyElement->getAttribute("id"));
-      //     $zpid = intval($zpid);
-
-      //     $cardLinkElement = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data > a.property-card-link"));
-      //     $cardLink = $cardLinkElement->getAttribute("href");
-      //     // $cardLinkElement->click();
-      //     // sleep(5);
-
-      //     $driver->get("https://api.scrapingdog.com/scrape?api_key=64ea0a7c389c1c508e3bb43b&url=https://www.zillow.com/ca/?searchQueryState=%7B%22pagination%22%3A%7B%7D%2C%22usersSearchTerm%22%3A%22CA%22%2C%22filterState%22%3A%7B%22beds%22%3A%7B%22min%22%3A1%7D%2C%22baths%22%3A%7B%22min%22%3A1%7D%2C%22sqft%22%3A%7B%22min%22%3A500%2C%22max%22%3A750%7D%2C%22pmf%22%3A%7B%22value%22%3Atrue%7D%2C%22sort%22%3A%7B%22value%22%3A%22globalrelevanceex%22%7D%2C%22nc%22%3A%7B%22value%22%3Afalse%7D%2C%22fsbo%22%3A%7B%22value%22%3Afalse%7D%2C%22cmsn%22%3A%7B%22value%22%3Afalse%7D%2C%22pf%22%3A%7B%22value%22%3Atrue%7D%2C%22fsba%22%3A%7B%22value%22%3Afalse%7D%7D%2C%22isListVisible%22%3Atrue%7D");
-      //     print_r($zpid);
-      //     print_r("\n");
-      //     print_r($cardLink);
-      //     print_r("\n");
-      //   } 
-      // }
-      $currentPage++;
-    }
-  }
-} catch (NoSuchElementException $e) {
-  print_r($e);
-  print_r("\n");
-}
-
-exit();
-
 $filterState = array(
   "beds" => array(
     "min" => 1
@@ -202,9 +135,6 @@ $queryString = json_encode($query);
 $searchQueryState = urlencode($queryString);
 $url = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/ca/?searchQueryState=$searchQueryState";
 
-print_r($url);
-print_r("\n");
-
 $driver->get($url);
 
 try {
@@ -233,7 +163,6 @@ try {
       $searchQueryState = urlencode($queryString);
       $pageUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/ca/?searchQueryState=$searchQueryState";
       $driver->get($pageUrl);
-      sleep(5);
 
       $html = $driver->findElement(WebDriverBy::tagName('html'));
       $html->sendKeys(WebDriverKeys::END);
@@ -252,10 +181,8 @@ try {
               $link = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");
               $detailUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=$link";
 
-              print_r($detailUrl);
+              print_r($zpid);
               print_r("\n");
-              $driver->get($detailUrl);
-              sleep(5);
 
               $result[] = array(
                 "zpid" => $zpid,

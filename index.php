@@ -123,7 +123,8 @@ try {
           print_r($zpid);
           print_r("\n");
         } 
-      }     
+      }
+      $currentPage++;
     }
   }
 } catch (NoSuchElementException $e) {

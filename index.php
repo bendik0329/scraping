@@ -348,7 +348,7 @@ try {
           }
           
           try {
-            $sqft = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container span[data-testid=\"bed-bath-item\"]:nth-child(3) strong"))->getText();
+            $sqft = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container span[data-testid=\"bed-bath-item\"]:nth-child(5) strong"))->getText();
           } catch (NoSuchElementException $e) {
             $sqft = "";
           }

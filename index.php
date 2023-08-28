@@ -185,8 +185,10 @@ try {
 
             if ($exist->num_rows == 0) {
               try {
-                $url = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");
-                // $detailUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=$url";
+                $link = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");
+                $detailUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=$link";
+                print_r($detailUrl);
+                print_r("\n");
                 // $driver->get($detailUrl);
 
                 // $detailHtml = $driver->findElement(WebDriverBy::cssSelector("div.detail-page"));
@@ -217,7 +219,7 @@ try {
                 
                 $result = array(
                   "zpid" => $zpid,
-                  "url" => $url,
+                  "url" => $link,
                   // "price" => $price,
                   // "address" => $address,
                 );

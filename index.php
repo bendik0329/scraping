@@ -72,20 +72,14 @@ if (PHP_OS === "Linux") {
   $serviceName = "selenium.service";
   $checkCommand = "systemctl is-active $serviceName";
   $output = shell_exec($checkCommand);
-  print_r($output);
 
   if (trim($output) !== "active") {
-    print_r("not activealkdfjadsjfkl");
-  }
-  // if (trim($output) !== "active") {
-  //   $startCommand = "sudo systemctl start $serviceName";
-  //   $startOutput = shell_exec($startCommand);
+    $startCommand = "sudo systemctl start $serviceName";
+    $startOutput = shell_exec($startCommand);
 
-  //   echo "Selenium Service was not running. Attempting to start...\n";
-  //   echo "Start command output: $startOutput\n";
-  // } else {
-  //   echo "Selenium Service is already running.\n";
-  // }
+    echo "Selenium Service was not running. Attempting to start...\n";
+    echo "Start command output: $startOutput\n";
+  }
 }
 
 exit();

@@ -87,7 +87,9 @@ $host = 'http://localhost:4444/wd/hub';
 $capabilities = \Facebook\WebDriver\Remote\DesiredCapabilities::chrome();
 $capabilities->setCapability('goog:chromeOptions', ['args' => ["--headless", "--user-agent=" . USER_AGENT]]);
 $driver = RemoteWebDriver::create($host, $capabilities);
-
+$driver->get("https://api.scrapingdog.com/scrape?api_key=64ea0a7c389c1c508e3bb43b&url=https://www.zillow.com/homedetails/433-4th-Ave-Portola-CA-96122/52928502_zpid/");
+print_r("asdfasdf");
+exit();
 $result = [];
 
 $filterState = array(

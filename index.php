@@ -189,9 +189,11 @@ try {
                 $detailUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=$link";
                 print_r($detailUrl);
                 print_r("\n");
-                // $driver->get($detailUrl);
 
-                // $detailHtml = $driver->findElement(WebDriverBy::cssSelector("div.detail-page"));
+                $driver->get($detailUrl);
+                sleep(5);
+
+                $detailHtml = $driver->findElement(WebDriverBy::cssSelector("div.detail-page"));
 
                 // try {
                 //   $price = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-1me8eh6-0.OByUh.fpfhCd > span"))->getText();

@@ -322,6 +322,8 @@ try {
         if ($item["zpid"] && $item["link"]) {
           $detailUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=" . $item["link"];
           $driver->get($detailUrl);
+          sleep(5);
+          
           $detailHtml = $driver->findElement(WebDriverBy::cssSelector("div.detail-page"));
 
           try {

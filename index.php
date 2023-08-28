@@ -188,12 +188,14 @@ try {
                 $link = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");
 
                 $pageUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=$link";
-                $driver->get($pageUrl);
-                sleep(5);
+                print_r($pageUrl);
+                print_r("\n");
+                // $driver->get($pageUrl);
+                // sleep(5);
 
-                $html = $driver->findElement(WebDriverBy::tagName('html'));
-                $html->sendKeys(WebDriverKeys::END);
-                sleep(5);
+                // $html = $driver->findElement(WebDriverBy::tagName('html'));
+                // $html->sendKeys(WebDriverKeys::END);
+                // sleep(5);
                 
                 // $detailHtml = $driver->findElement(WebDriverBy::cssSelector("div.detail-page"));
 

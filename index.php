@@ -318,11 +318,44 @@ try {
       }
 
       foreach ($list as $item) {
-        if ($item['zpid'] && $item['link']) {
-          $detailUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=" . $item['link'];
+        if ($item["zpid"] && $item["link"]) {
+          $detailUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=" . $item["link"];
           $driver->get($detailUrl);
+          $detailHtml = $driver->findElement(WebDriverBy::cssSelector("div.detail-page"));
+
+          try {
+            $price = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-1me8eh6-0.OByUh.fpfhCd > span"))->getText();
+          } catch (NoSuchElementException $e) {
+            $price = 0;
+          }
+
+          try {
+            $address = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container h1.Text-c11n-8-84-3__sc-aiai24-0.hrfydd"))->getText();
+          } catch (NoSuchElementException $e) {
+            $address = "";
+          }
+
+          try {
+            $beds = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container span.Text-c11n-8-84-3__sc-aiai24-0.hrfydd strong"))->getText();
+          } catch (NoSuchElementException $e) {
+            $beds = 0;
+          }
+
+          try {
+            $baths = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container span.Text-c11n-8-84-3__sc-aiai24-0 hrfydd"))->getText();
+          } catch (NoSuchElementException $e) {
+            $baths = 0;
+          }
+
+          $result[] = array(
+            "zpid" => $item["zpid"],
+            "url" => $item["link"],
+            "price" => $price,
+            "address" => $address,
+            "beds" => $beds,
+            "baths" => $baths,
+          );
         }
-        
       }
 
       $currentPage++;

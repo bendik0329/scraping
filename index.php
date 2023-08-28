@@ -353,6 +353,18 @@ try {
             $sqft = "";
           }
 
+          try {
+            $type = $detailHtml->findElement(WebDriverBy::cssSelector("div.hdp__sc-13r9t6h-0.ds-chip-removable-content span div.dpf__sc-1yftt2a-0.bNENJa span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-1yftt2a-1.hrfydd.ixkFNb"))->getText();
+          } catch (NoSuchElementException $e) {
+            $type = "";
+          }
+
+          try {
+            $zestimate = $detailHtml->findElement(WebDriverBy::cssSelector("div.hdp__sc-13r9t6h-0.ds-chip-removable-content span div.hdp__sc-j76ge-1.fomYLZ > span.Text-c11n-8-84-3__sc-aiai24-0.hrfydd > span.Text-c11n-8-84-3__sc-aiai24-0.hqOVzy span"))->getText();
+          } catch (NoSuchElementException $e) {
+            $zestimate = "";
+          }
+
           $result[] = array(
             "zpid" => $item["zpid"],
             "url" => $item["link"],
@@ -361,6 +373,8 @@ try {
             "beds" => $beds,
             "baths" => $baths,
             "sqft" => $sqft,
+            "type" => $type,
+            "zestimate" => $zestimate,
           );
         }
       }

@@ -115,6 +115,12 @@ try {
       $html->sendKeys(WebDriverKeys::END);
       sleep(5);
 
+      $propertyElements = $html->findElements(WebDriverBy::cssSelector("#grid-search-results > ul > li > div > div > article.property-card"));
+      foreach ($propertyElements as $propertyElement) {
+        $zpid = str_replace("zpid_", "", $propertyElement->getAttribute("id"));
+        $zpid = intval($zpid);
+        print_r($zpid);
+      }
       $detailUrl = "https://api.scrapingdog.com/scrape?api_key=64ea0a7c389c1c508e3bb43b&url=https://www.zillow.com/homedetails/361-W-8th-St-Stockton-CA-95206/15338156_zpid/";
       $driver->get($detailUrl);
       sleep(5);

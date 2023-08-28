@@ -7,6 +7,7 @@ require_once  __DIR__ . '/utils/database.php';
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\Exception\NoSuchElementException;
+use Facebook\WebDriver\WebDriver;
 use Facebook\WebDriver\WebDriverKeys;
 
 $envConfig = parse_ini_file(__DIR__ . "/.env");
@@ -346,7 +347,7 @@ try {
           } catch (NoSuchElementException $e) {
             $baths = "";
           }
-          
+
           try {
             $sqft = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container span[data-testid=\"bed-bath-item\"]:nth-child(5) strong"))->getText();
           } catch (NoSuchElementException $e) {
@@ -362,8 +363,91 @@ try {
           try {
             $zestimate = $detailHtml->findElement(WebDriverBy::cssSelector("div.hdp__sc-13r9t6h-0.ds-chip-removable-content span div.hdp__sc-j76ge-1.fomYLZ > span.Text-c11n-8-84-3__sc-aiai24-0.hrfydd > span.Text-c11n-8-84-3__sc-aiai24-0.hqOVzy span"))->getText();
           } catch (NoSuchElementException $e) {
-            $zestimate = "";
+            $zestimate = "None";
           }
+
+          $houseType = "";
+          $builtYear = "";
+          $heating = "";
+          $cooling = "";
+          $parking = "";
+          $lot = "";
+          $priceSqft = "";
+          $agencyFee = "";
+          try {
+            $houseElements = $detailHtml->findElements(WebDriverBy::cssSelector("div.data-view-container ul.dpf__sc-xzpkxd-0.dFxsBL li.dpf__sc-2arhs5-0.gRshUo"));
+            if (count($houseElements) > 0) {
+              foreach ($houseElements as $houseElement) {
+                try {
+                  $title = $houseElement->findElement(WebDriverBy::cssSelector("span.dpf__sc-2arhs5-1.NZRug svg.Icon-c11n-8-84-3__sc-13llmml-0.iAcAav title"))->getText();
+                  if ($title) {
+                    switch ($title) {
+                      case "Type":
+                        try {
+                          $houseType = $houseElement->findElement(WebDriverBy::cssSelector("span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-2arhs5-3.hrfydd.kOlNqB"))->getText();
+                        } catch (NoSuchElementException $e) {
+                          $houseType = "";
+                        }
+                        break;
+                      case "Year Built":
+                        try {
+                          $builtYear = $houseElement->findElement(WebDriverBy::cssSelector("span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-2arhs5-3.hrfydd.kOlNqB"))->getText();
+                        } catch (NoSuchElementException $e) {
+                          $builtYear = "";
+                        }
+                        break;
+                      case "Heating":
+                        try {
+                          $heating = $houseElement->findElement(WebDriverBy::cssSelector("span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-2arhs5-3.hrfydd.kOlNqB"))->getText();
+                        } catch (NoSuchElementException $e) {
+                          $heating = "";
+                        }
+                        break;
+                      case "Cooling":
+                        try {
+                          $cooling = $houseElement->findElement(WebDriverBy::cssSelector("span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-2arhs5-3.hrfydd.kOlNqB"))->getText();
+                        } catch (NoSuchElementException $e) {
+                          $cooling = "";
+                        }
+                        break;
+                      case "Parking":
+                        try {
+                          $parking = $houseElement->findElement(WebDriverBy::cssSelector("span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-2arhs5-3.hrfydd.kOlNqB"))->getText();
+                        } catch (NoSuchElementException $e) {
+                          $parking = "";
+                        }
+                        break;
+                      case "Lot":
+                        try {
+                          $lot = $houseElement->findElement(WebDriverBy::cssSelector("span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-2arhs5-3.hrfydd.kOlNqB"))->getText();
+                        } catch (NoSuchElementException $e) {
+                          $lot = "";
+                        }
+                        break;
+                      case "Price/sqft":
+                        try {
+                          $priceSqft = $houseElement->findElement(WebDriverBy::cssSelector("span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-2arhs5-3.hrfydd.kOlNqB"))->getText();
+                        } catch (NoSuchElementException $e) {
+                          $priceSqft = "";
+                        }
+                        break;
+                      case "Buyers Agency Fee":
+                        try {
+                          $agencyFee = $houseElement->findElement(WebDriverBy::cssSelector("span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-2arhs5-3.hrfydd.kOlNqB"))->getText();
+                        } catch (NoSuchElementException $e) {
+                          $agencyFee = "";
+                        }
+                        break;
+                    }
+                  }
+                } catch (NoSuchElementException $e) {
+                }
+              }
+            }
+          } catch (NoSuchElementException $e) {
+          }
+
+
 
           $result[] = array(
             "zpid" => $item["zpid"],
@@ -375,6 +459,14 @@ try {
             "sqft" => $sqft,
             "type" => $type,
             "zestimate" => $zestimate,
+            "houseType" => $houseType,
+            "builtYear" => $builtYear,
+            "heating" => $heating,
+            "cooling" => $cooling,
+            "parking" =>$parking,
+            "lot" => $lot,
+            "priceSqft" => $priceSqft,
+            "agencyFee" => $agencyFee,
           );
         }
       }

@@ -72,17 +72,19 @@ if (PHP_OS === "Linux") {
   $serviceName = "selenium.service";
   $checkCommand = "systemctl is-active $serviceName";
   $output = shell_exec($checkCommand);
+  print_r($output);
+  // if (trim($output) !== "active") {
+  //   $startCommand = "sudo systemctl start $serviceName";
+  //   $startOutput = shell_exec($startCommand);
 
-  if (trim($output) !== "active") {
-    $startCommand = "sudo systemctl start $serviceName";
-    $startOutput = shell_exec($startCommand);
-
-    echo "Selenium Service was not running. Attempting to start...\n";
-    echo "Start command output: $startOutput\n";
-  } else {
-    echo "Selenium Service is already running.\n";
-  }
+  //   echo "Selenium Service was not running. Attempting to start...\n";
+  //   echo "Start command output: $startOutput\n";
+  // } else {
+  //   echo "Selenium Service is already running.\n";
+  // }
 }
+
+exit();
 
 // Set up Selenium WebDriver
 $host = 'http://localhost:4444/wd/hub';
@@ -209,7 +211,7 @@ try {
                 }
 
                 try {
-                  $baths = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container h1.Text-c11n-8-84-3__sc-aiai24-0.hrfydd"))->getText();
+                  $baths = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container span.Text-c11n-8-84-3__sc-aiai24-0 hrfydd"))->getText();
                 } catch (NoSuchElementException $e) {
                   $baths = 0;
                 }

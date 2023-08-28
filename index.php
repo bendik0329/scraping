@@ -326,7 +326,7 @@ try {
           try {
             $price = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-1me8eh6-0.OByUh.fpfhCd > span"))->getText();
           } catch (NoSuchElementException $e) {
-            $price = 0;
+            $price = "";
           }
 
           try {
@@ -338,13 +338,13 @@ try {
           try {
             $beds = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container span.Text-c11n-8-84-3__sc-aiai24-0.hrfydd:nth-child(1) strong"))->getText();
           } catch (NoSuchElementException $e) {
-            $beds = 0;
+            $beds = "";
           }
 
           try {
-            $baths = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container span.Text-c11n-8-84-3__sc-aiai24-0.hrfydd:nth-child(2) strong"))->getText();
+            $baths = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container button span.Text-c11n-8-84-3__sc-aiai24-0.hrfydd:nth-child(2) strong"))->getText();
           } catch (NoSuchElementException $e) {
-            $baths = 0;
+            $baths = "";
           }
 
           $result[] = array(

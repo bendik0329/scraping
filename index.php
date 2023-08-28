@@ -336,15 +336,21 @@ try {
           }
 
           try {
-            $beds = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container span.Text-c11n-8-84-3__sc-aiai24-0.hrfydd:nth-child(1) strong"))->getText();
+            $beds = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container span[data-testid=\"bed-bath-item\"]:nth-child(1) strong"))->getText();
           } catch (NoSuchElementException $e) {
             $beds = "";
           }
 
           try {
-            $baths = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container button span.Text-c11n-8-84-3__sc-aiai24-0.hrfydd:nth-child(2) strong"))->getText();
+            $baths = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container button[class*=\"TriggerText\"] span[data-testid=\"bed-bath-item\"] strong"))->getText();
           } catch (NoSuchElementException $e) {
             $baths = "";
+          }
+          
+          try {
+            $sqft = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container span[data-testid=\"bed-bath-item\"]:nth-child(3) strong"))->getText();
+          } catch (NoSuchElementException $e) {
+            $sqft = "";
           }
 
           $result[] = array(
@@ -354,6 +360,7 @@ try {
             "address" => $address,
             "beds" => $beds,
             "baths" => $baths,
+            "sqft" => $sqft,
           );
         }
       }

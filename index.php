@@ -123,8 +123,8 @@ try {
 
           $cardLinkElement = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data > a.property-card-link"));
           $cardLink = $cardLinkElement->getAttribute("href");
-          $cardLinkElement->click();
-          sleep(5);
+          // $cardLinkElement->click();
+          // sleep(5);
 
           print_r($zpid);
           print_r("\n");

@@ -137,6 +137,9 @@ $queryString = json_encode($query);
 $searchQueryState = urlencode($queryString);
 $url = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/ca/?searchQueryState=$searchQueryState";
 
+print_r($url);
+print_r("\n");
+
 $driver->get($url);
 
 try {

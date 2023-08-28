@@ -115,24 +115,30 @@ try {
       $html->sendKeys(WebDriverKeys::END);
       sleep(5);
 
-      $propertyElements = $driver->findElements(WebDriverBy::cssSelector("#grid-search-results > ul > li > div > div > article.property-card"));
-      if (count($propertyElements) > 0) {
-        foreach ($propertyElements as $propertyElement) {
-          $zpid = str_replace("zpid_", "", $propertyElement->getAttribute("id"));
-          $zpid = intval($zpid);
+      $detailUrl = "https://api.scrapingdog.com/scrape?api_key=64ea0a7c389c1c508e3bb43b&url=https://www.zillow.com/homedetails/361-W-8th-St-Stockton-CA-95206/15338156_zpid/";
+      $driver->get($detailUrl);
+      sleep(5);
 
-          $cardLinkElement = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data > a.property-card-link"));
-          $cardLink = $cardLinkElement->getAttribute("href");
-          // $cardLinkElement->click();
-          // sleep(5);
+      $detailHtml = $driver->findElement(WebDriverBy::tagName('html'));
+      print_r($detailHtml);
+      // $propertyElements = $driver->findElements(WebDriverBy::cssSelector("#grid-search-results > ul > li > div > div > article.property-card"));
+      // if (count($propertyElements) > 0) {
+      //   foreach ($propertyElements as $propertyElement) {
+      //     $zpid = str_replace("zpid_", "", $propertyElement->getAttribute("id"));
+      //     $zpid = intval($zpid);
 
-          $driver->get("https://api.scrapingdog.com/scrape?api_key=64ea0a7c389c1c508e3bb43b&url=https://www.zillow.com/ca/?searchQueryState=%7B%22pagination%22%3A%7B%7D%2C%22usersSearchTerm%22%3A%22CA%22%2C%22filterState%22%3A%7B%22beds%22%3A%7B%22min%22%3A1%7D%2C%22baths%22%3A%7B%22min%22%3A1%7D%2C%22sqft%22%3A%7B%22min%22%3A500%2C%22max%22%3A750%7D%2C%22pmf%22%3A%7B%22value%22%3Atrue%7D%2C%22sort%22%3A%7B%22value%22%3A%22globalrelevanceex%22%7D%2C%22nc%22%3A%7B%22value%22%3Afalse%7D%2C%22fsbo%22%3A%7B%22value%22%3Afalse%7D%2C%22cmsn%22%3A%7B%22value%22%3Afalse%7D%2C%22pf%22%3A%7B%22value%22%3Atrue%7D%2C%22fsba%22%3A%7B%22value%22%3Afalse%7D%7D%2C%22isListVisible%22%3Atrue%7D");
-          print_r($zpid);
-          print_r("\n");
-          print_r($cardLink);
-          print_r("\n");
-        } 
-      }
+      //     $cardLinkElement = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data > a.property-card-link"));
+      //     $cardLink = $cardLinkElement->getAttribute("href");
+      //     // $cardLinkElement->click();
+      //     // sleep(5);
+
+      //     $driver->get("https://api.scrapingdog.com/scrape?api_key=64ea0a7c389c1c508e3bb43b&url=https://www.zillow.com/ca/?searchQueryState=%7B%22pagination%22%3A%7B%7D%2C%22usersSearchTerm%22%3A%22CA%22%2C%22filterState%22%3A%7B%22beds%22%3A%7B%22min%22%3A1%7D%2C%22baths%22%3A%7B%22min%22%3A1%7D%2C%22sqft%22%3A%7B%22min%22%3A500%2C%22max%22%3A750%7D%2C%22pmf%22%3A%7B%22value%22%3Atrue%7D%2C%22sort%22%3A%7B%22value%22%3A%22globalrelevanceex%22%7D%2C%22nc%22%3A%7B%22value%22%3Afalse%7D%2C%22fsbo%22%3A%7B%22value%22%3Afalse%7D%2C%22cmsn%22%3A%7B%22value%22%3Afalse%7D%2C%22pf%22%3A%7B%22value%22%3Atrue%7D%2C%22fsba%22%3A%7B%22value%22%3Afalse%7D%7D%2C%22isListVisible%22%3Atrue%7D");
+      //     print_r($zpid);
+      //     print_r("\n");
+      //     print_r($cardLink);
+      //     print_r("\n");
+      //   } 
+      // }
       $currentPage++;
     }
   }

@@ -318,7 +318,11 @@ try {
       }
 
       foreach ($list as $item) {
-        print_r($item);
+        if ($item['zpid'] && $item['link']) {
+          $detailUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=" . $item['link'];
+          $driver->get($detailUrl);
+        }
+        
       }
 
       $currentPage++;

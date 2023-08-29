@@ -17,35 +17,35 @@ function _init()
 
   if ($db->query($dropPropertiesSql) === TRUE) {
     $createPropertiesSql = "CREATE TABLE IF NOT EXISTS properties (
-    `id` INT ( 6 ) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    `zpid` INT ( 11 ) NOT NULL UNIQUE,
-    `url` VARCHAR ( 255 ) NOT NULL,
-    `image` VARCHAR ( 255 ),
-    `currency` VARCHAR ( 255 ),
-    `price` INT ( 11 ),
-    `address` VARCHAR ( 255 ),
-    `beds` VARCHAR ( 255 ),
-    `baths` VARCHAR ( 255 ),
-    `sqft` VARCHAR ( 255 ),
-    `type` VARCHAR ( 255 ),
-    `zestimateCurrency` VARCHAR ( 255 ),
-    `zestimatePrice` INT ( 11 ),
-    `houseType` VARCHAR ( 255 ),
-    `builtYear` VARCHAR ( 255 ),
-    `heating` VARCHAR ( 255 ),
-    `cooling` VARCHAR ( 255 ),
-    `parking` VARCHAR ( 255 ),
-    `lot` VARCHAR ( 255 ),
-    `priceSqft` VARCHAR ( 255 ),
-    `agencyFee` VARCHAR ( 255 ),
-    `days` INT ( 11 ),
-    `views` INT ( 11 ),
-    `saves` INT ( 11 ),
-    `special` VARCHAR ( 255 ),
-    `overview` VARCHAR ( 255 ),
-    `images` TEXT,
-    `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 
-  )";
+      `id` INT ( 6 ) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+      `zpid` INT ( 11 ) NOT NULL UNIQUE,
+      `url` VARCHAR ( 255 ) NOT NULL,
+      `image` VARCHAR ( 255 ),
+      `currency` VARCHAR ( 255 ),
+      `price` INT ( 11 ),
+      `address` VARCHAR ( 255 ),
+      `beds` VARCHAR ( 255 ),
+      `baths` VARCHAR ( 255 ),
+      `sqft` VARCHAR ( 255 ),
+      `type` VARCHAR ( 255 ),
+      `zestimateCurrency` VARCHAR ( 255 ),
+      `zestimatePrice` INT ( 11 ),
+      `houseType` VARCHAR ( 255 ),
+      `builtYear` VARCHAR ( 255 ),
+      `heating` VARCHAR ( 255 ),
+      `cooling` VARCHAR ( 255 ),
+      `parking` VARCHAR ( 255 ),
+      `lot` VARCHAR ( 255 ),
+      `priceSqft` VARCHAR ( 255 ),
+      `agencyFee` VARCHAR ( 255 ),
+      `days` INT ( 11 ),
+      `views` INT ( 11 ),
+      `saves` INT ( 11 ),
+      `special` VARCHAR ( 255 ),
+      `overview` VARCHAR ( 255 ),
+      `images` TEXT,
+      `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 
+    )";
 
     if ($db->query($createPropertiesSql) === TRUE) {
       echo "Table properties created successfully \n";
@@ -61,11 +61,11 @@ function _init()
 
   if ($db->query($dropImagesSql) === TRUE) {
     $imagesSql = "CREATE TABLE IF NOT EXISTS images (
-    `id` INT ( 6 ) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    `zpid` VARCHAR ( 255 ) NOT NULL,
-    `url` VARCHAR ( 255 ) NOT NULL,
-    `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 
-  )";
+      `id` INT ( 6 ) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+      `zpid` VARCHAR ( 255 ) NOT NULL,
+      `url` VARCHAR ( 255 ) NOT NULL,
+      `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 
+    )";
 
     if ($db->query($imagesSql) === TRUE) {
       echo "Table images created successfully \n";
@@ -81,14 +81,14 @@ function _init()
 
   if ($db->query($dropPriceHistoriesSql) === TRUE) {
     $priceHistoriesSql = "CREATE TABLE IF NOT EXISTS price_histories (
-    `id` INT ( 6 ) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    `zpid` VARCHAR ( 255 ) NOT NULL,
-    `date` DATE,
-    `event` VARCHAR ( 255 ),
-    `price` VARCHAR ( 255 ),
-    `priceSqft` VARCHAR ( 255 ),
-    `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 
-  )";
+      `id` INT ( 6 ) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+      `zpid` VARCHAR ( 255 ) NOT NULL,
+      `date` DATE,
+      `event` VARCHAR ( 255 ),
+      `price` VARCHAR ( 255 ),
+      `priceSqft` VARCHAR ( 255 ),
+      `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 
+    )";
 
     if ($db->query($priceHistoriesSql) === TRUE) {
       echo "Table price_histories created successfully \n";
@@ -104,15 +104,15 @@ function _init()
 
   if ($db->query($dropTaxHistoriesSql) === TRUE) {
     $taxHistoriesSql = "CREATE TABLE IF NOT EXISTS tax_histories (
-    `id` INT ( 6 ) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    `zpid` VARCHAR ( 255 ) NOT NULL,
-    `year` INT ( 11 ),
-    `tax` VARCHAR ( 255 ),
-    `taxRate` VARCHAR ( 255 ),
-    `taxAssessment` VARCHAR ( 255 ),
-    `taxAssessmentRate` VARCHAR ( 255 ),
-    `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 
-  )";
+      `id` INT ( 6 ) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+      `zpid` VARCHAR ( 255 ) NOT NULL,
+      `year` INT ( 11 ),
+      `tax` VARCHAR ( 255 ),
+      `taxRate` VARCHAR ( 255 ),
+      `taxAssessment` VARCHAR ( 255 ),
+      `taxAssessmentRate` VARCHAR ( 255 ),
+      `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 
+    )";
 
     if ($db->query($taxHistoriesSql) === TRUE) {
       echo "Table tax_histories created successfully \n";
@@ -176,6 +176,7 @@ function scrapePropertyDetail($zpid, $detailHtml)
     $image = $detailHtml->findElement(WebDriverBy::cssSelector("div.media-column-container ul.hdp__sc-1wi9vqt-0.dDzspE.ds-media-col.media-stream li:nth-child(1) img"))->getAttribute("src");
   } catch (NoSuchElementException $e) {
     $image = "";
+    print_r($e);
   }
   // get price
   try {
@@ -186,6 +187,7 @@ function scrapePropertyDetail($zpid, $detailHtml)
   } catch (NoSuchElementException $e) {
     $currency = "";
     $price = 0;
+    print_r($e);
   }
 
   // get address
@@ -193,6 +195,7 @@ function scrapePropertyDetail($zpid, $detailHtml)
     $address = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container h1.Text-c11n-8-84-3__sc-aiai24-0.hrfydd"))->getText();
   } catch (NoSuchElementException $e) {
     $address = "";
+    print_r($e);
   }
 
   // get beds
@@ -200,6 +203,7 @@ function scrapePropertyDetail($zpid, $detailHtml)
     $beds = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container span[data-testid=\"bed-bath-item\"]:nth-child(1) strong"))->getText();
   } catch (NoSuchElementException $e) {
     $beds = "";
+    print_r($e);
   }
 
   // get baths
@@ -207,6 +211,7 @@ function scrapePropertyDetail($zpid, $detailHtml)
     $baths = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container button[class*=\"TriggerText\"] span[data-testid=\"bed-bath-item\"] strong"))->getText();
   } catch (NoSuchElementException $e) {
     $baths = "";
+    print_r($e);
   }
 
   // get sqft
@@ -214,6 +219,7 @@ function scrapePropertyDetail($zpid, $detailHtml)
     $sqft = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container span[data-testid=\"bed-bath-item\"]:nth-child(5) strong"))->getText();
   } catch (NoSuchElementException $e) {
     $sqft = "";
+    print_r($e);
   }
 
   // get type
@@ -221,6 +227,7 @@ function scrapePropertyDetail($zpid, $detailHtml)
     $type = $detailHtml->findElement(WebDriverBy::cssSelector("div.hdp__sc-13r9t6h-0.ds-chip-removable-content span div.dpf__sc-1yftt2a-0.bNENJa span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-1yftt2a-1.hrfydd.ixkFNb"))->getText();
   } catch (NoSuchElementException $e) {
     $type = "";
+    print_r($e);
   }
 
   // get zestimate
@@ -232,6 +239,7 @@ function scrapePropertyDetail($zpid, $detailHtml)
   } catch (NoSuchElementException $e) {
     $zestimateCurrency = "";
     $zestimatePrice = 0;
+    print_r($e);
   }
 
   // get special info
@@ -239,6 +247,7 @@ function scrapePropertyDetail($zpid, $detailHtml)
     $special = $detailHtml->findElement(WebDriverBy::cssSelector("div.hdp__sc-ld4j6f-0.cKHmSE span.StyledTag-c11n-8-84-3__sc-1945joc-0.ftTUfk hdp__sc-ld4j6f-1.cosjzO"))->getText();
   } catch (NoSuchElementException $e) {
     $special = "";
+    print_r($e);
   }
 
   // get overview
@@ -246,6 +255,7 @@ function scrapePropertyDetail($zpid, $detailHtml)
     $overview = $detailHtml->findElement(WebDriverBy::cssSelector("div.Text-c11n-8-84-3__sc-aiai24-0.sc-oZIhv.hrfydd.jKaobh"))->getText();
   } catch (NoSuchElementException $e) {
     $overview = "";
+    print_r($e);
   }
 
   // get house info
@@ -321,6 +331,7 @@ function scrapeHouseElements($houseElements)
                 $houseType = $houseElement->findElement(WebDriverBy::cssSelector("span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-2arhs5-3.hrfydd.kOlNqB"))->getText();
               } catch (NoSuchElementException $e) {
                 $houseType = "";
+                print_r($e);
               }
               break;
             case "Year Built":
@@ -335,6 +346,7 @@ function scrapeHouseElements($houseElements)
                 }
               } catch (NoSuchElementException $e) {
                 $builtYear = 0;
+                print_r($e);
               }
               break;
             case "Heating":
@@ -342,6 +354,7 @@ function scrapeHouseElements($houseElements)
                 $heating = $houseElement->findElement(WebDriverBy::cssSelector("span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-2arhs5-3.hrfydd.kOlNqB"))->getText();
               } catch (NoSuchElementException $e) {
                 $heating = "";
+                print_r($e);
               }
               break;
             case "Cooling":
@@ -349,6 +362,7 @@ function scrapeHouseElements($houseElements)
                 $cooling = $houseElement->findElement(WebDriverBy::cssSelector("span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-2arhs5-3.hrfydd.kOlNqB"))->getText();
               } catch (NoSuchElementException $e) {
                 $cooling = "";
+                print_r($e);
               }
               break;
             case "Parking":
@@ -356,6 +370,7 @@ function scrapeHouseElements($houseElements)
                 $parking = $houseElement->findElement(WebDriverBy::cssSelector("span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-2arhs5-3.hrfydd.kOlNqB"))->getText();
               } catch (NoSuchElementException $e) {
                 $parking = "";
+                print_r($e);
               }
               break;
             case "Lot":
@@ -363,6 +378,7 @@ function scrapeHouseElements($houseElements)
                 $lot = $houseElement->findElement(WebDriverBy::cssSelector("span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-2arhs5-3.hrfydd.kOlNqB"))->getText();
               } catch (NoSuchElementException $e) {
                 $lot = "";
+                print_r($e);
               }
               break;
             case "Price/sqft":
@@ -370,6 +386,7 @@ function scrapeHouseElements($houseElements)
                 $priceSqft = $houseElement->findElement(WebDriverBy::cssSelector("span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-2arhs5-3.hrfydd.kOlNqB"))->getText();
               } catch (NoSuchElementException $e) {
                 $priceSqft = "";
+                print_r($e);
               }
               break;
             case "Buyers Agency Fee":
@@ -377,6 +394,7 @@ function scrapeHouseElements($houseElements)
                 $agencyFee = $houseElement->findElement(WebDriverBy::cssSelector("span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-2arhs5-3.hrfydd.kOlNqB"))->getText();
               } catch (NoSuchElementException $e) {
                 $agencyFee = "";
+                print_r($e);
               }
               break;
           }
@@ -413,6 +431,7 @@ function scrapeDtElements($dtElements)
             $days = intval(preg_replace('/\D/', '', $daysText));
           } catch (NoSuchElementException $e) {
             $days = "";
+            print_r($e);
           }
           break;
         case 1:
@@ -421,6 +440,7 @@ function scrapeDtElements($dtElements)
             $views = intval(preg_replace('/\D/', '', $viewsText));
           } catch (NoSuchElementException $e) {
             $views = "";
+            print_r($e);
           }
           break;
         case 2:
@@ -429,6 +449,7 @@ function scrapeDtElements($dtElements)
             $saves = intval(preg_replace('/\D/', '', $savesText));
           } catch (NoSuchElementException $e) {
             $saves = "";
+            print_r($e);
           }
           break;
       }
@@ -444,7 +465,7 @@ function scrapeDtElements($dtElements)
 
 function scrapePriceHistory($zpid, $priceRowElements)
 {
-  global $db;
+  global $db, $conn;
   $result = array();
 
   if (count($priceRowElements) > 0) {
@@ -463,6 +484,7 @@ function scrapePriceHistory($zpid, $priceRowElements)
                 $date = $priceColumnElement->findElement(WebDriverBy::cssSelector("span.hdp__sc-reo5z7-1.bRcAjm"))->getText();
               } catch (NoSuchElementException $e) {
                 $date = "";
+                print_r($e);
               }
               break;
             case 1:
@@ -470,6 +492,7 @@ function scrapePriceHistory($zpid, $priceRowElements)
                 $event = $priceColumnElement->findElement(WebDriverBy::cssSelector("span.hdp__sc-reo5z7-1.hdp__sc-reo5z7-4.bRcAjm.fTyeIS"))->getText();
               } catch (NoSuchElementException $e) {
                 $event = "";
+                print_r($e);
               }
               break;
             case 2:
@@ -477,18 +500,17 @@ function scrapePriceHistory($zpid, $priceRowElements)
                 $priceItem = $priceColumnElement->findElement(WebDriverBy::cssSelector("span.hdp__sc-reo5z7-1.hdp__sc-reo5z7-6.dQBikw.epSCRt span.hdp__sc-reo5z7-1.hdp__sc-reo5z7-5.bRcAjm.ldMXqX"))->getText();
               } catch (NoSuchElementException $e) {
                 $priceItem = "";
+                print_r($e);
               }
 
               try {
                 $pricePerSqft = $priceColumnElement->findElement(WebDriverBy::cssSelector("span.hdp__sc-reo5z7-1.hdp__sc-reo5z7-7.fEaJVg.jNzJBc"))->getText();
               } catch (NoSuchElementException $e) {
                 $pricePerSqft = "";
+                print_r($e);
               }
 
               break;
-          }
-          try {
-          } catch (NoSuchElementException $e) {
           }
         }
       }
@@ -513,8 +535,10 @@ function scrapePriceHistory($zpid, $priceRowElements)
           '" . date('Y-m-d H:i:s') . "'
         )";
 
-      $db->query($sql);
-      
+      if (!$db->query($sql)) {
+        echo "Error inserting price_histories table: " . $conn->error . "\n";
+      }
+
       $result[] = array(
         "date" => $date,
         "event" => $event,
@@ -529,7 +553,7 @@ function scrapePriceHistory($zpid, $priceRowElements)
 
 function scrapeTaxHistory($zpid, $taxRowElements)
 {
-  global $db;
+  global $db, $conn;
   $result = array();
 
   if (count($taxRowElements) > 0) {
@@ -545,6 +569,7 @@ function scrapeTaxHistory($zpid, $taxRowElements)
         $year = intval($year);
       } catch (NoSuchElementException $e) {
         $year = 0;
+        print_r($e);
       }
 
       $taxColumnElements = $taxRowElement->findElements(WebDriverBy::cssSelector("td"));
@@ -559,12 +584,14 @@ function scrapeTaxHistory($zpid, $taxRowElements)
                 $propertyTax = $propertyTaxArray[0];
               } catch (NoSuchElementException $e) {
                 $propertyTax = "";
+                print_r($e);
               }
 
               try {
                 $propertyTaxRate = $taxColumnElement->findElement(WebDriverBy::cssSelector("span.hdp__sc-reo5z7-1.bRcAjm span.hdp__sc-vcntbl-0.frFkpC"))->getText();
               } catch (NoSuchElementException $e) {
                 $propertyTaxRate = "";
+                print_r($e);
               }
 
               break;
@@ -575,12 +602,14 @@ function scrapeTaxHistory($zpid, $taxRowElements)
                 $taxAssessment = $taxAssessmentArray[0];
               } catch (NoSuchElementException $e) {
                 $taxAssessment = "";
+                print_r($e);
               }
 
               try {
                 $taxAssessmentRate = $taxColumnElement->findElement(WebDriverBy::cssSelector("span.hdp__sc-reo5z7-1.bRcAjm span.hdp__sc-vcntbl-0.frFkpC"))->getText();
               } catch (NoSuchElementException $e) {
                 $taxAssessmentRate = "";
+                print_r($e);
               }
 
               break;
@@ -610,7 +639,9 @@ function scrapeTaxHistory($zpid, $taxRowElements)
           '" . date('Y-m-d H:i:s') . "'
         )";
 
-      $db->query($sql);
+      if (!$db->query($sql)) {
+        echo "Error inserting tax_histories table: " . $conn->error . "\n";
+      }
 
       $result[] = array(
         "year" => $year,
@@ -625,7 +656,8 @@ function scrapeTaxHistory($zpid, $taxRowElements)
   return $result;
 }
 
-function deformatPrice ($formated_price) {
+function deformatPrice($formated_price)
+{
   $currency = substr($formated_price, 0, 1);
   $price = str_replace([$currency, ','], '', $formated_price);
 
@@ -635,6 +667,40 @@ function deformatPrice ($formated_price) {
   );
 }
 
-function deformatNumber ($formated_number) {
+function deformatNumber($formated_number)
+{
   return str_replace(',', '', $formated_number);
+}
+
+function downloadImages()
+{
+  global $db;
+  $properties = $db->query("SELECT * FROM properties");
+
+  if ($properties) {
+    if ($properties->num_rows > 0) {
+      while ($row = $properties->fetch_assoc()) {
+        try {
+          $id = $row['id'];
+          $zpid = $row['zpid'];
+          $imgUrl = $row['image'];
+
+          $imgFolder = __DIR__ . '/download/images/' . $zpid;
+          if (!file_exists($imgFolder)) {
+            mkdir($imgFolder, 0777, true);
+          }
+
+          $imgPath = $imgFolder . "/" . basename($imgUrl);
+          if (!file_exists($imgPath)) {
+            $imgData = file_get_contents($imgUrl);
+            if ($imgData !== false) {
+              file_put_contents($imgPath, $imgData);
+            }
+          }
+        } catch (Exception $e) {
+          print_r($e);
+        }
+      }
+    }
+  }
 }

@@ -381,7 +381,7 @@ try {
             if (count($houseElements) > 0) {
               foreach ($houseElements as $houseElement) {
                 try {
-                  $title = $houseElement->findElement(WebDriverBy::xpath("//*[name()='svg']/*[name()='title']"))->getText();
+                  $title = $houseElement->findElement(WebDriverBy::xpath('//*[@id="details-page-container"]/div/div/div[1]/div[2]/div[2]/div[3]/div/div/div/ul/li[1]/div/div[1]/ul/li[2]/span[1]/svg/title'))->getText();
                   print_r($title);
                   print_r("\n");
                   //       print_r($title);

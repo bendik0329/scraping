@@ -136,6 +136,8 @@ $queryString = json_encode($query);
 $searchQueryState = urlencode($queryString);
 $url = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/ca/?searchQueryState=$searchQueryState";
 
+print_r($url);
+exit();
 $driver->get($url);
 
 try {
@@ -323,7 +325,7 @@ try {
           $detailUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=" . $item["link"];
           $driver->get($detailUrl);
           sleep(5);
-          
+
           $detailHtml = $driver->findElement(WebDriverBy::cssSelector("div.detail-page"));
 
           try {

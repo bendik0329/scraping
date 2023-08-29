@@ -9,7 +9,7 @@ function scrapeProperties() {
 
 function scrapePropertyDetail($propertyElements) {
   global $db;
-  $list = array();
+  $value = array();
 
   if (count($propertyElements) > 0) {
     foreach ($propertyElements as $propertyElement) {
@@ -22,15 +22,16 @@ function scrapePropertyDetail($propertyElements) {
         if ($exist->num_rows == 0) {
           $link = $propertyElement->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");
 
-          $list[] = array(
+          $value[] = array(
             "zpid" => $zpid,
             "link" => $link,
           );
         }
       }
     }
-    return $list;
+    return $value;
   } else {
-    return [];
+    return array();
   }
 }
+

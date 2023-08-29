@@ -448,6 +448,7 @@ try {
                   //         }
                   //       }
                 } catch (NoSuchElementException $e) {
+                  print_r($e);
                 }
               }
             }

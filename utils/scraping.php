@@ -86,7 +86,6 @@ function _init()
       `date` DATE,
       `event` VARCHAR ( 255 ),
       `price` VARCHAR ( 255 ),
-      `priceSqft` VARCHAR ( 255 ),
       `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 
     )";
 
@@ -108,9 +107,7 @@ function _init()
       `zpid` VARCHAR ( 255 ) NOT NULL,
       `year` INT ( 11 ),
       `tax` VARCHAR ( 255 ),
-      `taxRate` VARCHAR ( 255 ),
       `taxAssessment` VARCHAR ( 255 ),
-      `taxAssessmentRate` VARCHAR ( 255 ),
       `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 
     )";
 
@@ -503,13 +500,6 @@ function scrapePriceHistory($zpid, $priceRowElements)
                 print_r($e);
               }
 
-              try {
-                $pricePerSqft = $priceColumnElement->findElement(WebDriverBy::cssSelector("span.hdp__sc-reo5z7-1.hdp__sc-reo5z7-7.fEaJVg.jNzJBc"))->getText();
-              } catch (NoSuchElementException $e) {
-                $pricePerSqft = "";
-                print_r($e);
-              }
-
               break;
           }
         }
@@ -522,7 +512,6 @@ function scrapePriceHistory($zpid, $priceRowElements)
           date,
           event,
           price,
-          priceSqft,
           createdAt
         )
         VALUES
@@ -531,7 +520,6 @@ function scrapePriceHistory($zpid, $priceRowElements)
           '" . ($date != "" ? date("Y-m-d", strtotime($date)) : NULL) . "',
           '" . $db->makeSafe($event) . "',
           '" . $db->makeSafe($priceItem) . "',
-          '" . $db->makeSafe($pricePerSqft) . "',
           '" . date('Y-m-d H:i:s') . "'
         )";
 
@@ -543,7 +531,6 @@ function scrapePriceHistory($zpid, $priceRowElements)
         "date" => $date,
         "event" => $event,
         "price" => $priceItem,
-        "priceSqft" => $pricePerSqft,
       );
     }
   }
@@ -560,9 +547,7 @@ function scrapeTaxHistory($zpid, $taxRowElements)
     foreach ($taxRowElements as $taxRowElement) {
       $year = 0;
       $propertyTax = "";
-      $propertyTaxRate = "";
       $taxAssessment = "";
-      $taxAssessmentRate = "";
 
       try {
         $year = $taxRowElement->findElement(WebDriverBy::cssSelector("th.StyledTableCell-c11n-8-84-3__sc-1mvjdio-0.StyledTableHeaderCell-c11n-8-84-3__sc-j48v56-0.eeNqSO span.hdp__sc-reo5z7-1.bRcAjm"))->getText();
@@ -587,13 +572,6 @@ function scrapeTaxHistory($zpid, $taxRowElements)
                 print_r($e);
               }
 
-              try {
-                $propertyTaxRate = $taxColumnElement->findElement(WebDriverBy::cssSelector("span.hdp__sc-reo5z7-1.bRcAjm span.hdp__sc-vcntbl-0.frFkpC"))->getText();
-              } catch (NoSuchElementException $e) {
-                $propertyTaxRate = "";
-                print_r($e);
-              }
-
               break;
             case 1:
               try {
@@ -602,13 +580,6 @@ function scrapeTaxHistory($zpid, $taxRowElements)
                 $taxAssessment = $taxAssessmentArray[0];
               } catch (NoSuchElementException $e) {
                 $taxAssessment = "";
-                print_r($e);
-              }
-
-              try {
-                $taxAssessmentRate = $taxColumnElement->findElement(WebDriverBy::cssSelector("span.hdp__sc-reo5z7-1.bRcAjm span.hdp__sc-vcntbl-0.frFkpC"))->getText();
-              } catch (NoSuchElementException $e) {
-                $taxAssessmentRate = "";
                 print_r($e);
               }
 
@@ -623,9 +594,7 @@ function scrapeTaxHistory($zpid, $taxRowElements)
           zpid,
           year,
           tax,
-          taxRate,
           taxAssessment,
-          taxAssessmentRate,
           createdAt
         )
         VALUES
@@ -633,9 +602,7 @@ function scrapeTaxHistory($zpid, $taxRowElements)
           '" . $db->makeSafe($zpid) . "',
           '" . $db->makeSafe($year) . "',
           '" . $db->makeSafe($propertyTax) . "',
-          '" . $db->makeSafe($propertyTaxRate) . "',
           '" . $db->makeSafe($taxAssessment) . "',
-          '" . $db->makeSafe($taxAssessmentRate) . "',
           '" . date('Y-m-d H:i:s') . "'
         )";
 
@@ -646,9 +613,7 @@ function scrapeTaxHistory($zpid, $taxRowElements)
       $result[] = array(
         "year" => $year,
         "tax" => $propertyTax,
-        "taxRate" => $propertyTaxRate,
         "taxAssessment" => $taxAssessment,
-        "taxAssessmentRate" => $taxAssessmentRate,
       );
     }
   }

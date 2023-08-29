@@ -139,9 +139,6 @@ foreach (STATE_LIST as $key => $state) {
                   $result["zpid"] = $item["zpid"];
                   $result["url"] = $item["link"];
 
-                  print_r($result);
-                  exit();
-                  
                   // insert properties to table
                   $sql = "
                     INSERT INTO properties
@@ -206,6 +203,9 @@ foreach (STATE_LIST as $key => $state) {
                   if (!$db->query($sql)) {
                     echo "Error inserting properties table: " . $conn->error . "\n";
                   }
+
+                  print_r($result);
+                  exit();
 
                   $properties[] = $result;
                 }

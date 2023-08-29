@@ -719,7 +719,7 @@ function _init()
   }
 }
 
-function scrapePropertyDetail($propertyElements) {
+function scrapeProperties($propertyElements) {
   global $db;
   $value = array();
 

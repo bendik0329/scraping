@@ -382,7 +382,14 @@ try {
               foreach ($houseElements as $houseElement) {
                 try {
                   $title = $houseElement->findElement(WebDriverBy::cssSelector("svg.title"))->getAttribute("textContent");
-                  print_r("title->>" . $title);
+                  $svgElement = $houseElement->findElement(WebDriverBy::tagName("svg"));
+                  $titleElement = $svgElement->findElement(WebDriverBy::tagName("title"));
+                  $title = $titleElement->getText();
+                  print_r($svgElement);
+                  print_r("\n");
+                  print_r($titleElement);
+                  print_r("\n");
+                  print_r($title);
                   print_r("\n");
                   //       print_r($title);
                   //       print_r("\n");

@@ -4,11 +4,7 @@ require_once  __DIR__ . '/database.php';
 
 use Facebook\WebDriver\WebDriverBy;
 
-function scrapeProperties() {
-
-}
-
-function scrapePropertyDetail($propertyElements) {
+function scrapeProperties($propertyElements) {
   global $db;
   $value = array();
 

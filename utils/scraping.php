@@ -11,19 +11,36 @@ use Facebook\WebDriver\WebDriverKeys;
 function _init()
 {
   global $db, $conn;
-  
+
   // check properties table
   $dropPropertiesSql = "DROP TABLE IF EXISTS properties";
 
   if ($db->query($dropPropertiesSql) === TRUE) {
     $createPropertiesSql = "CREATE TABLE IF NOT EXISTS properties (
     `id` INT ( 6 ) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    `zpid` VARCHAR ( 255 ) NOT NULL UNIQUE,
+    `zpid` INT ( 11 ) NOT NULL UNIQUE,
     `url` VARCHAR ( 255 ) NOT NULL,
-    `address` VARCHAR ( 255 ),
+    `image` VARCHAR ( 255 ),
     `price` VARCHAR ( 255 ),
+    `address` VARCHAR ( 255 ),
     `beds` VARCHAR ( 255 ),
     `baths` VARCHAR ( 255 ),
+    `sqft` VARCHAR ( 255 ),
+    `type` VARCHAR ( 255 ),
+    `zestimate` VARCHAR ( 255 ),
+    `houseType` VARCHAR ( 255 ),
+    `builtYear` VARCHAR ( 255 ),
+    `heating` VARCHAR ( 255 ),
+    `cooling` VARCHAR ( 255 ),
+    `parking` VARCHAR ( 255 ),
+    `lot` VARCHAR ( 255 ),
+    `priceSqft` VARCHAR ( 255 ),
+    `agencyFee` VARCHAR ( 255 ),
+    `days` VARCHAR ( 255 ),
+    `views` VARCHAR ( 255 ),
+    `saves` VARCHAR ( 255 ),
+    `special` VARCHAR ( 255 ),
+    `overview` VARCHAR ( 255 ),
     `images` TEXT,
     `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 
   )";
@@ -58,10 +75,10 @@ function _init()
   }
 
   // check price_history table
-  $dropPriceHistorySql = "DROP TABLE IF EXISTS price_history";
+  $dropPriceHistoriesSql = "DROP TABLE IF EXISTS price_histories";
 
-  if ($db->query($dropPriceHistorySql) === TRUE) {
-    $priceHistorySql = "CREATE TABLE IF NOT EXISTS price_history (
+  if ($db->query($dropPriceHistoriesSql) === TRUE) {
+    $priceHistoriesSql = "CREATE TABLE IF NOT EXISTS price_histories (
     `id` INT ( 6 ) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     `zpid` VARCHAR ( 255 ) NOT NULL,
     `date` DATE,
@@ -71,20 +88,20 @@ function _init()
     `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 
   )";
 
-    if ($db->query($priceHistorySql) === TRUE) {
-      echo "Table price_history created successfully \n";
+    if ($db->query($priceHistoriesSql) === TRUE) {
+      echo "Table price_histories created successfully \n";
     } else {
-      echo "Error creating price_history table: " . $conn->error . "\n";
+      echo "Error creating price_histories table: " . $conn->error . "\n";
     }
   } else {
-    echo "Error dropping price_history table: " . $conn->error . "\n";
+    echo "Error dropping price_histories table: " . $conn->error . "\n";
   }
 
   // check tax_history table
-  $dropTaxHistorySql = "DROP TABLE IF EXISTS tax_history";
+  $dropTaxHistoriesSql = "DROP TABLE IF EXISTS tax_histories";
 
-  if ($db->query($dropTaxHistorySql) === TRUE) {
-    $taxHistorySql = "CREATE TABLE IF NOT EXISTS tax_history (
+  if ($db->query($dropTaxHistoriesSql) === TRUE) {
+    $taxHistoriesSql = "CREATE TABLE IF NOT EXISTS tax_histories (
     `id` INT ( 6 ) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     `zpid` VARCHAR ( 255 ) NOT NULL,
     `year` INT ( 11 ),
@@ -95,13 +112,13 @@ function _init()
     `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 
   )";
 
-    if ($db->query($taxHistorySql) === TRUE) {
-      echo "Table tax_history created successfully \n";
+    if ($db->query($taxHistoriesSql) === TRUE) {
+      echo "Table tax_histories created successfully \n";
     } else {
-      echo "Error creating tax_history table: " . $conn->error . "\n";
+      echo "Error creating tax_histories table: " . $conn->error . "\n";
     }
   } else {
-    echo "Error dropping tax_history table: " . $conn->error . "\n";
+    echo "Error dropping tax_histories table: " . $conn->error . "\n";
   }
 
   // check the selenium server
@@ -148,7 +165,7 @@ function scrapeProperties($propertyElements)
   return $result;
 }
 
-function scrapePropertyDetail($detailHtml)
+function scrapePropertyDetail($zpid, $detailHtml)
 {
   global $db, $driver;
 
@@ -231,11 +248,11 @@ function scrapePropertyDetail($detailHtml)
 
   // get price history
   $priceRowElements = $detailHtml->findElements(WebDriverBy::cssSelector("table.hdp__sc-f00yqe-2.jaEmHG tbody tr.hdp__sc-f00yqe-3.hTnieU"));
-  $priceHistory = scrapePriceHistory($priceRowElements);
+  $priceHistory = scrapePriceHistory($zpid, $priceRowElements);
 
   // get tax history
   $taxRowElements = $detailHtml->findElements(WebDriverBy::cssSelector("table.StyledTable-c11n-8-84-3__sc-b979s8-0.jtAqyI tbody tr.StyledTableRow-c11n-8-84-3__sc-1gk7etl-0.kaeLLi"));
-  $taxHistory = scrapeTaxHistory($taxRowElements);
+  $taxHistory = scrapeTaxHistory($zpid, $taxRowElements);
 
   return array(
     "image" => $image,
@@ -269,7 +286,7 @@ function scrapeHouseElements($houseElements)
   global $driver;
 
   $houseType = "";
-  $builtYear = "";
+  $builtYear = 0;
   $heating = "";
   $cooling = "";
   $parking = "";
@@ -296,9 +313,16 @@ function scrapeHouseElements($houseElements)
               break;
             case "Year Built":
               try {
-                $builtYear = $houseElement->findElement(WebDriverBy::cssSelector("span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-2arhs5-3.hrfydd.kOlNqB"))->getText();
+                $builtYearText = $houseElement->findElement(WebDriverBy::cssSelector("span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-2arhs5-3.hrfydd.kOlNqB"))->getText();
+                $pattern = '/\b\d+\b/'; // Regular expression pattern to match any number
+
+                if (preg_match($pattern, $builtYearText, $matches)) {
+                  $builtYear = $matches[0];
+                } else {
+                  $builtYear = 0;
+                }
               } catch (NoSuchElementException $e) {
-                $builtYear = "";
+                $builtYear = 0;
               }
               break;
             case "Heating":
@@ -403,8 +427,9 @@ function scrapeDtElements($dtElements)
   );
 }
 
-function scrapePriceHistory($priceRowElements)
+function scrapePriceHistory($zpid, $priceRowElements)
 {
+  global $db;
   $result = array();
 
   if (count($priceRowElements) > 0) {
@@ -452,6 +477,29 @@ function scrapePriceHistory($priceRowElements)
           }
         }
       }
+
+      $sql = "
+        INSERT INTO price_histories
+        (
+          zpid,
+          date,
+          event,
+          price,
+          priceSqft,
+          createdAt
+        )
+        VALUES
+        (
+          '" . $db->makeSafe($zpid) . "',
+          '" . ($date != "" ? date("Y-m-d", strtotime($date)) : NULL) . "',
+          '" . $db->makeSafe($event) . "',
+          '" . $db->makeSafe($priceItem) . "',
+          '" . $db->makeSafe($pricePerSqft) . "',
+          '" . date('Y-m-d H:i:s') . "'
+        )";
+
+      $db->query($sql);
+      
       $result[] = array(
         "date" => $date,
         "event" => $event,
@@ -464,8 +512,9 @@ function scrapePriceHistory($priceRowElements)
   return $result;
 }
 
-function scrapeTaxHistory($taxRowElements)
+function scrapeTaxHistory($zpid, $taxRowElements)
 {
+  global $db;
   $result = array();
 
   if (count($taxRowElements) > 0) {
@@ -490,7 +539,9 @@ function scrapeTaxHistory($taxRowElements)
           switch ($key) {
             case 0:
               try {
-                $propertyTax = $taxColumnElement->findElement(WebDriverBy::cssSelector("span.hdp__sc-reo5z7-1.bRcAjm"))->getText();
+                $propertyTaxText = $taxColumnElement->findElement(WebDriverBy::cssSelector("span.hdp__sc-reo5z7-1.bRcAjm"))->getText();
+                $propertyTaxArray = explode(" ", $propertyTaxText);
+                $propertyTax = $propertyTaxArray[0];
               } catch (NoSuchElementException $e) {
                 $propertyTax = "";
               }
@@ -504,7 +555,9 @@ function scrapeTaxHistory($taxRowElements)
               break;
             case 1:
               try {
-                $taxAssessment = $taxColumnElement->findElement(WebDriverBy::cssSelector("span.hdp__sc-reo5z7-1.bRcAjm"))->getText();
+                $taxAssessmentText = $taxColumnElement->findElement(WebDriverBy::cssSelector("span.hdp__sc-reo5z7-1.bRcAjm"))->getText();
+                $taxAssessmentArray = explode(" ", $taxAssessmentText);
+                $taxAssessment = $taxAssessmentArray[0];
               } catch (NoSuchElementException $e) {
                 $taxAssessment = "";
               }
@@ -519,6 +572,30 @@ function scrapeTaxHistory($taxRowElements)
           }
         }
       }
+
+      $sql = "
+        INSERT INTO tax_histories
+        (
+          zpid,
+          year,
+          tax,
+          taxRate,
+          taxAssessment,
+          taxAssessmentRate,
+          createdAt
+        )
+        VALUES
+        (
+          '" . $db->makeSafe($zpid) . "',
+          '" . $db->makeSafe($year) . "',
+          '" . $db->makeSafe($propertyTax) . "',
+          '" . $db->makeSafe($propertyTaxRate) . "',
+          '" . $db->makeSafe($taxAssessment) . "',
+          '" . $db->makeSafe($taxAssessmentRate) . "',
+          '" . date('Y-m-d H:i:s') . "'
+        )";
+
+      $db->query($sql);
 
       $result[] = array(
         "year" => $year,

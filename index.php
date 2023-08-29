@@ -381,13 +381,7 @@ try {
             if (count($houseElements) > 0) {
               foreach ($houseElements as $houseElement) {
                 try {
-                  $svgElement = $houseElement->findElement(WebDriverBy::tagName("svg"));
-                  $titleElement = $svgElement->findElement(WebDriverBy::tagName("title"));
-                  $title = $titleElement->getText();
-                  print_r($svgElement);
-                  print_r("\n");
-                  print_r($titleElement);
-                  print_r("\n");
+                  $title = $houseElement->findElement(WebDriverBy::cssSelector("svg.Icon-c11n-8-84-3__sc-13llmml-0.iAcAav"))->getAttribute("title");
                   print_r($title);
                   print_r("\n");
                   //       print_r($title);

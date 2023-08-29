@@ -381,12 +381,16 @@ try {
             if (count($houseElements) > 0) {
               foreach ($houseElements as $houseElement) {
                 try {
-                  $svgElement = $houseElement->findElement(WebDriverBy::cssSelector("svg > title"))->getText();
+                  $svgElement = $houseElement->findElement(WebDriverBy::cssSelector("svg.Icon-c11n-8-84-3__sc-13llmml-0.iAcAav"));
+
+                  // Execute JavaScript to extract the title content
+                  $script = "return arguments[0].querySelector('title').textContent;";
+                  $titleContent = $driver->executeScript($script, [$svgElement]);
                   // $title = $houseElement->findElement(WebDriverBy::tagName("title"))->getText();
                   // $value = $houseElement->findElement(WebDriverBy::cssSelector("span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-2arhs5-3.hrfydd.kOlNqB"))->getText();
                   // print_r($title);
                   // print_r($value);
-                  print_r($svgElement);
+                  print_r($titleContent);
                   print_r("\n");
                   //       print_r($title);
                   //       print_r("\n");

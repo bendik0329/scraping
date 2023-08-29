@@ -203,7 +203,8 @@ foreach (STATE_LIST as $key => $state) {
                   if (!$db->query($sql)) {
                     echo "Error inserting properties table: " . $conn->error . "\n";
                   }
-
+                  print_r($sql);
+                  print_r("\n");
                   print_r($result);
                   exit();
 

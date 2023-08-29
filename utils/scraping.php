@@ -1,6 +1,7 @@
 <?php
 
-require_once  __DIR__ . '/utils/database.php';
+require_once  __DIR__ . '/database.php';
+
 use Facebook\WebDriver\WebDriverBy;
 
 function scrapeProperties() {

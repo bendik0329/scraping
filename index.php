@@ -11,6 +11,7 @@ use Facebook\WebDriver\Exception\NoSuchElementException;
 use Facebook\WebDriver\WebDriver;
 use Facebook\WebDriver\WebDriverKeys;
 
+// load environment variable
 $envConfig = parse_ini_file(__DIR__ . "/.env");
 
 $host = $envConfig['DB_HOST'];
@@ -18,13 +19,14 @@ $username = $envConfig['DB_USERNAME'];
 $password = $envConfig['DB_PASSWORD'];
 $dbname = $envConfig['DB_DATABASE'];
 $apiKey = $envConfig['API_KEY'];
-$db  = new Database();
 
 // Connect to DB
+$db  = new Database();
 if (!$db->connect($host, $username, $password, $dbname)) {
   die("DB Connection failed: " . $conn->connect_error);
 }
 
+// initialize
 _init();
 
 // Set up Selenium WebDriver
@@ -34,6 +36,7 @@ $capabilities->setCapability('goog:chromeOptions', ['args' => ["--headless", "--
 $driver = RemoteWebDriver::create($host, $capabilities);
 
 $properties = [];
+$total = 0;
 
 foreach (STATE_LIST as $key => $state) {
   foreach (BED_VALUES as $bed) {
@@ -203,12 +206,9 @@ foreach (STATE_LIST as $key => $state) {
                   if (!$db->query($sql)) {
                     echo "Error inserting properties table: " . $conn->error . "\n";
                   }
-                  print_r($sql);
-                  print_r("\n");
-                  print_r($result);
-                  exit();
 
                   $properties[] = $result;
+                  $total++;
                 }
               }
 
@@ -224,6 +224,9 @@ foreach (STATE_LIST as $key => $state) {
 }
 
 echo json_encode($properties);
+echo "Total Count->>" . $total;
+
+// close chrome driver
 $driver->close();
 
 // download images

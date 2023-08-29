@@ -42,7 +42,7 @@ function _init()
       `views` INT ( 11 ),
       `saves` INT ( 11 ),
       `special` VARCHAR ( 255 ),
-      `overview` VARCHAR ( 255 ),
+      `overview` TEXT,
       `images` TEXT,
       `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 
     )";

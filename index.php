@@ -136,8 +136,6 @@ $queryString = json_encode($query);
 $searchQueryState = urlencode($queryString);
 $url = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/ca/?searchQueryState=$searchQueryState";
 
-print_r($url);
-exit();
 $driver->get($url);
 
 try {
@@ -384,6 +382,9 @@ try {
               foreach ($houseElements as $houseElement) {
                 try {
                   $title = $houseElement->findElement(WebDriverBy::cssSelector("span.dpf__sc-2arhs5-1.NZRug svg.Icon-c11n-8-84-3__sc-13llmml-0.iAcAav title"))->getText();
+                  print_r($title);
+                  print_r("\n");
+                  
                   if ($title) {
                     switch ($title) {
                       case "Type":

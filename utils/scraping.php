@@ -21,13 +21,15 @@ function _init()
     `zpid` INT ( 11 ) NOT NULL UNIQUE,
     `url` VARCHAR ( 255 ) NOT NULL,
     `image` VARCHAR ( 255 ),
-    `price` VARCHAR ( 255 ),
+    `currency` VARCHAR ( 255 ),
+    `price` INT ( 11 ),
     `address` VARCHAR ( 255 ),
     `beds` VARCHAR ( 255 ),
     `baths` VARCHAR ( 255 ),
     `sqft` VARCHAR ( 255 ),
     `type` VARCHAR ( 255 ),
-    `zestimate` VARCHAR ( 255 ),
+    `zestimateCurrency` VARCHAR ( 255 ),
+    `zestimatePrice` INT ( 11 ),
     `houseType` VARCHAR ( 255 ),
     `builtYear` VARCHAR ( 255 ),
     `heating` VARCHAR ( 255 ),
@@ -36,9 +38,9 @@ function _init()
     `lot` VARCHAR ( 255 ),
     `priceSqft` VARCHAR ( 255 ),
     `agencyFee` VARCHAR ( 255 ),
-    `days` VARCHAR ( 255 ),
-    `views` VARCHAR ( 255 ),
-    `saves` VARCHAR ( 255 ),
+    `days` INT ( 11 ),
+    `views` INT ( 11 ),
+    `saves` INT ( 11 ),
     `special` VARCHAR ( 255 ),
     `overview` VARCHAR ( 255 ),
     `images` TEXT,
@@ -177,9 +179,13 @@ function scrapePropertyDetail($zpid, $detailHtml)
   }
   // get price
   try {
-    $price = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-1me8eh6-0.OByUh.fpfhCd > span"))->getText();
+    $priceText = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-1me8eh6-0.OByUh.fpfhCd > span"))->getText();
+    $deformatedPrice = deformatPrice($priceText);
+    $currency = $deformatedPrice["currency"];
+    $price = $deformatedPrice["price"];
   } catch (NoSuchElementException $e) {
-    $price = "";
+    $currency = "";
+    $price = 0;
   }
 
   // get address
@@ -219,9 +225,13 @@ function scrapePropertyDetail($zpid, $detailHtml)
 
   // get zestimate
   try {
-    $zestimate = $detailHtml->findElement(WebDriverBy::cssSelector("div.hdp__sc-13r9t6h-0.ds-chip-removable-content span div.hdp__sc-j76ge-1.fomYLZ > span.Text-c11n-8-84-3__sc-aiai24-0.hrfydd > span.Text-c11n-8-84-3__sc-aiai24-0.hqOVzy span"))->getText();
+    $zestimatePriceText = $detailHtml->findElement(WebDriverBy::cssSelector("div.hdp__sc-13r9t6h-0.ds-chip-removable-content span div.hdp__sc-j76ge-1.fomYLZ > span.Text-c11n-8-84-3__sc-aiai24-0.hrfydd > span.Text-c11n-8-84-3__sc-aiai24-0.hqOVzy span"))->getText();
+    $deformatedZestimatePrice = deformatPrice($zestimatePriceText);
+    $zestimateCurrency = $deformatedZestimatePrice["currency"];
+    $zestimatePrice = $deformatedZestimatePrice["price"];
   } catch (NoSuchElementException $e) {
-    $zestimate = "None";
+    $zestimateCurrency = "";
+    $zestimatePrice = 0;
   }
 
   // get special info
@@ -256,13 +266,15 @@ function scrapePropertyDetail($zpid, $detailHtml)
 
   return array(
     "image" => $image,
+    "currency" => $currency,
     "price" => $price,
     "address" => $address,
     "beds" => $beds,
     "baths" => $baths,
     "sqft" => $sqft,
     "type" => $type,
-    "zestimate" => $zestimate,
+    "zestimateCurrency" => $zestimateCurrency,
+    "zestimatePrice" => $zestimatePrice,
     "houseType" => $houseElementsResult["houseType"],
     "builtYear" => $houseElementsResult["builtYear"],
     "heating" => $houseElementsResult["heating"],
@@ -388,30 +400,33 @@ function scrapeHouseElements($houseElements)
 
 function scrapeDtElements($dtElements)
 {
-  $days = "";
-  $views = "";
-  $saves = "";
+  $days = 0;
+  $views = 0;
+  $saves = 0;
 
   if (count($dtElements) > 0) {
     foreach ($dtElements as $key => $dtElement) {
       switch ($key) {
         case 0:
           try {
-            $days = $dtElement->findElement(WebDriverBy::cssSelector("strong"))->getText();
+            $daysText = $dtElement->findElement(WebDriverBy::cssSelector("strong"))->getText();
+            $days = intval(preg_replace('/\D/', '', $daysText));
           } catch (NoSuchElementException $e) {
             $days = "";
           }
           break;
         case 1:
           try {
-            $views = $dtElement->findElement(WebDriverBy::cssSelector("strong"))->getText();
+            $viewsText = $dtElement->findElement(WebDriverBy::cssSelector("strong"))->getText();
+            $views = intval(preg_replace('/\D/', '', $viewsText));
           } catch (NoSuchElementException $e) {
             $views = "";
           }
           break;
         case 2:
           try {
-            $saves = $dtElement->findElement(WebDriverBy::cssSelector("strong"))->getText();
+            $savesText = $dtElement->findElement(WebDriverBy::cssSelector("strong"))->getText();
+            $saves = intval(preg_replace('/\D/', '', $savesText));
           } catch (NoSuchElementException $e) {
             $saves = "";
           }
@@ -608,4 +623,18 @@ function scrapeTaxHistory($zpid, $taxRowElements)
   }
 
   return $result;
+}
+
+function deformatPrice ($formated_price) {
+  $currency = substr($formated_price, 0, 1);
+  $price = str_replace([$currency, ','], '', $formated_price);
+
+  return array(
+    "currency" => $currency,
+    "price" => $price,
+  );
+}
+
+function deformatNumber ($formated_number) {
+  return str_replace(',', '', $formated_number);
 }

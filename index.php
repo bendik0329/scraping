@@ -381,8 +381,8 @@ try {
             if (count($houseElements) > 0) {
               foreach ($houseElements as $houseElement) {
                 try {
-                  $title = $houseElement->findElement(WebDriverBy::xpath("span[1]/svg/title"))->getText();
-                  print_r("title->>" . $title);
+                  $title = $houseElement->findElement(WebDriverBy::xpath("span[1]/svg"));
+                  print_r($title);
                   print_r("\n");
                   //       print_r($title);
                   //       print_r("\n");

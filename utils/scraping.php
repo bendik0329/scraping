@@ -152,6 +152,12 @@ function scrapePropertyDetail($detailHtml)
 {
   global $db, $driver;
 
+  // get image
+  try {
+    $image = $detailHtml->findElement(WebDriverBy::cssSelector("div.media-column-container ul.hdp__sc-1wi9vqt-0.dDzspE.ds-media-col.media-stream li:nth-child(1) img"))->getAttribute("src");
+  } catch (NoSuchElementException $e) {
+    $image = "";
+  }
   // get price
   try {
     $price = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-1me8eh6-0.OByUh.fpfhCd > span"))->getText();
@@ -232,6 +238,7 @@ function scrapePropertyDetail($detailHtml)
   $taxHistory = scrapeTaxHistory($taxRowElements);
 
   return array(
+    "image" => $image,
     "price" => $price,
     "address" => $address,
     "beds" => $beds,

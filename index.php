@@ -124,7 +124,10 @@ try {
 
           $detailHtml = $driver->findElement(WebDriverBy::cssSelector("div.detail-page"));
           $result = scrapePropertyDetail($detailHtml);
-          $properties = array_merge($properties, $result);
+          $result["zpid"] = $item["zpid"];
+          $result["url"] = $item["link"];
+
+          $properties[] = $result;
         }
       }
 

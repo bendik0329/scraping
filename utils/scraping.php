@@ -10,6 +10,9 @@ use Facebook\WebDriver\WebDriverKeys;
 
 function _init()
 {
+  print_r("init function");
+  print_r("\n");
+  
   global $db, $conn;
 
   // check properties table
@@ -305,8 +308,7 @@ function scrapeBedBathElements($bedBathElements)
   $acres = 0;
 
   $count = count($bedBathElements);
-  print_r("count->>" . $count);
-  print_r("\n");
+
   if ($count > 1) {
     foreach ($bedBathElements as $bedBathElement) {
       try {
@@ -341,8 +343,6 @@ function scrapeBedBathElements($bedBathElements)
     foreach ($bedBathElements as $bedBathElement) {
       try {
         $acresText = $bedBathElement->findElement(WebDriverBy::cssSelector("strong"))->getText();
-        print_r("acres text->>" . $acresText);
-        print_r("\n");
         $acresArray = explode(" ", $acresText);
         $title = $acresArray[1];
         $value = $acresArray[0];

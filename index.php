@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/vendor/autoload.php';
 require_once  __DIR__ . '/utils/constants.php';
-// require_once  __DIR__ . '/initialize.php';
+require_once  __DIR__ . '/init.php';
 // require_once  __DIR__ . '/utils/database.php';
 require_once  __DIR__ . '/utils/scraping.php';
 

@@ -363,7 +363,7 @@ function scrapeBedBathElements($bedBathElements)
             case "sqft":
               $sqft = $value;
               break;
-            case "acres":
+            case "Acres":
               $acres = $value;
               break;
           }
@@ -585,7 +585,7 @@ function scrapeDtElements($dtElements)
 
             preg_match('/\d+(\.\d+)?/', $daysText, $matches);
             if (!empty($matches)) {
-              $days = $matches[0];
+              $days = deformatNumber($matches[0]);
             } else {
               $days = 0;
             }
@@ -599,7 +599,7 @@ function scrapeDtElements($dtElements)
 
             preg_match('/\d+(\.\d+)?/', $viewsText, $matches);
             if (!empty($matches)) {
-              $views = $matches[0];
+              $views = deformatNumber($matches[0]);
             } else {
               $views = 0;
             }
@@ -613,7 +613,7 @@ function scrapeDtElements($dtElements)
 
             preg_match('/\d+(\.\d+)?/', $savesText, $matches);
             if (!empty($matches)) {
-              $saves = $matches[0];
+              $saves = deformatNumber($matches[0]);
             } else {
               $saves = 0;
             }

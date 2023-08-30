@@ -229,7 +229,6 @@ function scrapePropertyDetail($zpid, $detailHtml)
       $zestimateCurrency = $deformatedZestimatePrice["currency"];
       $zestimatePrice = $deformatedZestimatePrice["price"];
     }
-    
   } catch (NoSuchElementException $e) {
     $zestimateCurrency = "";
     $zestimatePrice = 0;
@@ -522,9 +521,16 @@ function scrapeHouseElements($houseElements)
             case "Price/sqft":
               try {
                 $priceSqftText = $houseElement->findElement(WebDriverBy::cssSelector("span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-2arhs5-3.hrfydd.kOlNqB"))->getText();
-                $deformatedPrice = deformatPrice($priceSqftText);
-                $priceSqftCurrency = $deformatedPrice["currency"];
-                $priceSqft = $deformatedPrice["price"];
+
+                preg_match('/([^\d\s]+[\d,]+)/', $priceSqftText, $matches);
+                if (!empty($matches)) {
+                  $deformatedPrice = deformatPrice($matches[0]);
+                  $priceSqftCurrency = $deformatedPrice["currency"];
+                  $priceSqft = $deformatedPrice["price"];
+                } else {
+                  $priceSqftCurrency = "";
+                  $priceSqft = 0;
+                }
               } catch (NoSuchElementException $e) {
                 $priceSqftCurrency = "";
                 $priceSqft = 0;

@@ -85,7 +85,7 @@ function scrape($batch, $db)
           echo $url . "\n";
 
           $driver->get($url);
-
+          sleep(5);
           try {
             $totalCount = $driver->findElement(WebDriverBy::cssSelector("div.ListHeader__NarrowViewWrapping-srp__sc-1rsgqpl-1.idxSRv.search-subtitle span.result-count"))->getText();
             $totalCount = str_replace(",", "", $totalCount);
@@ -115,7 +115,7 @@ function scrape($batch, $db)
 
                 $html = $driver->findElement(WebDriverBy::tagName('html'));
                 $html->sendKeys(WebDriverKeys::END);
-                sleep(2);
+                sleep(5);
 
                 $propertyElements = $driver->findElements(WebDriverBy::cssSelector("#grid-search-results > ul > li > div > div > article.property-card"));
                 $list = scrapeProperties($propertyElements);
@@ -124,7 +124,7 @@ function scrape($batch, $db)
                   if ($item["zpid"] && $item["link"]) {
                     $detailUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=" . $item["link"];
                     $driver->get($detailUrl);
-                    sleep(2);
+                    sleep(5);
 
                     $detailHtml = $driver->findElement(WebDriverBy::cssSelector("div.detail-page"));
                     $result = scrapePropertyDetail($item["zpid"], $detailHtml);

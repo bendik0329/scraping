@@ -513,7 +513,7 @@ function scrapeHouseElements($houseElements)
               try {
                 $lotText = $houseElement->findElement(WebDriverBy::cssSelector("span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-2arhs5-3.hrfydd.kOlNqB"))->getText();
                 $lotArray = explode(" ", $lotText);
-                $lot = $lotArray[0];
+                $lot = deformatNumber($lotArray[0]);
                 $lotUnit = $lotArray[1];
               } catch (NoSuchElementException $e) {
                 $lot = 0;

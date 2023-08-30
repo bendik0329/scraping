@@ -106,11 +106,12 @@ foreach (STATE_LIST as $key => $state) {
           if (isset($matches[0])) {
             $totalCount = intval($matches[0]);
             $itemsPerPage = 41;
-
-
             $currentPage = 1;
             $maxPage = ceil($totalCount / $itemsPerPage);
 
+            print_r($totalCount);
+            print_r("\n");
+            
             while ($currentPage <= $maxPage) {
               if ($currentPage !== 1) {
                 $pagination = array(

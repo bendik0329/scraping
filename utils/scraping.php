@@ -521,6 +521,7 @@ function scrapeDtElements($dtElements)
     foreach ($dtElements as $key => $dtElement) {
       try {
         $valueText = $dtElement->findElement(WebDriverBy::cssSelector("strong"))->getText();
+        $valueText = str_replace(",", "", $valueText);
         preg_match('/\d+/', $valueText, $matches);
         if (isset($matches[0])) {
           $value = intval($matches[0]);

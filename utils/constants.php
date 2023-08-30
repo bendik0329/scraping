@@ -60,14 +60,14 @@ const STATE_LIST = [
 const BED_VALUES = [1];
 const BATH_VALUES = [1];
 const SQFT_VALUES = [
-  // [
-  //   "min" => 0,
-  //   "max" => 500,
-  // ],
   [
-    "min" => 500,
-    "max" => 750,
+    "min" => 0,
+    "max" => 500,
   ],
+  // [
+  //   "min" => 500,
+  //   "max" => 750,
+  // ],
   // [
   //   "min" => 750,
   //   "max" => 1000,

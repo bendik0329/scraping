@@ -519,48 +519,27 @@ function scrapeDtElements($dtElements)
 
   if (count($dtElements) > 0) {
     foreach ($dtElements as $key => $dtElement) {
+      try {
+        $valueText = $dtElement->findElement(WebDriverBy::cssSelector("strong"))->getText();
+        preg_match('/\d+/', $valueText, $matches);
+        if (isset($matches[0])) {
+          $value = intval($matches[0]);
+        } else {
+          $value = 0;
+        }
+      } catch (NoSuchElementException $e) {
+        $value = 0;
+      }
+
       switch ($key) {
         case 0:
-          try {
-            $daysText = $dtElement->findElement(WebDriverBy::cssSelector("strong"))->getText();
-
-            preg_match('/\d+(\.\d+)?/', $daysText, $matches);
-            if (!empty($matches)) {
-              $days = deformatNumber($matches[0]);
-            } else {
-              $days = 0;
-            }
-          } catch (NoSuchElementException $e) {
-            $days = 0;
-          }
+          $days = $value;
           break;
         case 1:
-          try {
-            $viewsText = $dtElement->findElement(WebDriverBy::cssSelector("strong"))->getText();
-
-            preg_match('/\d+(\.\d+)?/', $viewsText, $matches);
-            if (!empty($matches)) {
-              $views = deformatNumber($matches[0]);
-            } else {
-              $views = 0;
-            }
-          } catch (NoSuchElementException $e) {
-            $views = 0;
-          }
+          $views = $value;
           break;
         case 2:
-          try {
-            $savesText = $dtElement->findElement(WebDriverBy::cssSelector("strong"))->getText();
-
-            preg_match('/\d+(\.\d+)?/', $savesText, $matches);
-            if (!empty($matches)) {
-              $saves = deformatNumber($matches[0]);
-            } else {
-              $saves = 0;
-            }
-          } catch (NoSuchElementException $e) {
-            $saves = 0;
-          }
+          $saves = $value;
           break;
       }
     }

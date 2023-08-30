@@ -179,7 +179,6 @@ function scrapePropertyDetail($zpid, $detailHtml)
     $image = $detailHtml->findElement(WebDriverBy::cssSelector("div.media-column-container ul.hdp__sc-1wi9vqt-0.dDzspE.ds-media-col.media-stream li:nth-child(1) img"))->getAttribute("src");
   } catch (NoSuchElementException $e) {
     $image = "";
-    print_r($e);
   }
   // get price
   try {
@@ -190,7 +189,6 @@ function scrapePropertyDetail($zpid, $detailHtml)
   } catch (NoSuchElementException $e) {
     $currency = "";
     $price = 0;
-    print_r($e);
   }
 
   // get address
@@ -207,7 +205,6 @@ function scrapePropertyDetail($zpid, $detailHtml)
     $city = "";
     $state = "";
     $zipcode = "";
-    print_r($e);
   }
 
   // get bed bath elements
@@ -219,7 +216,6 @@ function scrapePropertyDetail($zpid, $detailHtml)
     $type = $detailHtml->findElement(WebDriverBy::cssSelector("div.hdp__sc-13r9t6h-0.ds-chip-removable-content span div.dpf__sc-1yftt2a-0.bNENJa span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-1yftt2a-1.hrfydd.ixkFNb"))->getText();
   } catch (NoSuchElementException $e) {
     $type = "";
-    print_r($e);
   }
 
   // get zestimate
@@ -231,7 +227,6 @@ function scrapePropertyDetail($zpid, $detailHtml)
   } catch (NoSuchElementException $e) {
     $zestimateCurrency = "";
     $zestimatePrice = 0;
-    print_r($e);
   }
 
   // get special info
@@ -239,7 +234,6 @@ function scrapePropertyDetail($zpid, $detailHtml)
     $special = $detailHtml->findElement(WebDriverBy::cssSelector("div.hdp__sc-ld4j6f-0.cKHmSE span.StyledTag-c11n-8-84-3__sc-1945joc-0.ftTUfk hdp__sc-ld4j6f-1.cosjzO"))->getText();
   } catch (NoSuchElementException $e) {
     $special = "";
-    print_r($e);
   }
 
   // get overview
@@ -247,7 +241,6 @@ function scrapePropertyDetail($zpid, $detailHtml)
     $overview = $detailHtml->findElement(WebDriverBy::cssSelector("div.Text-c11n-8-84-3__sc-aiai24-0.sc-oZIhv.hrfydd.jKaobh"))->getText();
   } catch (NoSuchElementException $e) {
     $overview = "";
-    print_r($e);
   }
 
   // get house info
@@ -487,7 +480,6 @@ function scrapeHouseElements($houseElements)
                 }
               } catch (NoSuchElementException $e) {
                 $builtYear = 0;
-                print_r($e);
               }
               break;
             case "Heating":
@@ -495,7 +487,6 @@ function scrapeHouseElements($houseElements)
                 $heating = $houseElement->findElement(WebDriverBy::cssSelector("span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-2arhs5-3.hrfydd.kOlNqB"))->getText();
               } catch (NoSuchElementException $e) {
                 $heating = "";
-                print_r($e);
               }
               break;
             case "Cooling":
@@ -503,7 +494,6 @@ function scrapeHouseElements($houseElements)
                 $cooling = $houseElement->findElement(WebDriverBy::cssSelector("span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-2arhs5-3.hrfydd.kOlNqB"))->getText();
               } catch (NoSuchElementException $e) {
                 $cooling = "";
-                print_r($e);
               }
               break;
             case "Parking":
@@ -511,7 +501,6 @@ function scrapeHouseElements($houseElements)
                 $parking = $houseElement->findElement(WebDriverBy::cssSelector("span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-2arhs5-3.hrfydd.kOlNqB"))->getText();
               } catch (NoSuchElementException $e) {
                 $parking = "";
-                print_r($e);
               }
               break;
             case "Lot":
@@ -522,7 +511,6 @@ function scrapeHouseElements($houseElements)
                 $lotUnit = $lotArray[1];
               } catch (NoSuchElementException $e) {
                 $lot = 0;
-                print_r($e);
               }
               break;
             case "Price/sqft":
@@ -534,7 +522,6 @@ function scrapeHouseElements($houseElements)
               } catch (NoSuchElementException $e) {
                 $priceSqftCurrency = "";
                 $priceSqft = 0;
-                print_r($e);
               }
               break;
             case "Buyers Agency Fee":
@@ -548,7 +535,6 @@ function scrapeHouseElements($houseElements)
                 }
               } catch (NoSuchElementException $e) {
                 $agencyFee = "";
-                print_r($e);
               }
               break;
           }
@@ -593,7 +579,6 @@ function scrapeDtElements($dtElements)
             }
           } catch (NoSuchElementException $e) {
             $days = 0;
-            print_r($e);
           }
           break;
         case 1:
@@ -608,7 +593,6 @@ function scrapeDtElements($dtElements)
             }
           } catch (NoSuchElementException $e) {
             $views = 0;
-            print_r($e);
           }
           break;
         case 2:
@@ -623,7 +607,6 @@ function scrapeDtElements($dtElements)
             }
           } catch (NoSuchElementException $e) {
             $saves = 0;
-            print_r($e);
           }
           break;
       }
@@ -658,7 +641,6 @@ function scrapePriceHistory($zpid, $priceRowElements)
                 $date = $priceColumnElement->findElement(WebDriverBy::cssSelector("span.hdp__sc-reo5z7-1.bRcAjm"))->getText();
               } catch (NoSuchElementException $e) {
                 $date = "";
-                print_r($e);
               }
               break;
             case 1:
@@ -666,7 +648,6 @@ function scrapePriceHistory($zpid, $priceRowElements)
                 $event = $priceColumnElement->findElement(WebDriverBy::cssSelector("span.hdp__sc-reo5z7-1.hdp__sc-reo5z7-4.bRcAjm.fTyeIS"))->getText();
               } catch (NoSuchElementException $e) {
                 $event = "";
-                print_r($e);
               }
               break;
             case 2:
@@ -674,7 +655,6 @@ function scrapePriceHistory($zpid, $priceRowElements)
                 $priceItem = $priceColumnElement->findElement(WebDriverBy::cssSelector("span.hdp__sc-reo5z7-1.hdp__sc-reo5z7-6.dQBikw.epSCRt span.hdp__sc-reo5z7-1.hdp__sc-reo5z7-5.bRcAjm.ldMXqX"))->getText();
               } catch (NoSuchElementException $e) {
                 $priceItem = "";
-                print_r($e);
               }
 
               break;
@@ -731,7 +711,6 @@ function scrapeTaxHistory($zpid, $taxRowElements)
         $year = intval($year);
       } catch (NoSuchElementException $e) {
         $year = 0;
-        print_r($e);
       }
 
       $taxColumnElements = $taxRowElement->findElements(WebDriverBy::cssSelector("td"));
@@ -746,7 +725,6 @@ function scrapeTaxHistory($zpid, $taxRowElements)
                 $propertyTax = $propertyTaxArray[0];
               } catch (NoSuchElementException $e) {
                 $propertyTax = "";
-                print_r($e);
               }
 
               break;
@@ -757,7 +735,6 @@ function scrapeTaxHistory($zpid, $taxRowElements)
                 $taxAssessment = $taxAssessmentArray[0];
               } catch (NoSuchElementException $e) {
                 $taxAssessment = "";
-                print_r($e);
               }
 
               break;
@@ -823,7 +800,6 @@ function downloadImages()
     if ($properties->num_rows > 0) {
       while ($row = $properties->fetch_assoc()) {
         try {
-          $id = $row['id'];
           $zpid = $row['zpid'];
           $imgUrl = $row['image'];
 
@@ -840,7 +816,6 @@ function downloadImages()
             }
           }
         } catch (Exception $e) {
-          print_r($e);
         }
       }
     }

@@ -99,7 +99,7 @@ foreach (STATE_LIST as $key => $state) {
 
         try {
           $totalCount = $driver->findElement(WebDriverBy::cssSelector("div.ListHeader__NarrowViewWrapping-srp__sc-1rsgqpl-1.idxSRv.search-subtitle span.result-count"))->getText();
-
+          $totalCount = str_replace(",", "", $totalCount);
           preg_match('/\d+/', $totalCount, $matches);
 
           if (isset($matches[0])) {

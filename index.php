@@ -2,8 +2,7 @@
 
 require_once __DIR__ . '/vendor/autoload.php';
 require_once  __DIR__ . '/utils/constants.php';
-require_once  __DIR__ . '/init.php';
-// require_once  __DIR__ . '/utils/database.php';
+require_once  __DIR__ . '/utils/database.php';
 require_once  __DIR__ . '/utils/scraping.php';
 
 use Facebook\WebDriver\Remote\RemoteWebDriver;
@@ -12,12 +11,23 @@ use Facebook\WebDriver\Exception\NoSuchElementException;
 use Facebook\WebDriver\WebDriver;
 use Facebook\WebDriver\WebDriverKeys;
 
-$states = STATE_LIST;
-$startIndex = intval($argv[1]); // Get the startIndex from the command line argument
-
 // load environment variable
 $envConfig = parse_ini_file(__DIR__ . "/.env");
+
+$host = $envConfig['DB_HOST'];
+$username = $envConfig['DB_USERNAME'];
+$password = $envConfig['DB_PASSWORD'];
+$dbname = $envConfig['DB_DATABASE'];
 $apiKey = $envConfig['API_KEY'];
+
+// Connect to DB
+$db  = new Database();
+if (!$db->connect($host, $username, $password, $dbname)) {
+  die("DB Connection failed: " . $conn->connect_error);
+}
+
+// initialize
+_init();
 
 // Set up Selenium WebDriver
 $host = 'http://localhost:4444/wd/hub';
@@ -25,116 +35,115 @@ $capabilities = \Facebook\WebDriver\Remote\DesiredCapabilities::chrome();
 $capabilities->setCapability('goog:chromeOptions', ['args' => ["--headless", "--user-agent=" . USER_AGENT]]);
 $driver = RemoteWebDriver::create($host, $capabilities);
 
-function scrape($batch, $db)
-{
-  global $driver, $apiKey;
+$properties = [];
+$total = 0;
 
-  foreach ($batch as $state) {
-    foreach (BED_VALUES as $bed) {
-      foreach (BATH_VALUES as $bath) {
-        foreach (SQFT_VALUES as $sqft) {
-          $stateAlias = strtolower($state);
+foreach (STATE_LIST as $state) {
+  foreach (BED_VALUES as $bed) {
+    foreach (BATH_VALUES as $bath) {
+      foreach (SQFT_VALUES as $sqft) {
+        $stateAlias = strtolower($state);
 
-          if ($sqft["min"] === 0) {
-            unset($sqft["min"]);
-          }
+        if ($sqft["min"] === 0) {
+          unset($sqft["min"]);
+        }
 
-          if ($sqft["max"] === 0) {
-            unset($sqft["max"]);
-          }
+        if ($sqft["max"] === 0) {
+          unset($sqft["max"]);
+        }
 
-          $filterState = array(
-            "beds" => array(
-              "min" => $bed
-            ),
-            "baths" => array(
-              "min" => $bath
-            ),
-            "sqft" => $sqft,
-            "pmf" => array(
-              "value" => true
-            ),
-            "sort" => array(
-              "value" => "globalrelevanceex"
-            ),
-            "nc" => array(
-              "value" => false
-            ),
-            "fsbo" => array(
-              "value" => false
-            ),
-            "cmsn" => array(
-              "value" => false
-            ),
-            "pf" => array(
-              "value" => true
-            ),
-            "fsba" => array(
-              "value" => false
-            )
-          );
+        $filterState = array(
+          "beds" => array(
+            "min" => $bed
+          ),
+          "baths" => array(
+            "min" => $bath
+          ),
+          "sqft" => $sqft,
+          "pmf" => array(
+            "value" => true
+          ),
+          "sort" => array(
+            "value" => "globalrelevanceex"
+          ),
+          "nc" => array(
+            "value" => false
+          ),
+          "fsbo" => array(
+            "value" => false
+          ),
+          "cmsn" => array(
+            "value" => false
+          ),
+          "pf" => array(
+            "value" => true
+          ),
+          "fsba" => array(
+            "value" => false
+          )
+        );
 
-          $query = array(
-            "pagination" => new stdClass(),
-            "usersSearchTerm" => $state,
-            "filterState" => $filterState,
-            "isListVisible" => true
-          );
+        $query = array(
+          "pagination" => new stdClass(),
+          "usersSearchTerm" => $state,
+          "filterState" => $filterState,
+          "isListVisible" => true
+        );
 
-          $queryString = json_encode($query);
-          $searchQueryState = urlencode($queryString);
-          $url = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/$stateAlias/?searchQueryState=$searchQueryState";
-          echo $url . "\n";
+        $queryString = json_encode($query);
+        $searchQueryState = urlencode($queryString);
+        $url = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/$stateAlias/?searchQueryState=$searchQueryState";
+        echo $url . "\n";
 
-          $driver->get($url);
-          sleep(5);
-          try {
-            $totalCount = $driver->findElement(WebDriverBy::cssSelector("div.ListHeader__NarrowViewWrapping-srp__sc-1rsgqpl-1.idxSRv.search-subtitle span.result-count"))->getText();
-            $totalCount = str_replace(",", "", $totalCount);
-            preg_match('/\d+/', $totalCount, $matches);
+        $driver->get($url);
 
-            if (isset($matches[0])) {
-              $totalCount = intval($matches[0]);
-              $itemsPerPage = 41;
-              $currentPage = 1;
-              $maxPage = ceil($totalCount / $itemsPerPage);
+        try {
+          $totalCount = $driver->findElement(WebDriverBy::cssSelector("div.ListHeader__NarrowViewWrapping-srp__sc-1rsgqpl-1.idxSRv.search-subtitle span.result-count"))->getText();
+          $totalCount = str_replace(",", "", $totalCount);
+          preg_match('/\d+/', $totalCount, $matches);
 
-              print_r($totalCount);
-              print_r("\n");
+          if (isset($matches[0])) {
+            $totalCount = intval($matches[0]);
+            $itemsPerPage = 41;
+            $currentPage = 1;
+            $maxPage = ceil($totalCount / $itemsPerPage);
 
-              while ($currentPage <= $maxPage) {
-                if ($currentPage !== 1) {
-                  $pagination = array(
-                    "currentPage" => $currentPage,
-                  );
-                  $query["pagination"] = $pagination;
-                }
+            print_r($totalCount);
+            print_r("\n");
 
-                $queryString = json_encode($query);
-                $searchQueryState = urlencode($queryString);
-                $pageUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/$stateAlias/?searchQueryState=$searchQueryState";
-                $driver->get($pageUrl);
+            while ($currentPage <= $maxPage) {
+              if ($currentPage !== 1) {
+                $pagination = array(
+                  "currentPage" => $currentPage,
+                );
+                $query["pagination"] = $pagination;
+              }
 
-                $html = $driver->findElement(WebDriverBy::tagName('html'));
-                $html->sendKeys(WebDriverKeys::END);
-                sleep(5);
+              $queryString = json_encode($query);
+              $searchQueryState = urlencode($queryString);
+              $pageUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/$stateAlias/?searchQueryState=$searchQueryState";
+              $driver->get($pageUrl);
 
-                $propertyElements = $driver->findElements(WebDriverBy::cssSelector("#grid-search-results > ul > li > div > div > article.property-card"));
-                $list = scrapeProperties($propertyElements);
+              $html = $driver->findElement(WebDriverBy::tagName('html'));
+              $html->sendKeys(WebDriverKeys::END);
+              sleep(2);
 
-                foreach ($list as $item) {
-                  if ($item["zpid"] && $item["link"]) {
-                    $detailUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=" . $item["link"];
-                    $driver->get($detailUrl);
-                    sleep(5);
+              $propertyElements = $driver->findElements(WebDriverBy::cssSelector("#grid-search-results > ul > li > div > div > article.property-card"));
+              $list = scrapeProperties($propertyElements);
 
-                    $detailHtml = $driver->findElement(WebDriverBy::cssSelector("div.detail-page"));
-                    $result = scrapePropertyDetail($item["zpid"], $detailHtml);
-                    $result["zpid"] = $item["zpid"];
-                    $result["url"] = $item["link"];
+              foreach ($list as $item) {
+                if ($item["zpid"] && $item["link"]) {
+                  $detailUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=" . $item["link"];
+                  $driver->get($detailUrl);
+                  sleep(2);
 
-                    // insert properties to table
-                    $sql = "
+                  $detailHtml = $driver->findElement(WebDriverBy::cssSelector("div.detail-page"));
+                  $result = scrapePropertyDetail($item["zpid"], $detailHtml);
+                  $result["zpid"] = $item["zpid"];
+                  $result["url"] = $item["link"];
+
+                  // insert properties to table
+                  $sql = "
                       INSERT INTO properties
                       (
                         zpid,
@@ -206,36 +215,32 @@ function scrape($batch, $db)
                         '" . date('Y-m-d H:i:s') . "'
                       )";
 
-                    if (!$db->query($sql)) {
-                      echo "Error inserting properties table: \n";
-                      echo $sql . "\n";
-                    }
+                  if (!$db->query($sql)) {
+                    echo "Error inserting properties table: \n";
+                    echo $sql . "\n";
                   }
-                }
 
-                $currentPage++;
+                  $properties[] = $result;
+                  $total++;
+                }
               }
+
+              $currentPage++;
             }
-          } catch (NoSuchElementException $e) {
-            print_r($e);
           }
+        } catch (NoSuchElementException $e) {
+          print_r($e);
         }
       }
     }
   }
-
-  // close chrome driver
-  $driver->close();
-
-  // download images
-  downloadImages();
 }
 
-// Divide states into batches of 5
-$stateBatches = array_chunk($states, 25);
+echo json_encode($properties);
+echo "Total Count->>" . $total;
 
-// Get the batch to scrape based on the startIndex
-$batchToScrape = isset($stateBatches[$startIndex]) ? $stateBatches[$startIndex] : [];
+// close chrome driver
+$driver->close();
 
-// Scrape and store the batch of states
-scrape($batchToScrape, $db);
+// download images
+downloadImages();

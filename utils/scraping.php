@@ -12,7 +12,7 @@ function _init()
 {
   print_r("init function");
   print_r("\n");
-  
+
   global $db, $conn;
 
   // check properties table
@@ -395,7 +395,7 @@ function scrapeHouseElements($houseElements)
   $lotUnit = "";
   $priceSqftCurrency = "";
   $priceSqft = 0;
-  $agencyFee = "";
+  $agencyFee = 0;
 
   if (count($houseElements) > 0) {
     foreach ($houseElements as $houseElement) {
@@ -410,6 +410,10 @@ function scrapeHouseElements($houseElements)
             case "Type":
               try {
                 $houseType = $houseElement->findElement(WebDriverBy::cssSelector("span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-2arhs5-3.hrfydd.kOlNqB"))->getText();
+
+                if ($houseType == "No data") {
+                  $houseType = "";
+                }
               } catch (NoSuchElementException $e) {
                 $houseType = "";
               }
@@ -417,12 +421,17 @@ function scrapeHouseElements($houseElements)
             case "Year Built":
               try {
                 $builtYearText = $houseElement->findElement(WebDriverBy::cssSelector("span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-2arhs5-3.hrfydd.kOlNqB"))->getText();
-                $pattern = '/\b\d+\b/'; // Regular expression pattern to match any number
 
-                if (preg_match($pattern, $builtYearText, $matches)) {
-                  $builtYear = $matches[0];
-                } else {
+                if ($builtYearText == "No data") {
                   $builtYear = 0;
+                } else {
+                  $pattern = '/\b\d+\b/'; // Regular expression pattern to match any number
+
+                  if (preg_match($pattern, $builtYearText, $matches)) {
+                    $builtYear = $matches[0];
+                  } else {
+                    $builtYear = 0;
+                  }
                 }
               } catch (NoSuchElementException $e) {
                 $builtYear = 0;
@@ -431,6 +440,10 @@ function scrapeHouseElements($houseElements)
             case "Heating":
               try {
                 $heating = $houseElement->findElement(WebDriverBy::cssSelector("span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-2arhs5-3.hrfydd.kOlNqB"))->getText();
+
+                if ($heating == "No data") {
+                  $heating = "";
+                }
               } catch (NoSuchElementException $e) {
                 $heating = "";
               }
@@ -438,6 +451,10 @@ function scrapeHouseElements($houseElements)
             case "Cooling":
               try {
                 $cooling = $houseElement->findElement(WebDriverBy::cssSelector("span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-2arhs5-3.hrfydd.kOlNqB"))->getText();
+
+                if ($cooling == "No data") {
+                  $cooling = "";
+                }
               } catch (NoSuchElementException $e) {
                 $cooling = "";
               }
@@ -445,6 +462,9 @@ function scrapeHouseElements($houseElements)
             case "Parking":
               try {
                 $parking = $houseElement->findElement(WebDriverBy::cssSelector("span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-2arhs5-3.hrfydd.kOlNqB"))->getText();
+                if ($parking == "No data") {
+                  $parking = "";
+                }
               } catch (NoSuchElementException $e) {
                 $parking = "";
               }
@@ -452,25 +472,37 @@ function scrapeHouseElements($houseElements)
             case "Lot":
               try {
                 $lotText = $houseElement->findElement(WebDriverBy::cssSelector("span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-2arhs5-3.hrfydd.kOlNqB"))->getText();
-                $lotArray = explode(" ", $lotText);
-                $lot = deformatNumber($lotArray[0]);
-                $lotUnit = $lotArray[1];
+
+                if ($lotText == "No data") {
+                  $lot = 0;
+                  $lotUnit = "";
+                } else {
+                  $lotArray = explode(" ", $lotText);
+                  $lot = deformatNumber($lotArray[0]);
+                  $lotUnit = $lotArray[1];
+                }
               } catch (NoSuchElementException $e) {
                 $lot = 0;
+                $lotUnit = "";
               }
               break;
             case "Price/sqft":
               try {
                 $priceSqftText = $houseElement->findElement(WebDriverBy::cssSelector("span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-2arhs5-3.hrfydd.kOlNqB"))->getText();
 
-                preg_match('/([^\d\s]+[\d,]+)/', $priceSqftText, $matches);
-                if (!empty($matches)) {
-                  $deformatedPrice = deformatPrice($matches[0]);
-                  $priceSqftCurrency = $deformatedPrice["currency"];
-                  $priceSqft = $deformatedPrice["price"];
-                } else {
+                if ($priceSqftText == "No data") {
                   $priceSqftCurrency = "";
                   $priceSqft = 0;
+                } else {
+                  preg_match('/([^\d\s]+[\d,]+)/', $priceSqftText, $matches);
+                  if (!empty($matches)) {
+                    $deformatedPrice = deformatPrice($matches[0]);
+                    $priceSqftCurrency = $deformatedPrice["currency"];
+                    $priceSqft = $deformatedPrice["price"];
+                  } else {
+                    $priceSqftCurrency = "";
+                    $priceSqft = 0;
+                  }
                 }
               } catch (NoSuchElementException $e) {
                 $priceSqftCurrency = "";
@@ -480,14 +512,19 @@ function scrapeHouseElements($houseElements)
             case "Buyers Agency Fee":
               try {
                 $agencyFeeText = $houseElement->findElement(WebDriverBy::cssSelector("span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-2arhs5-3.hrfydd.kOlNqB"))->getText();
-                preg_match('/\d+(\.\d+)?/', $agencyFeeText, $matches);
-                if (!empty($matches)) {
-                  $agencyFee = $matches[0];
-                } else {
+
+                if ($agencyFeeText == "No data") {
                   $agencyFee = 0;
+                } else {
+                  preg_match('/\d+(\.\d+)?/', $agencyFeeText, $matches);
+                  if (!empty($matches)) {
+                    $agencyFee = $matches[0];
+                  } else {
+                    $agencyFee = 0;
+                  }
                 }
               } catch (NoSuchElementException $e) {
-                $agencyFee = "";
+                $agencyFee = 0;
               }
               break;
           }

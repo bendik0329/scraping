@@ -307,7 +307,8 @@ function scrapeBedBathElements($bedBathElements)
   $acres = 0;
 
   $count = count($bedBathElements);
-
+  print_r("count->>" . $count);
+  print_r("\n");
   if ($count > 1) {
     foreach ($bedBathElements as $bedBathElement) {
       try {
@@ -342,6 +343,8 @@ function scrapeBedBathElements($bedBathElements)
     foreach ($bedBathElements as $bedBathElement) {
       try {
         $acresText = $bedBathElement->findElement(WebDriverBy::cssSelector("strong"))->getText();
+        print_r("acres text->>" . $acresText);
+        print_r("\n");
         $acresArray = explode(" ", $acresText);
         $title = $acresArray[1];
         $value = $acresArray[0];
@@ -372,66 +375,6 @@ function scrapeBedBathElements($bedBathElements)
       }
     }
   }
-
-  // if ($count == 1) {
-  //   foreach ($bedBathElements as $bedBathElement) {
-  //     $acresText = $bedBathElement->findElement(WebDriverBy::cssSelector("strong"))->getText();
-  //     $acresArray =
-  //       preg_match('/\d+(\.\d+)?/', $acresText, $matches);
-  //     if (!empty($matches)) {
-  //       $acres = $matches[0];
-  //     } else {
-  //       $acres = 0;
-  //     }
-  //   }
-  // } else if ($count > 1) {
-  //   foreach ($bedBathElements as $key => $bedBathElement) {
-  //     switch ($key) {
-  //       case 0:
-  //         try {
-  //           $bedsText = $bedBathElement->findElement(WebDriverBy::cssSelector("strong"))->getText();
-
-  //           preg_match('/\d+(\.\d+)?/', $bedsText, $matches);
-  //           if (!empty($matches)) {
-  //             $beds = $matches[0];
-  //           } else {
-  //             $beds = 0;
-  //           }
-  //         } catch (NoSuchElementException $e) {
-  //           $beds = 0;
-  //         }
-  //         break;
-  //       case 1:
-  //         try {
-  //           $bathsText = $bedBathElement->findElement(WebDriverBy::cssSelector("strong"))->getText();
-
-  //           preg_match('/\d+(\.\d+)?/', $bathsText, $matches);
-  //           if (!empty($matches)) {
-  //             $baths = $matches[0];
-  //           } else {
-  //             $baths = 0;
-  //           }
-  //         } catch (NoSuchElementException $e) {
-  //           $baths = 0;
-  //         }
-  //         break;
-  //       case 2:
-  //         try {
-  //           $sqftText = $bedBathElement->findElement(WebDriverBy::cssSelector("strong"))->getText();
-
-  //           preg_match('/\d+(\.\d+)?/', $sqftText, $matches);
-  //           if (!empty($matches)) {
-  //             $sqft = $matches[0];
-  //           } else {
-  //             $sqft = 0;
-  //           }
-  //         } catch (NoSuchElementException $e) {
-  //           $sqft = 0;
-  //         }
-  //         break;
-  //     }
-  //   }
-  // }
 
   return array(
     "beds" => $beds,

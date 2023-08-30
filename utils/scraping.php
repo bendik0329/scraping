@@ -24,20 +24,26 @@ function _init()
       `currency` VARCHAR ( 255 ),
       `price` INT ( 11 ),
       `address` VARCHAR ( 255 ),
-      `beds` VARCHAR ( 255 ),
-      `baths` VARCHAR ( 255 ),
-      `sqft` VARCHAR ( 255 ),
+      `city` VARCHAR ( 255 ),
+      `state` VARCHAR ( 255 ),
+      `zipcode` VARCHAR ( 255 ),
+      `beds` FLOAT ( 4 ),
+      `baths` FLOAT ( 4 ),
+      `sqft` FLOAT ( 4 ),
+      `acres` FLOAT ( 4 ),
       `type` VARCHAR ( 255 ),
       `zestimateCurrency` VARCHAR ( 255 ),
       `zestimatePrice` INT ( 11 ),
       `houseType` VARCHAR ( 255 ),
-      `builtYear` VARCHAR ( 255 ),
+      `builtYear` INT ( 11 ),
       `heating` VARCHAR ( 255 ),
       `cooling` VARCHAR ( 255 ),
       `parking` VARCHAR ( 255 ),
-      `lot` VARCHAR ( 255 ),
-      `priceSqft` VARCHAR ( 255 ),
-      `agencyFee` VARCHAR ( 255 ),
+      `lot` FLOAT ( 4 ),
+      `lotUnit` VARCHAR ( 255 ),
+      `priceSqftCurrency` VARCHAR ( 255 ),
+      `priceSqft` INT ( 11 ),
+      `agencyFee` FLOAT ( 4 ),
       `days` INT ( 11 ),
       `views` INT ( 11 ),
       `saves` INT ( 11 ),
@@ -189,35 +195,24 @@ function scrapePropertyDetail($zpid, $detailHtml)
 
   // get address
   try {
-    $address = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container h1.Text-c11n-8-84-3__sc-aiai24-0.hrfydd"))->getText();
+    $addressText = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container h1.Text-c11n-8-84-3__sc-aiai24-0.hrfydd"))->getText();
+    $addressArray = explode(", ", $addressText);
+    $address = $addressArray[0];
+    $city = $addressArray[1];
+    $stateArray = explode(" ", $addressArray[2]);
+    $state = $stateArray[0];
+    $zipcode = $stateArray[1];
   } catch (NoSuchElementException $e) {
     $address = "";
+    $city = "";
+    $state = "";
+    $zipcode = "";
     print_r($e);
   }
 
-  // get beds
-  try {
-    $beds = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container span[data-testid=\"bed-bath-item\"]:nth-child(1) strong"))->getText();
-  } catch (NoSuchElementException $e) {
-    $beds = "";
-    print_r($e);
-  }
-
-  // get baths
-  try {
-    $baths = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container button[class*=\"TriggerText\"] span[data-testid=\"bed-bath-item\"] strong"))->getText();
-  } catch (NoSuchElementException $e) {
-    $baths = "";
-    print_r($e);
-  }
-
-  // get sqft
-  try {
-    $sqft = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container span[data-testid=\"bed-bath-item\"]:nth-child(5) strong"))->getText();
-  } catch (NoSuchElementException $e) {
-    $sqft = "";
-    print_r($e);
-  }
+  // get bed bath elements
+  $bedBathElements = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container span.Text-c11n-8-84-3__sc-aiai24-0.hrfydd"));
+  $bedBathElementsResult = scrapeBedBathElements($bedBathElements);
 
   // get type
   try {
@@ -276,9 +271,13 @@ function scrapePropertyDetail($zpid, $detailHtml)
     "currency" => $currency,
     "price" => $price,
     "address" => $address,
-    "beds" => $beds,
-    "baths" => $baths,
-    "sqft" => $sqft,
+    "city" => $city,
+    "state" => $state,
+    "zipcode" => $zipcode,
+    "beds" => $bedBathElementsResult["beds"],
+    "baths" => $bedBathElementsResult["baths"],
+    "sqft" => $bedBathElementsResult["sqft"],
+    "acres" => $bedBathElementsResult["acres"],
     "type" => $type,
     "zestimateCurrency" => $zestimateCurrency,
     "zestimatePrice" => $zestimatePrice,
@@ -288,6 +287,8 @@ function scrapePropertyDetail($zpid, $detailHtml)
     "cooling" => $houseElementsResult["cooling"],
     "parking" => $houseElementsResult["parking"],
     "lot" => $houseElementsResult["lot"],
+    "lotUnit" => $houseElementsResult["lotUnit"],
+    "priceSqftCurrency" => $houseElementsResult["priceSqftCurrency"],
     "priceSqft" => $houseElementsResult["priceSqft"],
     "agencyFee" => $houseElementsResult["agencyFee"],
     "special" => $special,
@@ -300,6 +301,148 @@ function scrapePropertyDetail($zpid, $detailHtml)
   );
 }
 
+function scrapeBedBathElements($bedBathElements)
+{
+  $beds = 0;
+  $baths = 0;
+  $sqft = 0;
+  $acres = 0;
+
+  $count = count($bedBathElements);
+
+  if ($count > 1) {
+    foreach ($bedBathElements as $bedBathElement) {
+      try {
+        $title = $bedBathElement->findElement(WebDriverBy::cssSelector("span"))->getText();
+        $valueText = $bedBathElement->findElement(WebDriverBy::cssSelector("strong"))->getText();
+        preg_match('/\d+(\.\d+)?/', $valueText, $matches);
+        if (!empty($matches)) {
+          $value = $matches[0];
+        } else {
+          $value = 0;
+        }
+        if ($title) {
+          switch ($title) {
+            case "bd":
+              $beds = $value;
+              break;
+            case "ba":
+              $baths = $value;
+              break;
+            case "sqft":
+              $sqft = $value;
+              break;
+            case "acres":
+              $acres = $value;
+              break;
+          }
+        }
+      } catch (NoSuchElementException $e) {
+      }
+    }
+  } else if ($count == 1) {
+    foreach ($bedBathElements as $bedBathElement) {
+      try {
+        $acresText = $bedBathElement->findElement(WebDriverBy::cssSelector("strong"))->getText();
+        $acresArray = explode(" ", $acresText);
+        $title = $acresArray[1];
+        $value = $acresArray[0];
+        if ($title && $value) {
+          preg_match('/\d+(\.\d+)?/', $value, $matches);
+          if (!empty($matches)) {
+            $value = $matches[0];
+          } else {
+            $acres = 0;
+          }
+
+          switch ($title) {
+            case "bd":
+              $beds = $value;
+              break;
+            case "ba":
+              $beds = $value;
+              break;
+            case "sqft":
+              $sqft = $value;
+              break;
+            case "acres":
+              $acres = $value;
+              break;
+          }
+        }
+      } catch (NoSuchElementException $e) {
+      }
+    }
+  }
+
+  // if ($count == 1) {
+  //   foreach ($bedBathElements as $bedBathElement) {
+  //     $acresText = $bedBathElement->findElement(WebDriverBy::cssSelector("strong"))->getText();
+  //     $acresArray =
+  //       preg_match('/\d+(\.\d+)?/', $acresText, $matches);
+  //     if (!empty($matches)) {
+  //       $acres = $matches[0];
+  //     } else {
+  //       $acres = 0;
+  //     }
+  //   }
+  // } else if ($count > 1) {
+  //   foreach ($bedBathElements as $key => $bedBathElement) {
+  //     switch ($key) {
+  //       case 0:
+  //         try {
+  //           $bedsText = $bedBathElement->findElement(WebDriverBy::cssSelector("strong"))->getText();
+
+  //           preg_match('/\d+(\.\d+)?/', $bedsText, $matches);
+  //           if (!empty($matches)) {
+  //             $beds = $matches[0];
+  //           } else {
+  //             $beds = 0;
+  //           }
+  //         } catch (NoSuchElementException $e) {
+  //           $beds = 0;
+  //         }
+  //         break;
+  //       case 1:
+  //         try {
+  //           $bathsText = $bedBathElement->findElement(WebDriverBy::cssSelector("strong"))->getText();
+
+  //           preg_match('/\d+(\.\d+)?/', $bathsText, $matches);
+  //           if (!empty($matches)) {
+  //             $baths = $matches[0];
+  //           } else {
+  //             $baths = 0;
+  //           }
+  //         } catch (NoSuchElementException $e) {
+  //           $baths = 0;
+  //         }
+  //         break;
+  //       case 2:
+  //         try {
+  //           $sqftText = $bedBathElement->findElement(WebDriverBy::cssSelector("strong"))->getText();
+
+  //           preg_match('/\d+(\.\d+)?/', $sqftText, $matches);
+  //           if (!empty($matches)) {
+  //             $sqft = $matches[0];
+  //           } else {
+  //             $sqft = 0;
+  //           }
+  //         } catch (NoSuchElementException $e) {
+  //           $sqft = 0;
+  //         }
+  //         break;
+  //     }
+  //   }
+  // }
+
+  return array(
+    "beds" => $beds,
+    "baths" => $baths,
+    "sqft" => $sqft,
+    "acres" => $acres,
+  );
+}
+
 function scrapeHouseElements($houseElements)
 {
   global $driver;
@@ -309,8 +452,10 @@ function scrapeHouseElements($houseElements)
   $heating = "";
   $cooling = "";
   $parking = "";
-  $lot = "";
-  $priceSqft = "";
+  $lot = 0;
+  $lotUnit = "";
+  $priceSqftCurrency = "";
+  $priceSqft = 0;
   $agencyFee = "";
 
   if (count($houseElements) > 0) {
@@ -328,7 +473,6 @@ function scrapeHouseElements($houseElements)
                 $houseType = $houseElement->findElement(WebDriverBy::cssSelector("span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-2arhs5-3.hrfydd.kOlNqB"))->getText();
               } catch (NoSuchElementException $e) {
                 $houseType = "";
-                print_r($e);
               }
               break;
             case "Year Built":
@@ -372,23 +516,36 @@ function scrapeHouseElements($houseElements)
               break;
             case "Lot":
               try {
-                $lot = $houseElement->findElement(WebDriverBy::cssSelector("span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-2arhs5-3.hrfydd.kOlNqB"))->getText();
+                $lotText = $houseElement->findElement(WebDriverBy::cssSelector("span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-2arhs5-3.hrfydd.kOlNqB"))->getText();
+                $lotArray = explode(" ", $lotText);
+                $lot = $lotArray[0];
+                $lotUnit = $lotArray[1];
               } catch (NoSuchElementException $e) {
-                $lot = "";
+                $lot = 0;
                 print_r($e);
               }
               break;
             case "Price/sqft":
               try {
-                $priceSqft = $houseElement->findElement(WebDriverBy::cssSelector("span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-2arhs5-3.hrfydd.kOlNqB"))->getText();
+                $priceSqftText = $houseElement->findElement(WebDriverBy::cssSelector("span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-2arhs5-3.hrfydd.kOlNqB"))->getText();
+                $deformatedPrice = deformatPrice($priceSqftText);
+                $priceSqftCurrency = $deformatedPrice["currency"];
+                $priceSqft = $deformatedPrice["price"];
               } catch (NoSuchElementException $e) {
-                $priceSqft = "";
+                $priceSqftCurrency = "";
+                $priceSqft = 0;
                 print_r($e);
               }
               break;
             case "Buyers Agency Fee":
               try {
-                $agencyFee = $houseElement->findElement(WebDriverBy::cssSelector("span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-2arhs5-3.hrfydd.kOlNqB"))->getText();
+                $agencyFeeText = $houseElement->findElement(WebDriverBy::cssSelector("span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-2arhs5-3.hrfydd.kOlNqB"))->getText();
+                preg_match('/\d+(\.\d+)?/', $agencyFeeText, $matches);
+                if (!empty($matches)) {
+                  $agencyFee = $matches[0];
+                } else {
+                  $agencyFee = 0;
+                }
               } catch (NoSuchElementException $e) {
                 $agencyFee = "";
                 print_r($e);
@@ -408,6 +565,8 @@ function scrapeHouseElements($houseElements)
     "cooling" => $cooling,
     "parking" => $parking,
     "lot" => $lot,
+    "lotUnit" => $lotUnit,
+    "priceSqftCurrency" => $priceSqftCurrency,
     "priceSqft" => $priceSqft,
     "agencyFee" => $agencyFee,
   );
@@ -425,27 +584,45 @@ function scrapeDtElements($dtElements)
         case 0:
           try {
             $daysText = $dtElement->findElement(WebDriverBy::cssSelector("strong"))->getText();
-            $days = intval(preg_replace('/\D/', '', $daysText));
+
+            preg_match('/\d+(\.\d+)?/', $daysText, $matches);
+            if (!empty($matches)) {
+              $days = $matches[0];
+            } else {
+              $days = 0;
+            }
           } catch (NoSuchElementException $e) {
-            $days = "";
+            $days = 0;
             print_r($e);
           }
           break;
         case 1:
           try {
             $viewsText = $dtElement->findElement(WebDriverBy::cssSelector("strong"))->getText();
-            $views = intval(preg_replace('/\D/', '', $viewsText));
+
+            preg_match('/\d+(\.\d+)?/', $viewsText, $matches);
+            if (!empty($matches)) {
+              $views = $matches[0];
+            } else {
+              $views = 0;
+            }
           } catch (NoSuchElementException $e) {
-            $views = "";
+            $views = 0;
             print_r($e);
           }
           break;
         case 2:
           try {
             $savesText = $dtElement->findElement(WebDriverBy::cssSelector("strong"))->getText();
-            $saves = intval(preg_replace('/\D/', '', $savesText));
+
+            preg_match('/\d+(\.\d+)?/', $savesText, $matches);
+            if (!empty($matches)) {
+              $saves = $matches[0];
+            } else {
+              $saves = 0;
+            }
           } catch (NoSuchElementException $e) {
-            $saves = "";
+            $saves = 0;
             print_r($e);
           }
           break;

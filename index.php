@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/vendor/autoload.php';
 require_once  __DIR__ . '/utils/constants.php';
-require_once  __DIR__ . '/initialize.php';
+// require_once  __DIR__ . '/initialize.php';
 // require_once  __DIR__ . '/utils/database.php';
 require_once  __DIR__ . '/utils/scraping.php';
 
@@ -32,7 +32,8 @@ $startIndex = intval($argv[1]); // Get the startIndex from the command line argu
 
 // // initialize
 // _init();
-
+print_r($startIndex);
+print_r("\n");
 function scrape($states, $db) {
   print_r($states);
 }

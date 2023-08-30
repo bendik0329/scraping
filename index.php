@@ -32,9 +32,9 @@ $startIndex = intval($argv[1]); // Get the startIndex from the command line argu
 
 // // initialize
 // _init();
-print_r($startIndex);
+print_r("index->>" . $startIndex);
 print_r("\n");
-function scrape($states, $db) {
+function scrape($states) {
   print_r($states);
 }
 

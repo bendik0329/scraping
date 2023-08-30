@@ -221,9 +221,15 @@ function scrapePropertyDetail($zpid, $detailHtml)
   // get zestimate
   try {
     $zestimatePriceText = $detailHtml->findElement(WebDriverBy::cssSelector("div.hdp__sc-13r9t6h-0.ds-chip-removable-content span div.hdp__sc-j76ge-1.fomYLZ > span.Text-c11n-8-84-3__sc-aiai24-0.hrfydd > span.Text-c11n-8-84-3__sc-aiai24-0.hqOVzy span"))->getText();
-    $deformatedZestimatePrice = deformatPrice($zestimatePriceText);
-    $zestimateCurrency = $deformatedZestimatePrice["currency"];
-    $zestimatePrice = $deformatedZestimatePrice["price"];
+    if ($zestimatePriceText == "None") {
+      $zestimateCurrency = "";
+      $zestimatePrice = 0;
+    } else {
+      $deformatedZestimatePrice = deformatPrice($zestimatePriceText);
+      $zestimateCurrency = $deformatedZestimatePrice["currency"];
+      $zestimatePrice = $deformatedZestimatePrice["price"];
+    }
+    
   } catch (NoSuchElementException $e) {
     $zestimateCurrency = "";
     $zestimatePrice = 0;

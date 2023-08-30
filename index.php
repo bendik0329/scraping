@@ -216,7 +216,8 @@ foreach (STATE_LIST as $key => $state) {
                     )";
 
                   if (!$db->query($sql)) {
-                    echo "Error inserting properties table: " . $conn->error . "\n";
+                    echo "Error inserting properties table: \n";
+                    echo $sql . "\n";
                   }
 
                   $properties[] = $result;

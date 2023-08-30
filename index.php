@@ -15,18 +15,18 @@ use Facebook\WebDriver\WebDriverKeys;
 $states = STATE_LIST;
 $startIndex = intval($argv[1]); // Get the startIndex from the command line argument
 
+// load environment variable
+$envConfig = parse_ini_file(__DIR__ . "/.env");
+$apiKey = $envConfig['API_KEY'];
+
+// Set up Selenium WebDriver
+$host = 'http://localhost:4444/wd/hub';
+$capabilities = \Facebook\WebDriver\Remote\DesiredCapabilities::chrome();
+$capabilities->setCapability('goog:chromeOptions', ['args' => ["--headless", "--user-agent=" . USER_AGENT]]);
+$driver = RemoteWebDriver::create($host, $capabilities);
+
 function scrape($batch, $db)
 {
-  // load environment variable
-  $envConfig = parse_ini_file(__DIR__ . "/.env");
-  $apiKey = $envConfig['API_KEY'];
-
-  // Set up Selenium WebDriver
-  $host = 'http://localhost:4444/wd/hub';
-  $capabilities = \Facebook\WebDriver\Remote\DesiredCapabilities::chrome();
-  $capabilities->setCapability('goog:chromeOptions', ['args' => ["--headless", "--user-agent=" . USER_AGENT]]);
-  $driver = RemoteWebDriver::create($host, $capabilities);
-
   foreach ($batch as $state) {
     foreach (BED_VALUES as $bed) {
       foreach (BATH_VALUES as $bath) {

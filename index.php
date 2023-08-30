@@ -27,6 +27,8 @@ $driver = RemoteWebDriver::create($host, $capabilities);
 
 function scrape($batch, $db)
 {
+  global $driver, $apiKey;
+
   foreach ($batch as $state) {
     foreach (BED_VALUES as $bed) {
       foreach (BATH_VALUES as $bath) {

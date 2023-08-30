@@ -127,7 +127,7 @@ foreach (STATE_LIST as $key => $state) {
 
               $html = $driver->findElement(WebDriverBy::tagName('html'));
               $html->sendKeys(WebDriverKeys::END);
-              sleep(5);
+              // sleep(5);
 
               $propertyElements = $driver->findElements(WebDriverBy::cssSelector("#grid-search-results > ul > li > div > div > article.property-card"));
               $list = scrapeProperties($propertyElements);
@@ -136,7 +136,7 @@ foreach (STATE_LIST as $key => $state) {
                 if ($item["zpid"] && $item["link"]) {
                   $detailUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=" . $item["link"];
                   $driver->get($detailUrl);
-                  sleep(5);
+                  // sleep(5);
 
                   $detailHtml = $driver->findElement(WebDriverBy::cssSelector("div.detail-page"));
                   $result = scrapePropertyDetail($item["zpid"], $detailHtml);

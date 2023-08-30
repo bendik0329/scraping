@@ -208,7 +208,7 @@ function scrapePropertyDetail($zpid, $detailHtml)
   }
 
   // get bed bath elements
-  $bedBathElements = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container span.Text-c11n-8-84-3__sc-aiai24-0.hrfydd"));
+  $bedBathElements = $detailHtml->findElements(WebDriverBy::cssSelector("div.summary-container span.Text-c11n-8-84-3__sc-aiai24-0.hrfydd"));
   $bedBathElementsResult = scrapeBedBathElements($bedBathElements);
 
   // get type

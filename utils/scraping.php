@@ -43,7 +43,6 @@ function _init()
       `cooling` VARCHAR ( 255 ),
       `parking` VARCHAR ( 255 ),
       `lot` FLOAT ( 4 ),
-      `lotUnit` VARCHAR ( 255 ),
       `priceSqftCurrency` VARCHAR ( 255 ),
       `priceSqft` INT ( 11 ),
       `agencyFee` FLOAT ( 4 ),
@@ -286,7 +285,6 @@ function scrapePropertyDetail($zpid, $detailHtml)
     "cooling" => $houseElementsResult["cooling"],
     "parking" => $houseElementsResult["parking"],
     "lot" => $houseElementsResult["lot"],
-    "lotUnit" => $houseElementsResult["lotUnit"],
     "priceSqftCurrency" => $houseElementsResult["priceSqftCurrency"],
     "priceSqft" => $houseElementsResult["priceSqft"],
     "agencyFee" => $houseElementsResult["agencyFee"],
@@ -392,7 +390,6 @@ function scrapeHouseElements($houseElements)
   $cooling = "";
   $parking = "";
   $lot = 0;
-  $lotUnit = "";
   $priceSqftCurrency = "";
   $priceSqft = 0;
   $agencyFee = 0;
@@ -475,15 +472,17 @@ function scrapeHouseElements($houseElements)
 
                 if ($lotText == "No data") {
                   $lot = 0;
-                  $lotUnit = "";
                 } else {
                   $lotArray = explode(" ", $lotText);
                   $lot = deformatNumber($lotArray[0]);
-                  $lotUnit = $lotArray[1];
+                  $unit = $lotArray[1];
+
+                  if ($unit == "Acres") {
+                    $lot = intval($lot) * 43560;
+                  }
                 }
               } catch (NoSuchElementException $e) {
                 $lot = 0;
-                $lotUnit = "";
               }
               break;
             case "Price/sqft":
@@ -541,7 +540,6 @@ function scrapeHouseElements($houseElements)
     "cooling" => $cooling,
     "parking" => $parking,
     "lot" => $lot,
-    "lotUnit" => $lotUnit,
     "priceSqftCurrency" => $priceSqftCurrency,
     "priceSqft" => $priceSqft,
     "agencyFee" => $agencyFee,

@@ -132,7 +132,7 @@ foreach (STATE_LIST as $state) {
               // $html->sendKeys(WebDriverKeys::END);
 
               $html = $driver->findElement(WebDriverBy::cssSelector("div.search-page-list-container.double-column-only.short-list-cards"));
-              $driver->executeScript('arguments[0].scrollTop = arguments[0].scrollHeight;', [$html]);
+              $driver->executeScript('arguments[0].scrollIntoView(false);', [$html]);
               // $html->sendKeys(WebDriverKeys::END);
               // sleep(5);
 

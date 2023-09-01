@@ -153,6 +153,13 @@ function scrapeProperties($propertyElements)
     foreach ($propertyElements as $propertyElement) {
       $zpid = str_replace("zpid_", "", $propertyElement->getAttribute("id"));
       $zpid = intval($zpid);
+      $images = array();
+      $imgElements = $propertyElement->findElement(WebDriverBy::cssSelector("a.Anchor-c11n-8-84-3__sc-hn4bge-0.kxrUt.carousel-photo picture img.Image-c11n-8-84-3__sc-1rtmhsc-0"));
+      if (count($imgElements) > 0) {
+        foreach ($imgElements as $imgElement) {
+          $images[] = $imgElement->getAttribute("src");;
+        }
+      }
 
       if ($zpid) {
         $exist = $db->query("SELECT * FROM properties WHERE zpid = $zpid");
@@ -163,6 +170,7 @@ function scrapeProperties($propertyElements)
           $result[] = array(
             "zpid" => $zpid,
             "link" => $link,
+            "images" => $images,
           );
         }
       }

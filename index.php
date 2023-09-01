@@ -141,6 +141,7 @@ foreach (STATE_LIST as $state) {
                   $result = scrapePropertyDetail($item["zpid"], $detailHtml);
                   $result["zpid"] = $item["zpid"];
                   $result["url"] = $item["link"];
+                  $result["images"] = $item["images"];
 
                   // insert properties to table
                   $sql = "
@@ -176,6 +177,7 @@ foreach (STATE_LIST as $state) {
                         saves,
                         special,
                         overview,
+                        images,
                         createdAt
                       )
                       VALUES
@@ -210,6 +212,7 @@ foreach (STATE_LIST as $state) {
                         '" . $db->makeSafe($result["saves"]) . "',
                         '" . $db->makeSafe($result["special"]) . "',
                         '" . $db->makeSafe($result["overview"]) . "',
+                        '" . $db->makeSafe(json_encode($result["images"])) . "',
                         '" . date('Y-m-d H:i:s') . "'
                       )";
 

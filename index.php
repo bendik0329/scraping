@@ -132,8 +132,9 @@ foreach (STATE_LIST as $state) {
               // $html->sendKeys(WebDriverKeys::END);
 
               $html = $driver->findElement(WebDriverBy::cssSelector("div.search-page-list-container.double-column-only.short-list-cards"));
-              $html->sendKeys(WebDriverKeys::END);
-              sleep(5);
+              print_r($html);
+              // $html->sendKeys(WebDriverKeys::END);
+              // sleep(5);
 
               // $wait = new WebDriverWait($driver, 10);
               // $wait->until(WebDriverExpectedCondition::urlContains($url));

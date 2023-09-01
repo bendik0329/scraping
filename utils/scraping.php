@@ -486,7 +486,7 @@ function scrapeHouseElements($houseElements)
                   $unit = $lotArray[1];
 
                   if ($unit == "Acres") {
-                    $lot = intval($lot) * 43560;
+                    $lot = floatval($lot) * 43560;
                   }
                 }
               } catch (NoSuchElementException $e) {

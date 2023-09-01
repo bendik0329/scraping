@@ -148,7 +148,8 @@ foreach (STATE_LIST as $state) {
                   $htmlDomParser = HtmlDomParser::str_get_html($html);
 
                   $detailHtml = $htmlDomParser->findOne("div.detail-page");
-                  print_r($detailHtml);
+                  $price = $detailHtml->findOne("div.summary-container div.hdp__sc-1s2b8ok-1.ckVIjE span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-1me8eh6-0.OByUh.fpfhCd > span")->text();
+                  print_r($price);
                   print_r("\n");
                   // $driver->get($detailUrl);
                   // sleep(2);

@@ -137,9 +137,6 @@ foreach (STATE_LIST as $state) {
                 if ($item["zpid"] && $item["link"]) {
                   $detailUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=" . $item["link"];
 
-                  print_r($detailUrl);
-                  print_r("\n");
-
                   $curl = curl_init();
                   curl_setopt($curl, CURLOPT_URL, $detailUrl);
                   curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
@@ -150,9 +147,9 @@ foreach (STATE_LIST as $state) {
 
                   $htmlDomParser = HtmlDomParser::str_get_html($html);
 
-                  print_r($htmlDomParser);
+                  $detailHtml = $htmlDomParser->findOne("div.detail-page");
+                  print_r($detailHtml);
                   print_r("\n");
-
                   // $driver->get($detailUrl);
                   // sleep(2);
 

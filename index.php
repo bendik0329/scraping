@@ -95,7 +95,7 @@ foreach (STATE_LIST as $state) {
 
         $queryString = json_encode($query);
         $searchQueryState = urlencode($queryString);
-        $url = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/$stateAlias/?searchQueryState=$searchQueryState";
+        $url = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/$stateAlias/?searchQueryState=$searchQueryState&dynamic=false";
         echo $url . "\n";
 
         $driver->get($url);
@@ -124,7 +124,7 @@ foreach (STATE_LIST as $state) {
 
               $queryString = json_encode($query);
               $searchQueryState = urlencode($queryString);
-              $pageUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/$stateAlias/?searchQueryState=$searchQueryState";
+              $pageUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/$stateAlias/?searchQueryState=$searchQueryState&dynamic=false";
 
               $driver->get($pageUrl);
               

@@ -10,9 +10,6 @@ use Facebook\WebDriver\WebDriverKeys;
 
 function _init()
 {
-  print_r("init function");
-  print_r("\n");
-
   global $db, $conn;
 
   // check properties table

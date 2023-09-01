@@ -128,7 +128,7 @@ foreach (STATE_LIST as $state) {
 
               $html = $driver->findElement(WebDriverBy::tagName('html'));
               $html->sendKeys(WebDriverKeys::END);
-              sleep(2);
+              sleep(5);
 
               $propertyElements = $driver->findElements(WebDriverBy::cssSelector("#grid-search-results > ul > li > div > div > article.property-card"));
               $list = scrapeProperties($propertyElements);

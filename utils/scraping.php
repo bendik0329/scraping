@@ -154,7 +154,7 @@ function scrapeProperties($propertyElements)
       $zpid = str_replace("zpid_", "", $propertyElement->getAttribute("id"));
       $zpid = intval($zpid);
       $images = array();
-      $imgElements = $propertyElement->findElement(WebDriverBy::cssSelector("a.Anchor-c11n-8-84-3__sc-hn4bge-0.kxrUt.carousel-photo picture img.Image-c11n-8-84-3__sc-1rtmhsc-0"));
+      $imgElements = $propertyElement->findElements(WebDriverBy::cssSelector("a.Anchor-c11n-8-84-3__sc-hn4bge-0.kxrUt.carousel-photo picture img.Image-c11n-8-84-3__sc-1rtmhsc-0"));
       if (count($imgElements) > 0) {
         foreach ($imgElements as $imgElement) {
           $images[] = $imgElement->getAttribute("src");;

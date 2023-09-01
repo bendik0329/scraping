@@ -125,7 +125,8 @@ foreach (STATE_LIST as $state) {
               $pageUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/$stateAlias/?searchQueryState=$searchQueryState";
 
               $driver->get($pageUrl);
-
+              sleep(5);
+              
               $html = $driver->findElement(WebDriverBy::tagName('html'));
               $html->sendKeys(WebDriverKeys::END);
               sleep(5);

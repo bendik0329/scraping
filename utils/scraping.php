@@ -146,6 +146,8 @@ function scrapeProperties($propertyElements)
   global $db;
   $result = array();
 
+  print_r("property counts->>" . count($propertyElements));
+  print_r("\n");
   if (count($propertyElements) > 0) {
     foreach ($propertyElements as $propertyElement) {
       $zpid = str_replace("zpid_", "", $propertyElement->getAttribute("id"));

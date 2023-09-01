@@ -11,6 +11,8 @@ use Facebook\WebDriver\Exception\NoSuchElementException;
 use Facebook\WebDriver\WebDriver;
 use Facebook\WebDriver\WebDriverKeys;
 use voku\helper\HtmlDomParser;
+use Facebook\WebDriver\WebDriverWait;
+use Facebook\WebDriver\WebDriverExpectedCondition;
 
 // load environment variable
 $envConfig = parse_ini_file(__DIR__ . "/.env");
@@ -125,11 +127,12 @@ foreach (STATE_LIST as $state) {
               $pageUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/$stateAlias/?searchQueryState=$searchQueryState";
 
               $driver->get($pageUrl);
-              sleep(5);
               
               $html = $driver->findElement(WebDriverBy::tagName('html'));
               $html->sendKeys(WebDriverKeys::END);
-              sleep(5);
+
+              $wait = new WebDriverWait($driver, 10);
+              $wait->until(WebDriverExpectedCondition::urlContains($url));
 
               $propertyElements = $driver->findElements(WebDriverBy::cssSelector("#grid-search-results > ul > li > div > div > article.property-card"));
               $list = scrapeProperties($propertyElements);

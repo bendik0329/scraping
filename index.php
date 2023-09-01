@@ -128,11 +128,15 @@ foreach (STATE_LIST as $state) {
 
               $driver->get($pageUrl);
               
-              $html = $driver->findElement(WebDriverBy::tagName('html'));
-              $html->sendKeys(WebDriverKeys::END);
+              // $html = $driver->findElement(WebDriverBy::tagName('html'));
+              // $html->sendKeys(WebDriverKeys::END);
 
-              $wait = new WebDriverWait($driver, 10);
-              $wait->until(WebDriverExpectedCondition::urlContains($url));
+              $html = $driver->findElement(WebDriverBy::cssSelector("div.search-page-list-container.double-column-only.short-list-cards"));
+              $html->sendKeys(WebDriverKeys::END);
+              sleep(5);
+
+              // $wait = new WebDriverWait($driver, 10);
+              // $wait->until(WebDriverExpectedCondition::urlContains($url));
 
               $propertyElements = $driver->findElements(WebDriverBy::cssSelector("#grid-search-results > ul > li > div > div > article.property-card"));
               $list = scrapeProperties($propertyElements);

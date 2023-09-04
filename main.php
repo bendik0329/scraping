@@ -197,7 +197,7 @@ foreach ($chunks as $chunk) {
                               sleep(2);
 
                               $detailHtml = $driver->findElement(WebDriverBy::cssSelector("div.detail-page"));
-                              $result = scrapePropertyDetail($item["zpid"], $detailHtml);
+                              $result = scrapePropertyDetail($zpid, $detailHtml);
                               $result["zpid"] = $zpid;
                               $result["url"] = $link;
                               $result["images"] = $images;

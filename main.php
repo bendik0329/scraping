@@ -161,6 +161,7 @@ foreach ($chunks as $chunk) {
                   $wait = new WebDriverWait($driver, 10);
                   $wait->until(WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::cssSelector("footer.site-footer")));
 
+                  $list = array();
                   $propertyElements = $driver->findElements(WebDriverBy::cssSelector("li.ListItem-c11n-8-84-3__sc-10e22w8-0.StyledListCardWrapper-srp__sc-wtsrtn-0.iCyebE.gTOWtl > div"));
 
                   foreach ($propertyElements as $propertyElement) {
@@ -190,23 +191,11 @@ foreach ($chunks as $chunk) {
                               }
                             }
 
-                            if ($link) {
-                              $detailUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=" . $link;
-
-                              $driver->get($detailUrl);
-                              sleep(2);
-
-                              $detailHtml = $driver->findElement(WebDriverBy::cssSelector("div.detail-page"));
-                              $result = scrapePropertyDetail($zpid, $detailHtml);
-                              $result["zpid"] = $zpid;
-                              $result["url"] = $link;
-                              $result["images"] = $images;
-
-                              $existingData = json_decode(file_get_contents($jsonFile), true);
-                              $existingData = array_merge($existingData, $result);
-                              $jsonData = json_encode($existingData, JSON_PRETTY_PRINT);
-                              file_put_contents($jsonFile, $jsonData);
-                            }
+                            $list[] = array(
+                              "zpid" => $zpid,
+                              "link" => $link,
+                              "images" => $images,
+                            );
                           } catch (NoSuchElementException $e) {
                           }
                         }
@@ -215,31 +204,28 @@ foreach ($chunks as $chunk) {
                     }
                   }
 
+                  foreach ($list as $item) {
+                    if ($item["zpid"] && $item["link"]) {
+                      $detailUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=" . $item["link"];
+
+                      $driver->get($detailUrl);
+                      sleep(2);
+
+                      $detailHtml = $driver->findElement(WebDriverBy::cssSelector("div.detail-page"));
+                      $result = scrapePropertyDetail($item["zpid"], $detailHtml);
+                      $result["zpid"] = $item["zpid"];
+                      $result["url"] = $item["link"];
+                      $result["images"] = $item["images"];
+
+                      print_r($result);
+                      print_r("\n");
+                      $properties[] = $result;
+                      $total++;
+                    }
+                  }
+
                   $currentPage++;
                 }
-                
-
-
-
-                // foreach ($list as $item) {
-                //   if ($item["zpid"] && $item["link"]) {
-                //     $detailUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=" . $item["link"];
-
-                //     $driver->get($detailUrl);
-                //     sleep(2);
-
-                //     $detailHtml = $driver->findElement(WebDriverBy::cssSelector("div.detail-page"));
-                //     $result = scrapePropertyDetail($item["zpid"], $detailHtml);
-                //     $result["zpid"] = $item["zpid"];
-                //     $result["url"] = $item["link"];
-                //     $result["images"] = $item["images"];
-
-                //     print_r($result);
-                //     print_r("\n");
-                //     $properties[] = $result;
-                //     $total++;
-                //   }
-                // }
               }
             } catch (NoSuchElementException $e) {
             }

@@ -146,8 +146,8 @@ foreach (STATE_LIST as $state) {
                 $driver->get($pageUrl);
               }
 
-              // $wait = new WebDriverWait($driver, 10);
-              // $wait->until(WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::cssSelector("footer.site-footer")));
+              $wait = new WebDriverWait($driver, 10);
+              $wait->until(WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::cssSelector("footer.site-footer")));
 
               $html = $driver->findElement(WebDriverBy::tagName('html'));
               $html->sendKeys(WebDriverKeys::END);

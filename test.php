@@ -37,6 +37,10 @@ $numParallel = 2;
 $pids = [];
 $chunks = array_chunk(STATE_LIST, $numParallel);
 
+// Set up Selenium WebDriver
+$host = 'http://localhost:4444/wd/hub';
+$capabilities = \Facebook\WebDriver\Remote\DesiredCapabilities::chrome();
+$capabilities->setCapability('goog:chromeOptions', ['args' => ["--headless", "--user-agent=" . USER_AGENT]]);
 
 foreach ($chunks as $chunk) {
   $pid = pcntl_fork();
@@ -45,10 +49,7 @@ foreach ($chunks as $chunk) {
     // Fork failed
     die('Could not fork');
   } elseif ($pid == 0) {
-    // Set up Selenium WebDriver
-    $host = 'http://localhost:4444/wd/hub';
-    $capabilities = \Facebook\WebDriver\Remote\DesiredCapabilities::chrome();
-    $capabilities->setCapability('goog:chromeOptions', ['args' => ["--headless", "--user-agent=" . USER_AGENT]]);
+    
     $driver = RemoteWebDriver::create($host, $capabilities);
 
     $properties = [];

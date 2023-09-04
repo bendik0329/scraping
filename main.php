@@ -161,6 +161,8 @@ foreach ($chunks as $chunk) {
                   $wait = new WebDriverWait($driver, 10);
                   $wait->until(WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::cssSelector("footer.site-footer")));
 
+                  $propertyElements = $driver->findElements(WebDriverBy::cssSelector("li.ListItem-c11n-8-84-3__sc-10e22w8-0.StyledListCardWrapper-srp__sc-wtsrtn-0.iCyebE.gTOWtl > div"));
+                  
                   foreach ($propertyElements as $propertyElement) {
                     $renderStatus = $propertyElement->getAttribute("data-renderstrat");
                     if ($renderStatus) {
@@ -212,10 +214,10 @@ foreach ($chunks as $chunk) {
                       }
                     }
                   }
-                  
+
                   $currentPage++;
                 }
-                $propertyElements = $driver->findElements(WebDriverBy::cssSelector("li.ListItem-c11n-8-84-3__sc-10e22w8-0.StyledListCardWrapper-srp__sc-wtsrtn-0.iCyebE.gTOWtl > div"));
+                
 
 
 

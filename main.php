@@ -15,12 +15,6 @@ use Facebook\WebDriver\WebDriverDimension;
 use Facebook\WebDriver\WebDriverWait;
 use Facebook\WebDriver\WebDriverExpectedCondition;
 
-$scrapedData = array(
-  'key1' => "123",
-  'key2' => "234",
-);
-$jsonData = json_encode($scrapedData, JSON_PRETTY_PRINT);
-
 // Save the JSON data to a file
 $jsonFile = 'data.json';
 if (file_exists($jsonFile)) {
@@ -158,8 +152,8 @@ foreach ($chunks as $chunk) {
                     $driver->get($pageUrl);
                   }
 
-                  $wait = new WebDriverWait($driver, 10);
-                  $wait->until(WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::cssSelector("footer.site-footer")));
+                  // $wait = new WebDriverWait($driver, 10);
+                  // $wait->until(WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::cssSelector("footer.site-footer")));
 
                   $list = array();
                   $propertyElements = $driver->findElements(WebDriverBy::cssSelector("li.ListItem-c11n-8-84-3__sc-10e22w8-0.StyledListCardWrapper-srp__sc-wtsrtn-0.iCyebE.gTOWtl > div"));

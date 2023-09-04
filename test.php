@@ -33,7 +33,7 @@ if (!$db->connect($host, $username, $password, $dbname)) {
 // initialize
 _init();
 
-$numParallel = 5;
+$numParallel = 2;
 $pids = [];
 $chunks = array_chunk(STATE_LIST, $numParallel);
 

@@ -1,4 +1,6 @@
 {
-    "key1": "123",
-    "key2": "234"
+    "key1": "value1",
+    "key2": "value2",
+    "key3": "value1",
+    "key4": "value2"
 }

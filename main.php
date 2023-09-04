@@ -16,14 +16,14 @@ use Facebook\WebDriver\WebDriverWait;
 use Facebook\WebDriver\WebDriverExpectedCondition;
 
 // Save the JSON data to a file
-$jsonFile = 'data.json';
-if (file_exists($jsonFile)) {
-  if (unlink($jsonFile)) {
-    echo "File deleted successfully.";
-  } else {
-    echo "Unable to delete the file.";
-  }
-}
+// $jsonFile = 'data.json';
+// if (file_exists($jsonFile)) {
+//   if (unlink($jsonFile)) {
+//     echo "File deleted successfully.";
+//   } else {
+//     echo "Unable to delete the file.";
+//   }
+// }
 
 // load environment variable
 $envConfig = parse_ini_file(__DIR__ . "/.env");
@@ -152,8 +152,8 @@ foreach ($chunks as $chunk) {
                     $driver->get($pageUrl);
                   }
 
-                  // $wait = new WebDriverWait($driver, 10);
-                  // $wait->until(WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::cssSelector("footer.site-footer")));
+                  $wait = new WebDriverWait($driver, 10);
+                  $wait->until(WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::cssSelector("footer.site-footer")));
 
                   $list = array();
                   $propertyElements = $driver->findElements(WebDriverBy::cssSelector("li.ListItem-c11n-8-84-3__sc-10e22w8-0.StyledListCardWrapper-srp__sc-wtsrtn-0.iCyebE.gTOWtl > div"));
@@ -173,50 +173,53 @@ foreach ($chunks as $chunk) {
                         $zpid = str_replace("zpid_", "", $element->getAttribute("id"));
                         $zpid = intval($zpid);
 
-                        if ($zpid) {
-                          try {
-                            $link = $element->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");
+                        print_r("zpid->>>" . $zpid);
+                        print_r("\n");
 
-                            $images = array();
-                            $imgElements = $element->findElements(WebDriverBy::cssSelector("a.Anchor-c11n-8-84-3__sc-hn4bge-0.kxrUt.carousel-photo picture img.Image-c11n-8-84-3__sc-1rtmhsc-0"));
-                            if (count($imgElements) > 0) {
-                              foreach ($imgElements as $imgElement) {
-                                $images[] = $imgElement->getAttribute("src");;
-                              }
-                            }
+                        // if ($zpid) {
+                        //   try {
+                        //     $link = $element->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");
 
-                            $list[] = array(
-                              "zpid" => $zpid,
-                              "link" => $link,
-                              "images" => $images,
-                            );
-                          } catch (NoSuchElementException $e) {
-                          }
-                        }
+                        //     $images = array();
+                        //     $imgElements = $element->findElements(WebDriverBy::cssSelector("a.Anchor-c11n-8-84-3__sc-hn4bge-0.kxrUt.carousel-photo picture img.Image-c11n-8-84-3__sc-1rtmhsc-0"));
+                        //     if (count($imgElements) > 0) {
+                        //       foreach ($imgElements as $imgElement) {
+                        //         $images[] = $imgElement->getAttribute("src");;
+                        //       }
+                        //     }
+
+                        //     $list[] = array(
+                        //       "zpid" => $zpid,
+                        //       "link" => $link,
+                        //       "images" => $images,
+                        //     );
+                        //   } catch (NoSuchElementException $e) {
+                        //   }
+                        // }
                       } catch (NoSuchElementException $e) {
                       }
                     }
                   }
 
-                  foreach ($list as $item) {
-                    if ($item["zpid"] && $item["link"]) {
-                      $detailUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=" . $item["link"];
+                  // foreach ($list as $item) {
+                  //   if ($item["zpid"] && $item["link"]) {
+                  //     $detailUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=" . $item["link"];
 
-                      $driver->get($detailUrl);
-                      sleep(2);
+                  //     $driver->get($detailUrl);
+                  //     sleep(2);
 
-                      $detailHtml = $driver->findElement(WebDriverBy::cssSelector("div.detail-page"));
-                      $result = scrapePropertyDetail($item["zpid"], $detailHtml);
-                      $result["zpid"] = $item["zpid"];
-                      $result["url"] = $item["link"];
-                      $result["images"] = $item["images"];
+                  //     $detailHtml = $driver->findElement(WebDriverBy::cssSelector("div.detail-page"));
+                  //     $result = scrapePropertyDetail($item["zpid"], $detailHtml);
+                  //     $result["zpid"] = $item["zpid"];
+                  //     $result["url"] = $item["link"];
+                  //     $result["images"] = $item["images"];
 
-                      print_r($result);
-                      print_r("\n");
-                      $properties[] = $result;
-                      $total++;
-                    }
-                  }
+                  //     print_r($result);
+                  //     print_r("\n");
+                  //     $properties[] = $result;
+                  //     $total++;
+                  //   }
+                  // }
 
                   $currentPage++;
                 }

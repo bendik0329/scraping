@@ -36,9 +36,77 @@ _init();
 // Set up Selenium WebDriver
 $host = 'http://localhost:4444/wd/hub';
 $capabilities = \Facebook\WebDriver\Remote\DesiredCapabilities::chrome();
-$capabilities->setCapability('goog:chromeOptions', ['args' => ["--headless", "--user-agent=" . USER_AGENT]]);
+$capabilities->setCapability('goog:chromeOptions', ['args' => ["--user-agent=" . USER_AGENT]]);
 $driver = RemoteWebDriver::create($host, $capabilities);
-$window = $driver->manage()->window();
+
+// $window = $driver->manage()->window();
+
+// $url = "https://api.scrapingdog.com/scrape?api_key=64ea0a7c389c1c508e3bb43b&url=https://www.zillow.com/ca/?searchQueryState=%7B%22pagination%22%3A%7B%7D%2C%22usersSearchTerm%22%3A%22CA%22%2C%22filterState%22%3A%7B%22beds%22%3A%7B%22min%22%3A1%7D%2C%22baths%22%3A%7B%22min%22%3A2%7D%2C%22sqft%22%3A%7B%22min%22%3A1000%2C%22max%22%3A1250%7D%2C%22pmf%22%3A%7B%22value%22%3Atrue%7D%2C%22sort%22%3A%7B%22value%22%3A%22globalrelevanceex%22%7D%2C%22nc%22%3A%7B%22value%22%3Afalse%7D%2C%22fsbo%22%3A%7B%22value%22%3Afalse%7D%2C%22cmsn%22%3A%7B%22value%22%3Afalse%7D%2C%22pf%22%3A%7B%22value%22%3Atrue%7D%2C%22fsba%22%3A%7B%22value%22%3Afalse%7D%7D%2C%22isListVisible%22%3Atrue%7D&dynamic=false";
+
+// $driver->get($url);
+// sleep(5);
+
+// Scroll down to the bottom of the page
+// $driver->executeScript('window.scrollTo(0, document.body.scrollHeight);');
+
+// Wait until there is no element with attribute data-renderstrat="timeout"
+// $wait = new WebDriverWait($driver, 10); // $driver is your WebDriver instance
+// $wait->until(function () use ($driver) {
+//     $elements = $driver->findElements(WebDriverBy::cssSelector("li.ListItem-c11n-8-84-3__sc-10e22w8-0.StyledListCardWrapper-srp__sc-wtsrtn-0.iCyebE.gTOWtl > div[data-renderstrat=\"timeout\"]"));
+//     return count($elements) === 0;
+// });
+
+// $driver->findElement(WebDriverBy::tagName('body'))->sendKeys(WebDriverKeys::END);
+// sleep(5);
+
+// $propertyList = $driver->findElement(WebDriverBy::cssSelector("ul.photo-cards"));
+// $propertyElements = $propertyList->findElements(WebDriverBy::cssSelector("li.ListItem-c11n-8-84-3__sc-10e22w8-0.StyledListCardWrapper-srp__sc-wtsrtn-0.iCyebE.gTOWtl > div"));
+
+// if (count($propertyElements) > 0) {
+//   print_r(count($propertyElements));
+//   foreach ($propertyElements as $propertyElement) {
+//     $renderStatus = $propertyElement->getAttribute("data-renderstrat");
+//     print_r($renderStatus);
+//     print_r("\n");
+// if ($renderStatus == "inline") {
+// } else if ($renderStatus == "timeout") {
+//   $driver->executeScript('arguments[0].scrollIntoView(true);', [$propertyElement]);
+// }
+// print_r($propertyElement);
+// $driver->executeScript('arguments[0].scrollIntoView(true);', [$propertyElement]);
+// try {
+//   $item = $propertyElement->findElement(WebDriverBy::cssSelector("article.property-card"));
+//   $zpid = str_replace("zpid_", "", $propertyElement->getAttribute("id"));
+//   $zpid = intval($zpid);
+
+//   print_r($zpid);
+//   print_r("\n");
+// } catch (NoSuchElementException $e) {
+//   print_r($e);
+// }
+//   }
+// }
+
+
+// $lastItem = end($propertyItems);
+// $driver->executeScript('arguments[0].scrollIntoView(true);', [$lastItem]);
+
+// $wait = new WebDriverWait($driver, 10);
+// $wait->until(function () use ($driver, $lastItem) {
+//   return $driver->executeScript('return arguments[0].scrollTop;', [$lastItem]) === 0;
+// });
+
+// print_r(count($propertyItems));
+// exit();
+
+// $html = $driver->findElement(WebDriverBy::tagName('html'));
+// $html->sendKeys(WebDriverKeys::END);
+// sleep(5);
+
+// $propertyElements = $driver->findElements(WebDriverBy::cssSelector("#grid-search-results > ul > li > div > div > article.property-card"));
+// $count = count($propertyElements);
+
+// print_r("count->>" . $count);
 // $window->setSize(new WebDriverDimension(800, 600));
 
 // $driver->get("https://api.scrapingdog.com/scrape?api_key=64ea0a7c389c1c508e3bb43b&url=https://www.zillow.com/ca/?searchQueryState=%7B%22pagination%22%3A%7B%7D%2C%22usersSearchTerm%22%3A%22CA%22%2C%22filterState%22%3A%7B%22beds%22%3A%7B%22min%22%3A1%7D%2C%22baths%22%3A%7B%22min%22%3A1%7D%2C%22sqft%22%3A%7B%22max%22%3A500%7D%2C%22pmf%22%3A%7B%22value%22%3Atrue%7D%2C%22sort%22%3A%7B%22value%22%3A%22globalrelevanceex%22%7D%2C%22nc%22%3A%7B%22value%22%3Afalse%7D%2C%22fsbo%22%3A%7B%22value%22%3Afalse%7D%2C%22cmsn%22%3A%7B%22value%22%3Afalse%7D%2C%22pf%22%3A%7B%22value%22%3Atrue%7D%2C%22fsba%22%3A%7B%22value%22%3Afalse%7D%7D%2C%22isListVisible%22%3Atrue%7D&dynamic=false");
@@ -48,11 +116,7 @@ $window = $driver->manage()->window();
 
 // print_r("hi");
 
-// $html = $driver->findElement(WebDriverBy::tagName('html'));
-// $html->sendKeys(WebDriverKeys::END);
-// sleep(5);
 
-// exit();
 
 
 $properties = [];
@@ -86,6 +150,9 @@ foreach (STATE_LIST as $state) {
           "sort" => array(
             "value" => "globalrelevanceex"
           ),
+          "isAllHomes" => array(
+            "value" => True
+          ),
           "nc" => array(
             "value" => false
           ),
@@ -112,6 +179,7 @@ foreach (STATE_LIST as $state) {
 
         $queryString = json_encode($query);
         $searchQueryState = urlencode($queryString);
+
         $url = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/$stateAlias/?searchQueryState=$searchQueryState&dynamic=false";
         echo $url . "\n";
 
@@ -149,9 +217,24 @@ foreach (STATE_LIST as $state) {
               $wait = new WebDriverWait($driver, 10);
               $wait->until(WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::cssSelector("footer.site-footer")));
 
-              $html = $driver->findElement(WebDriverBy::tagName('html'));
-              $html->sendKeys(WebDriverKeys::END);
-              sleep(5);
+              $propertyElements = $driver->findElements(WebDriverBy::cssSelector("li.ListItem-c11n-8-84-3__sc-10e22w8-0.StyledListCardWrapper-srp__sc-wtsrtn-0.iCyebE.gTOWtl > div"));
+
+              foreach ($propertyElements as $propertyElement) {
+                $renderStatus = $propertyElement->getAttribute("data-renderstrat");
+                if ($renderStatus) {
+                  $driver->executeScript('arguments[0].scrollIntoView(true);', array($propertyElement));
+                  $wait = new WebDriverWait($driver, 10);
+                  $wait->until(function () use ($propertyElement) {
+                    $attributeValue = $propertyElement->getAttribute('data-renderstrat');
+                    return $attributeValue !== 'timeout';
+                  });
+                }
+              }
+
+              // $html = $driver->findElement(WebDriverBy::tagName('html'));
+              // $html->sendKeys(WebDriverKeys::END);
+              // sleep(5);
+
               // $wait->until(function () use ($driver) {
               //   $activeElement = $driver->switchTo()->activeElement();
               //   return $activeElement->getTagName() !== 'body';

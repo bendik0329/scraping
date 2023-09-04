@@ -147,6 +147,9 @@ function scrapeProperties($propertyElements)
   $result = array();
 
   if (count($propertyElements) > 0) {
+    print_r("property count->>");
+    print_r(count($propertyElements));
+    print_r("\n");
     foreach ($propertyElements as $propertyElement) {
       $zpid = str_replace("zpid_", "", $propertyElement->getAttribute("id"));
       $zpid = intval($zpid);
@@ -179,12 +182,6 @@ function scrapeProperties($propertyElements)
 
 function scrapePropertyDetail($zpid, $detailHtml)
 {
-  // get image
-  try {
-    $image = $detailHtml->findElement(WebDriverBy::cssSelector("div.media-column-container ul.hdp__sc-1wi9vqt-0.dDzspE.ds-media-col.media-stream li:nth-child(1) img"))->getAttribute("src");
-  } catch (NoSuchElementException $e) {
-    $image = "";
-  }
   // get price
   try {
     $priceText = $detailHtml->findElement(WebDriverBy::cssSelector("div.summary-container div.hdp__sc-1s2b8ok-1.ckVIjE span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-1me8eh6-0.OByUh.fpfhCd > span"))->getText();
@@ -262,15 +259,14 @@ function scrapePropertyDetail($zpid, $detailHtml)
   $dtElementsResult = scrapeDtElements($dtElements);
 
   // get price history
-  $priceRowElements = $detailHtml->findElements(WebDriverBy::cssSelector("table.hdp__sc-f00yqe-2.jaEmHG tbody tr.hdp__sc-f00yqe-3.hTnieU"));
-  $priceHistory = scrapePriceHistory($zpid, $priceRowElements);
+  // $priceRowElements = $detailHtml->findElements(WebDriverBy::cssSelector("table.hdp__sc-f00yqe-2.jaEmHG tbody tr.hdp__sc-f00yqe-3.hTnieU"));
+  // $priceHistory = scrapePriceHistory($zpid, $priceRowElements);
 
   // get tax history
-  $taxRowElements = $detailHtml->findElements(WebDriverBy::cssSelector("table.StyledTable-c11n-8-84-3__sc-b979s8-0.jtAqyI tbody tr.StyledTableRow-c11n-8-84-3__sc-1gk7etl-0.kaeLLi"));
-  $taxHistory = scrapeTaxHistory($zpid, $taxRowElements);
+  // $taxRowElements = $detailHtml->findElements(WebDriverBy::cssSelector("table.StyledTable-c11n-8-84-3__sc-b979s8-0.jtAqyI tbody tr.StyledTableRow-c11n-8-84-3__sc-1gk7etl-0.kaeLLi"));
+  // $taxHistory = scrapeTaxHistory($zpid, $taxRowElements);
 
   return array(
-    "image" => $image,
     "currency" => $currency,
     "price" => $price,
     "address" => $address,
@@ -298,8 +294,8 @@ function scrapePropertyDetail($zpid, $detailHtml)
     "days" => $dtElementsResult["days"],
     "views" => $dtElementsResult["views"],
     "saves" => $dtElementsResult["saves"],
-    "priceHistory" => $priceHistory,
-    "taxHistory" => $taxHistory,
+    // "priceHistory" => $priceHistory,
+    // "taxHistory" => $taxHistory,
   );
 }
 
@@ -485,6 +481,8 @@ function scrapeHouseElements($houseElements)
                   if ($unit == "Acres") {
                     $lot = floatval($lot) * 43560;
                   }
+                  print_r($lot);
+                  print_r("\n");
                 }
               } catch (NoSuchElementException $e) {
                 $lot = 0;
@@ -635,27 +633,27 @@ function scrapePriceHistory($zpid, $priceRowElements)
         }
       }
 
-      $sql = "
-        INSERT INTO price_histories
-        (
-          zpid,
-          date,
-          event,
-          price,
-          createdAt
-        )
-        VALUES
-        (
-          '" . $db->makeSafe($zpid) . "',
-          '" . ($date != "" ? date("Y-m-d", strtotime($date)) : NULL) . "',
-          '" . $db->makeSafe($event) . "',
-          '" . $db->makeSafe($priceItem) . "',
-          '" . date('Y-m-d H:i:s') . "'
-        )";
+      // $sql = "
+      //   INSERT INTO price_histories
+      //   (
+      //     zpid,
+      //     date,
+      //     event,
+      //     price,
+      //     createdAt
+      //   )
+      //   VALUES
+      //   (
+      //     '" . $db->makeSafe($zpid) . "',
+      //     '" . ($date != "" ? date("Y-m-d", strtotime($date)) : NULL) . "',
+      //     '" . $db->makeSafe($event) . "',
+      //     '" . $db->makeSafe($priceItem) . "',
+      //     '" . date('Y-m-d H:i:s') . "'
+      //   )";
 
-      if (!$db->query($sql)) {
-        echo "Error inserting price_histories table: " . $conn->error . "\n";
-      }
+      // if (!$db->query($sql)) {
+      //   echo "Error inserting price_histories table: " . $conn->error . "\n";
+      // }
 
       $result[] = array(
         "date" => $date,
@@ -715,27 +713,27 @@ function scrapeTaxHistory($zpid, $taxRowElements)
         }
       }
 
-      $sql = "
-        INSERT INTO tax_histories
-        (
-          zpid,
-          year,
-          tax,
-          taxAssessment,
-          createdAt
-        )
-        VALUES
-        (
-          '" . $db->makeSafe($zpid) . "',
-          '" . $db->makeSafe($year) . "',
-          '" . $db->makeSafe($propertyTax) . "',
-          '" . $db->makeSafe($taxAssessment) . "',
-          '" . date('Y-m-d H:i:s') . "'
-        )";
+      // $sql = "
+      //   INSERT INTO tax_histories
+      //   (
+      //     zpid,
+      //     year,
+      //     tax,
+      //     taxAssessment,
+      //     createdAt
+      //   )
+      //   VALUES
+      //   (
+      //     '" . $db->makeSafe($zpid) . "',
+      //     '" . $db->makeSafe($year) . "',
+      //     '" . $db->makeSafe($propertyTax) . "',
+      //     '" . $db->makeSafe($taxAssessment) . "',
+      //     '" . date('Y-m-d H:i:s') . "'
+      //   )";
 
-      if (!$db->query($sql)) {
-        echo "Error inserting tax_histories table: " . $conn->error . "\n";
-      }
+      // if (!$db->query($sql)) {
+      //   echo "Error inserting tax_histories table: " . $conn->error . "\n";
+      // }
 
       $result[] = array(
         "year" => $year,
@@ -776,7 +774,7 @@ function downloadImages()
           $zpid = $row['zpid'];
           $imgUrl = $row['image'];
 
-          $imgFolder = __DIR__ . '/../download/images/' . $zpid;
+          $imgFolder = __DIR__ . '/download/images/' . $zpid;
           if (!file_exists($imgFolder)) {
             mkdir($imgFolder, 0777, true);
           }

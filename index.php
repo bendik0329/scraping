@@ -36,7 +36,7 @@ _init();
 // Set up Selenium WebDriver
 $host = 'http://localhost:4444/wd/hub';
 $capabilities = \Facebook\WebDriver\Remote\DesiredCapabilities::chrome();
-$capabilities->setCapability('goog:chromeOptions', ['args' => ["--user-agent=" . USER_AGENT]]);
+$capabilities->setCapability('goog:chromeOptions', ['args' => ["--headless", "--user-agent=" . USER_AGENT]]);
 $driver = RemoteWebDriver::create($host, $capabilities);
 $window = $driver->manage()->window();
 // $window->setSize(new WebDriverDimension(800, 600));
@@ -146,8 +146,8 @@ foreach (STATE_LIST as $state) {
                 $driver->get($pageUrl);
               }
 
-              $wait = new WebDriverWait($driver, 10);
-              $wait->until(WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::cssSelector("footer.site-footer")));
+              // $wait = new WebDriverWait($driver, 10);
+              // $wait->until(WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::cssSelector("footer.site-footer")));
 
               $html = $driver->findElement(WebDriverBy::tagName('html'));
               $html->sendKeys(WebDriverKeys::END);

@@ -162,7 +162,7 @@ foreach ($chunks as $chunk) {
                   $wait->until(WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::cssSelector("footer.site-footer")));
 
                   $propertyElements = $driver->findElements(WebDriverBy::cssSelector("li.ListItem-c11n-8-84-3__sc-10e22w8-0.StyledListCardWrapper-srp__sc-wtsrtn-0.iCyebE.gTOWtl > div"));
-                  
+
                   foreach ($propertyElements as $propertyElement) {
                     $renderStatus = $propertyElement->getAttribute("data-renderstrat");
                     if ($renderStatus) {
@@ -198,9 +198,9 @@ foreach ($chunks as $chunk) {
 
                               $detailHtml = $driver->findElement(WebDriverBy::cssSelector("div.detail-page"));
                               $result = scrapePropertyDetail($item["zpid"], $detailHtml);
-                              $result["zpid"] = $item["zpid"];
-                              $result["url"] = $item["link"];
-                              $result["images"] = $item["images"];
+                              $result["zpid"] = $zpid;
+                              $result["url"] = $link;
+                              $result["images"] = $images;
 
                               $existingData = json_decode(file_get_contents($jsonFile), true);
                               $existingData = array_merge($existingData, $result);

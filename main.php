@@ -89,28 +89,28 @@ foreach ($chunks as $chunk) {
                 $element = $propertyElement->findElement(WebDriverBy::cssSelector("article.property-card"));
                 $zpid = str_replace("zpid_", "", $element->getAttribute("id"));
                 $zpid = intval($zpid);
+                print_r("zpid->>" . $zpid);
+                // if ($zpid) {
+                //   $exist = $db->query("SELECT * FROM properties WHERE zpid = $zpid");
 
-                if ($zpid) {
-                  $exist = $db->query("SELECT * FROM properties WHERE zpid = $zpid");
+                //   if ($exist->num_rows == 0) {
+                //     $link = $element->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");
 
-                  if ($exist->num_rows == 0) {
-                    $link = $element->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");
+                //     $images = array();
+                //     $imgElements = $element->findElements(WebDriverBy::cssSelector("a.Anchor-c11n-8-84-3__sc-hn4bge-0.kxrUt.carousel-photo picture img.Image-c11n-8-84-3__sc-1rtmhsc-0"));
+                //     if (count($imgElements) > 0) {
+                //       foreach ($imgElements as $imgElement) {
+                //         $images[] = $imgElement->getAttribute("src");;
+                //       }
+                //     }
 
-                    $images = array();
-                    $imgElements = $element->findElements(WebDriverBy::cssSelector("a.Anchor-c11n-8-84-3__sc-hn4bge-0.kxrUt.carousel-photo picture img.Image-c11n-8-84-3__sc-1rtmhsc-0"));
-                    if (count($imgElements) > 0) {
-                      foreach ($imgElements as $imgElement) {
-                        $images[] = $imgElement->getAttribute("src");;
-                      }
-                    }
-
-                    $list[] = array(
-                      "zpid" => $zpid,
-                      "link" => $link,
-                      "images" => $images,
-                    );
-                  }
-                }
+                //     $list[] = array(
+                //       "zpid" => $zpid,
+                //       "link" => $link,
+                //       "images" => $images,
+                //     );
+                //   }
+                // }
               } catch (NoSuchElementException $e) {
               }
             }

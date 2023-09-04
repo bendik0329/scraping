@@ -69,8 +69,6 @@ foreach ($chunks as $chunk) {
 
         if (isset($matches[0])) {
           $totalCount = intval($matches[0]);
-          print_r("total count->>" . $totalCount);
-          print_r("\n");
 
           $list = array();
           $propertyElements = $driver->findElements(WebDriverBy::cssSelector("li.ListItem-c11n-8-84-3__sc-10e22w8-0.StyledListCardWrapper-srp__sc-wtsrtn-0.iCyebE.gTOWtl > div"));
@@ -89,131 +87,133 @@ foreach ($chunks as $chunk) {
                 $element = $propertyElement->findElement(WebDriverBy::cssSelector("article.property-card"));
                 $zpid = str_replace("zpid_", "", $element->getAttribute("id"));
                 $zpid = intval($zpid);
+
                 print_r("zpid->>" . $zpid);
-                // if ($zpid) {
-                //   $exist = $db->query("SELECT * FROM properties WHERE zpid = $zpid");
+                print_r("\n");
+                if ($zpid) {
+                  try {
+                    $link = $element->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");
 
-                //   if ($exist->num_rows == 0) {
-                //     $link = $element->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");
+                    $images = array();
+                    $imgElements = $element->findElements(WebDriverBy::cssSelector("a.Anchor-c11n-8-84-3__sc-hn4bge-0.kxrUt.carousel-photo picture img.Image-c11n-8-84-3__sc-1rtmhsc-0"));
+                    if (count($imgElements) > 0) {
+                      foreach ($imgElements as $imgElement) {
+                        $images[] = $imgElement->getAttribute("src");;
+                      }
+                    }
 
-                //     $images = array();
-                //     $imgElements = $element->findElements(WebDriverBy::cssSelector("a.Anchor-c11n-8-84-3__sc-hn4bge-0.kxrUt.carousel-photo picture img.Image-c11n-8-84-3__sc-1rtmhsc-0"));
-                //     if (count($imgElements) > 0) {
-                //       foreach ($imgElements as $imgElement) {
-                //         $images[] = $imgElement->getAttribute("src");;
-                //       }
-                //     }
-
-                //     $list[] = array(
-                //       "zpid" => $zpid,
-                //       "link" => $link,
-                //       "images" => $images,
-                //     );
-                //   }
-                // }
+                    $list[] = array(
+                      "zpid" => $zpid,
+                      "link" => $link,
+                      "images" => $images,
+                    );
+                  } catch (NoSuchElementException $e) {
+                  }
+                }
               } catch (NoSuchElementException $e) {
               }
             }
           }
 
-          foreach ($list as $item) {
-            if ($item["zpid"] && $item["link"]) {
-              $detailUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=" . $item["link"];
+          print_r($list);
+          print_r("\n");
+          // foreach ($list as $item) {
+          //   if ($item["zpid"] && $item["link"]) {
+          //     $detailUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=" . $item["link"];
 
-              $driver->get($detailUrl);
-              sleep(2);
+          //     $driver->get($detailUrl);
+          //     sleep(2);
 
-              $detailHtml = $driver->findElement(WebDriverBy::cssSelector("div.detail-page"));
-              $result = scrapePropertyDetail($item["zpid"], $detailHtml);
-              $result["zpid"] = $item["zpid"];
-              $result["url"] = $item["link"];
-              $result["images"] = $item["images"];
+          //     $detailHtml = $driver->findElement(WebDriverBy::cssSelector("div.detail-page"));
+          //     $result = scrapePropertyDetail($item["zpid"], $detailHtml);
+          //     $result["zpid"] = $item["zpid"];
+          //     $result["url"] = $item["link"];
+          //     $result["images"] = $item["images"];
 
-              // insert properties to table
-              $sql = "
-                INSERT INTO properties
-                (
-                  zpid,
-                  url,
-                  image,
-                  currency,
-                  price,
-                  address,
-                  city,
-                  state,
-                  zipcode,
-                  beds,
-                  baths,
-                  sqft,
-                  acres,
-                  type,
-                  zestimateCurrency,
-                  zestimatePrice,
-                  houseType,
-                  builtYear,
-                  heating,
-                  cooling,
-                  parking,
-                  lot,
-                  priceSqftCurrency,
-                  priceSqft,
-                  agencyFee,
-                  days,
-                  views,
-                  saves,
-                  special,
-                  overview,
-                  images,
-                  createdAt
-                )
-                VALUES
-                (
-                  '" . $db->makeSafe($result["zpid"]) . "',
-                  '" . $db->makeSafe($result["url"]) . "',
-                  '" . $db->makeSafe($result["image"]) . "',
-                  '" . $db->makeSafe($result["currency"]) . "',
-                  '" . $db->makeSafe($result["price"]) . "',
-                  '" . $db->makeSafe($result["address"]) . "',
-                  '" . $db->makeSafe($result["city"]) . "',
-                  '" . $db->makeSafe($result["state"]) . "',
-                  '" . $db->makeSafe($result["zipcode"]) . "',
-                  '" . $db->makeSafe($result["beds"]) . "',
-                  '" . $db->makeSafe($result["baths"]) . "',
-                  '" . $db->makeSafe($result["sqft"]) . "',
-                  '" . $db->makeSafe($result["acres"]) . "',
-                  '" . $db->makeSafe($result["type"]) . "',
-                  '" . $db->makeSafe($result["zestimateCurrency"]) . "',
-                  '" . $db->makeSafe($result["zestimatePrice"]) . "',
-                  '" . $db->makeSafe($result["houseType"]) . "',
-                  '" . $db->makeSafe($result["builtYear"]) . "',
-                  '" . $db->makeSafe($result["heating"]) . "',
-                  '" . $db->makeSafe($result["cooling"]) . "',
-                  '" . $db->makeSafe($result["parking"]) . "',
-                  '" . $db->makeSafe($result["lot"]) . "',
-                  '" . $db->makeSafe($result["priceSqftCurrency"]) . "',
-                  '" . $db->makeSafe($result["priceSqft"]) . "',
-                  '" . $db->makeSafe($result["agencyFee"]) . "',
-                  '" . $db->makeSafe($result["days"]) . "',
-                  '" . $db->makeSafe($result["views"]) . "',
-                  '" . $db->makeSafe($result["saves"]) . "',
-                  '" . $db->makeSafe($result["special"]) . "',
-                  '" . $db->makeSafe($result["overview"]) . "',
-                  '" . $db->makeSafe(json_encode($result["images"])) . "',
-                  '" . date('Y-m-d H:i:s') . "'
-                )";
+          //     // insert properties to table
+          //     $sql = "
+          //       INSERT INTO properties
+          //       (
+          //         zpid,
+          //         url,
+          //         image,
+          //         currency,
+          //         price,
+          //         address,
+          //         city,
+          //         state,
+          //         zipcode,
+          //         beds,
+          //         baths,
+          //         sqft,
+          //         acres,
+          //         type,
+          //         zestimateCurrency,
+          //         zestimatePrice,
+          //         houseType,
+          //         builtYear,
+          //         heating,
+          //         cooling,
+          //         parking,
+          //         lot,
+          //         priceSqftCurrency,
+          //         priceSqft,
+          //         agencyFee,
+          //         days,
+          //         views,
+          //         saves,
+          //         special,
+          //         overview,
+          //         images,
+          //         createdAt
+          //       )
+          //       VALUES
+          //       (
+          //         '" . $db->makeSafe($result["zpid"]) . "',
+          //         '" . $db->makeSafe($result["url"]) . "',
+          //         '" . $db->makeSafe($result["image"]) . "',
+          //         '" . $db->makeSafe($result["currency"]) . "',
+          //         '" . $db->makeSafe($result["price"]) . "',
+          //         '" . $db->makeSafe($result["address"]) . "',
+          //         '" . $db->makeSafe($result["city"]) . "',
+          //         '" . $db->makeSafe($result["state"]) . "',
+          //         '" . $db->makeSafe($result["zipcode"]) . "',
+          //         '" . $db->makeSafe($result["beds"]) . "',
+          //         '" . $db->makeSafe($result["baths"]) . "',
+          //         '" . $db->makeSafe($result["sqft"]) . "',
+          //         '" . $db->makeSafe($result["acres"]) . "',
+          //         '" . $db->makeSafe($result["type"]) . "',
+          //         '" . $db->makeSafe($result["zestimateCurrency"]) . "',
+          //         '" . $db->makeSafe($result["zestimatePrice"]) . "',
+          //         '" . $db->makeSafe($result["houseType"]) . "',
+          //         '" . $db->makeSafe($result["builtYear"]) . "',
+          //         '" . $db->makeSafe($result["heating"]) . "',
+          //         '" . $db->makeSafe($result["cooling"]) . "',
+          //         '" . $db->makeSafe($result["parking"]) . "',
+          //         '" . $db->makeSafe($result["lot"]) . "',
+          //         '" . $db->makeSafe($result["priceSqftCurrency"]) . "',
+          //         '" . $db->makeSafe($result["priceSqft"]) . "',
+          //         '" . $db->makeSafe($result["agencyFee"]) . "',
+          //         '" . $db->makeSafe($result["days"]) . "',
+          //         '" . $db->makeSafe($result["views"]) . "',
+          //         '" . $db->makeSafe($result["saves"]) . "',
+          //         '" . $db->makeSafe($result["special"]) . "',
+          //         '" . $db->makeSafe($result["overview"]) . "',
+          //         '" . $db->makeSafe(json_encode($result["images"])) . "',
+          //         '" . date('Y-m-d H:i:s') . "'
+          //       )";
 
-              if (!$db->query($sql)) {
-                echo "Error inserting properties table: \n";
-                echo $sql . "\n";
-              }
+          //     if (!$db->query($sql)) {
+          //       echo "Error inserting properties table: \n";
+          //       echo $sql . "\n";
+          //     }
 
-              $properties[] = $result;
-              $total++;
-            }
-          }
+          //     $properties[] = $result;
+          //     $total++;
+          //   }
+          // }
         }
       } catch (NoSuchElementException $e) {
-        print_r($e);
       }
     }
 

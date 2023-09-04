@@ -39,7 +39,7 @@ $chunks = array_chunk(STATE_LIST, $numParallel);
 $properties = [];
 $total = 0;
 
-foreach ($chunks as $chunk) {
+foreach ($chunks as $key => $chunk) {
   $pid = pcntl_fork();
 
   if ($pid == -1) {
@@ -51,10 +51,11 @@ foreach ($chunks as $chunk) {
       // $driver = RemoteWebDriver::create($host, $capabilities);
 
       // Process each state in the chunk
+      print_r("index->>" . $key);
+      print_r("\n");
       foreach ($chunk as $state) {
           // Add your code here to control the Selenium instance for each state
           // For example, navigate to a website and perform actions
-          echo "hi \n";
           echo "Processing state: $state\n";
       }
 

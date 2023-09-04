@@ -205,7 +205,8 @@ foreach ($chunks as $chunk) {
               //   echo "Error inserting properties table: \n";
               //   echo $sql . "\n";
               // }
-
+              print_r($result);
+              print_r("\n");
               $properties[] = $result;
               $total++;
             }

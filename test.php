@@ -33,10 +33,12 @@ if (!$db->connect($host, $username, $password, $dbname)) {
 // initialize
 _init();
 
-$numParallel = 2;
+$numParallel = 10;
 $pids = [];
 $chunks = array_chunk(STATE_LIST, $numParallel);
 
+print_r($chunks);
+exit();
 // Set up Selenium WebDriver
 $host = 'http://localhost:4444/wd/hub';
 $capabilities = \Facebook\WebDriver\Remote\DesiredCapabilities::chrome();

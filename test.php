@@ -36,10 +36,10 @@ _init();
 // Set up Selenium WebDriver
 $host = 'http://localhost:4444/wd/hub';
 $capabilities = \Facebook\WebDriver\Remote\DesiredCapabilities::chrome();
-$capabilities->setCapability('goog:chromeOptions', ['args' => ["--user-agent=" . USER_AGENT]]);
+$capabilities->setCapability('goog:chromeOptions', ['args' => ["--headless", "--user-agent=" . USER_AGENT]]);
 $driver = RemoteWebDriver::create($host, $capabilities);
 $window = $driver->manage()->window();
-// $window->setSize(new WebDriverDimension(800, 600));
+$window->setSize(new WebDriverDimension(800, 600));
 
 // $driver->get("https://api.scrapingdog.com/scrape?api_key=64ea0a7c389c1c508e3bb43b&url=https://www.zillow.com/ca/?searchQueryState=%7B%22pagination%22%3A%7B%7D%2C%22usersSearchTerm%22%3A%22CA%22%2C%22filterState%22%3A%7B%22beds%22%3A%7B%22min%22%3A1%7D%2C%22baths%22%3A%7B%22min%22%3A1%7D%2C%22sqft%22%3A%7B%22max%22%3A500%7D%2C%22pmf%22%3A%7B%22value%22%3Atrue%7D%2C%22sort%22%3A%7B%22value%22%3A%22globalrelevanceex%22%7D%2C%22nc%22%3A%7B%22value%22%3Afalse%7D%2C%22fsbo%22%3A%7B%22value%22%3Afalse%7D%2C%22cmsn%22%3A%7B%22value%22%3Afalse%7D%2C%22pf%22%3A%7B%22value%22%3Atrue%7D%2C%22fsba%22%3A%7B%22value%22%3Afalse%7D%7D%2C%22isListVisible%22%3Atrue%7D&dynamic=false");
 
@@ -53,8 +53,6 @@ $window = $driver->manage()->window();
 // sleep(5);
 
 // exit();
-
-
 $properties = [];
 $total = 0;
 
@@ -116,7 +114,6 @@ foreach (STATE_LIST as $state) {
         echo $url . "\n";
 
         $driver->get($url);
-        sleep(5);
 
         try {
           $totalCount = $driver->findElement(WebDriverBy::cssSelector("div.ListHeader__NarrowViewWrapping-srp__sc-1rsgqpl-1.idxSRv.search-subtitle span.result-count"))->getText();
@@ -147,11 +144,11 @@ foreach (STATE_LIST as $state) {
               }
 
               $wait = new WebDriverWait($driver, 10);
-              $wait->until(WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::cssSelector("footer.site-footer")));
+              $wait->until(WebDriverExpectedCondition::visibilityOfElementLocated(WebDriverBy::cssSelector("footer.site-footer")));
 
               $html = $driver->findElement(WebDriverBy::tagName('html'));
               $html->sendKeys(WebDriverKeys::END);
-              sleep(5);
+              sleep(10);
               // $wait->until(function () use ($driver) {
               //   $activeElement = $driver->switchTo()->activeElement();
               //   return $activeElement->getTagName() !== 'body';

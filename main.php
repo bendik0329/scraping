@@ -39,6 +39,9 @@ foreach ($chunks as $chunk) {
       $driver->get($url);
       sleep(5);
 
+      print_r($url);
+      print_r("\n");
+      
       try {
         $totalCount = $driver->findElement(WebDriverBy::cssSelector("div.ListHeader__NarrowViewWrapping-srp__sc-1rsgqpl-1.idxSRv.search-subtitle span.result-count"))->getText();
         $totalCount = str_replace(",", "", $totalCount);

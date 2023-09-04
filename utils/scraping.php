@@ -776,7 +776,7 @@ function downloadImages()
           $zpid = $row['zpid'];
           $imgUrl = $row['image'];
 
-          $imgFolder = __DIR__ . '/download/images/' . $zpid;
+          $imgFolder = __DIR__ . '/../download/images/' . $zpid;
           if (!file_exists($imgFolder)) {
             mkdir($imgFolder, 0777, true);
           }

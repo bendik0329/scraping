@@ -36,7 +36,7 @@ _init();
 // Set up Selenium WebDriver
 $host = 'http://localhost:4444/wd/hub';
 $capabilities = \Facebook\WebDriver\Remote\DesiredCapabilities::chrome();
-$capabilities->setCapability('goog:chromeOptions', ['args' => ["--user-agent=" . USER_AGENT]]);
+$capabilities->setCapability('goog:chromeOptions', ['args' => ["--headless", "--user-agent=" . USER_AGENT]]);
 $driver = RemoteWebDriver::create($host, $capabilities);
 
 // $window = $driver->manage()->window();
@@ -228,6 +228,8 @@ foreach (STATE_LIST as $state) {
                     $attributeValue = $propertyElement->getAttribute('data-renderstrat');
                     return $attributeValue !== 'timeout';
                   });
+
+
                 }
               }
 

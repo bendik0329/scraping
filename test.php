@@ -30,7 +30,7 @@ foreach ($chunks as $chunk) {
       }
 
       // Quit the WebDriver instance
-      $driver->quit();
+      // $driver->quit();
 
       exit(); // Exit the child process
   } else {

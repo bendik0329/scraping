@@ -299,18 +299,30 @@ function scrapePropertyDetail($zpid, $detailHtml)
 
 function scrapeProperty($zpid, $url)
 {
-  print_r("detail url->>" . $url);
-  print_r("\n");
-  // $curl = curl_init();
-  // curl_setopt($curl, CURLOPT_URL, $url);
-  // curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
-  // curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-  // curl_setopt($curl, CURLOPT_USERAGENT, USER_AGENT);
-  // $html = curl_exec($curl);
-  // curl_close($curl);
+  $curl = curl_init();
+  curl_setopt($curl, CURLOPT_URL, $url);
+  curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+  curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($curl, CURLOPT_USERAGENT, USER_AGENT);
+  $html = curl_exec($curl);
+  curl_close($curl);
 
-  // $htmlDomParser = HtmlDomParser::str_get_html($html);
-  // print_r($htmlDomParser);
+  $htmlDomParser = HtmlDomParser::str_get_html($html);
+  print_r($htmlDomParser);
+
+  $detailHtml = $htmlDomParser->findOne("div.detail-page");
+
+  // get price
+  $priceElement = $detailHtml->findOne("div.summary-container div.hdp__sc-1s2b8ok-1.ckVIjE span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-1me8eh6-0.OByUh.fpfhCd > span");
+
+  if ($priceElement) {
+    $priceText = $priceElement->text();
+    $deformatedPrice = deformatPrice($priceText);
+    $price = $deformatedPrice["price"];
+  } else {
+    $price = 0;
+  }
+  print_r("price->>" . $price);
 }
 
 function scrapeBedBathElements($bedBathElements)

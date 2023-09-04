@@ -147,9 +147,6 @@ function scrapeProperties($propertyElements)
   $result = array();
 
   if (count($propertyElements) > 0) {
-    print_r("property count->>");
-    print_r(count($propertyElements));
-    print_r("\n");
     foreach ($propertyElements as $propertyElement) {
       $zpid = str_replace("zpid_", "", $propertyElement->getAttribute("id"));
       $zpid = intval($zpid);
@@ -488,8 +485,6 @@ function scrapeHouseElements($houseElements)
                   if ($unit == "Acres") {
                     $lot = floatval($lot) * 43560;
                   }
-                  print_r($lot);
-                  print_r("\n");
                 }
               } catch (NoSuchElementException $e) {
                 $lot = 0;

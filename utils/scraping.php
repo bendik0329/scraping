@@ -7,6 +7,7 @@ use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\Exception\NoSuchElementException;
 use Facebook\WebDriver\WebDriver;
 use Facebook\WebDriver\WebDriverKeys;
+use voku\helper\HtmlDomParser;
 
 function _init()
 {
@@ -294,6 +295,22 @@ function scrapePropertyDetail($zpid, $detailHtml)
     // "priceHistory" => $priceHistory,
     // "taxHistory" => $taxHistory,
   );
+}
+
+function scrapeProperty($zpid, $url)
+{
+  print_r("detail url->>" . $url);
+  print_r("\n");
+  // $curl = curl_init();
+  // curl_setopt($curl, CURLOPT_URL, $url);
+  // curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+  // curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+  // curl_setopt($curl, CURLOPT_USERAGENT, USER_AGENT);
+  // $html = curl_exec($curl);
+  // curl_close($curl);
+
+  // $htmlDomParser = HtmlDomParser::str_get_html($html);
+  // print_r($htmlDomParser);
 }
 
 function scrapeBedBathElements($bedBathElements)

@@ -140,7 +140,7 @@ foreach ($chunks as $chunk) {
 
                 print_r("total count->>" . $totalCount);
                 print_r("\n");
-                
+
                 while ($currentPage <= $maxPage) {
                   if ($currentPage != 1) {
                     $pagination = array(
@@ -179,26 +179,27 @@ foreach ($chunks as $chunk) {
                         print_r("zpid->>>" . $zpid);
                         print_r("\n");
 
-                        // if ($zpid) {
-                        //   try {
-                        //     $link = $element->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");
+                        if ($zpid) {
+                          try {
+                            $link = $element->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");
+                            $detailUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=" . $link;
+                            $result = scrapeProperty($zpid, $detailUrl);
+                            // $images = array();
+                            // $imgElements = $element->findElements(WebDriverBy::cssSelector("a.Anchor-c11n-8-84-3__sc-hn4bge-0.kxrUt.carousel-photo picture img.Image-c11n-8-84-3__sc-1rtmhsc-0"));
+                            // if (count($imgElements) > 0) {
+                            //   foreach ($imgElements as $imgElement) {
+                            //     $images[] = $imgElement->getAttribute("src");;
+                            //   }
+                            // }
 
-                        //     $images = array();
-                        //     $imgElements = $element->findElements(WebDriverBy::cssSelector("a.Anchor-c11n-8-84-3__sc-hn4bge-0.kxrUt.carousel-photo picture img.Image-c11n-8-84-3__sc-1rtmhsc-0"));
-                        //     if (count($imgElements) > 0) {
-                        //       foreach ($imgElements as $imgElement) {
-                        //         $images[] = $imgElement->getAttribute("src");;
-                        //       }
-                        //     }
-
-                        //     $list[] = array(
-                        //       "zpid" => $zpid,
-                        //       "link" => $link,
-                        //       "images" => $images,
-                        //     );
-                        //   } catch (NoSuchElementException $e) {
-                        //   }
-                        // }
+                            // $list[] = array(
+                            //   "zpid" => $zpid,
+                            //   "link" => $link,
+                            //   "images" => $images,
+                            // );
+                          } catch (NoSuchElementException $e) {
+                          }
+                        }
                       } catch (NoSuchElementException $e) {
                       }
                     }

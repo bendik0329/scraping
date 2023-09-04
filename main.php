@@ -138,6 +138,9 @@ foreach ($chunks as $chunk) {
                 $currentPage = 1;
                 $maxPage = ceil($totalCount / $itemsPerPage);
 
+                print_r("total count->>" . $totalCount);
+                print_r("\n");
+                
                 while ($currentPage <= $maxPage) {
                   if ($currentPage != 1) {
                     $pagination = array(

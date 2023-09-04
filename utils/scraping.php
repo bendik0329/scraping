@@ -308,13 +308,11 @@ function scrapeProperty($zpid, $url)
   curl_close($curl);
 
   $htmlDomParser = HtmlDomParser::str_get_html($html);
-  print_r($htmlDomParser);
 
   $detailHtml = $htmlDomParser->findOne("div.detail-page");
 
   // get price
   $priceElement = $detailHtml->findOne("div.summary-container div.hdp__sc-1s2b8ok-1.ckVIjE span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-1me8eh6-0.OByUh.fpfhCd > span");
-
   if ($priceElement) {
     $priceText = $priceElement->text();
     $deformatedPrice = deformatPrice($priceText);
@@ -323,6 +321,7 @@ function scrapeProperty($zpid, $url)
     $price = 0;
   }
   print_r("price->>" . $price);
+  print_r("\n");
 }
 
 function scrapeBedBathElements($bedBathElements)

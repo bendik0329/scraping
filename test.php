@@ -20,7 +20,7 @@ foreach ($chunks as $chunk) {
   } elseif ($pid == 0) {
       // Child process
       // Create a new WebDriver instance
-      $driver = RemoteWebDriver::create($host, $capabilities);
+      // $driver = RemoteWebDriver::create($host, $capabilities);
 
       // Process each state in the chunk
       foreach ($chunk as $state) {

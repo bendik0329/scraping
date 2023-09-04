@@ -54,6 +54,7 @@ foreach ($chunks as $chunk) {
       foreach ($chunk as $state) {
           // Add your code here to control the Selenium instance for each state
           // For example, navigate to a website and perform actions
+          echo "hi \n";
           echo "Processing state: $state\n";
       }
 

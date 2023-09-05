@@ -42,6 +42,7 @@ function _init()
       `saves` INT ( 11 ),
       `special` VARCHAR ( 255 ),
       `overview` TEXT,
+      `filter` TEXT,
       `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 
     )";
 

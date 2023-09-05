@@ -17,8 +17,7 @@ function _init()
       `id` INT ( 6 ) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
       `zpid` INT ( 11 ) NOT NULL UNIQUE,
       `url` VARCHAR ( 255 ) NOT NULL,
-      `image` VARCHAR ( 255 ),
-      `currency` VARCHAR ( 255 ),
+      `images` TEXT,
       `price` INT ( 11 ),
       `address` VARCHAR ( 255 ),
       `city` VARCHAR ( 255 ),
@@ -29,15 +28,13 @@ function _init()
       `sqft` FLOAT ( 4 ),
       `acres` FLOAT ( 4 ),
       `type` VARCHAR ( 255 ),
-      `zestimateCurrency` VARCHAR ( 255 ),
-      `zestimatePrice` INT ( 11 ),
+      `zestimate` INT ( 11 ),
       `houseType` VARCHAR ( 255 ),
       `builtYear` INT ( 11 ),
       `heating` VARCHAR ( 255 ),
       `cooling` VARCHAR ( 255 ),
       `parking` VARCHAR ( 255 ),
       `lot` FLOAT ( 4 ),
-      `priceSqftCurrency` VARCHAR ( 255 ),
       `priceSqft` INT ( 11 ),
       `agencyFee` FLOAT ( 4 ),
       `days` INT ( 11 ),
@@ -45,7 +42,6 @@ function _init()
       `saves` INT ( 11 ),
       `special` VARCHAR ( 255 ),
       `overview` TEXT,
-      `images` TEXT,
       `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 
     )";
 
@@ -56,70 +52,6 @@ function _init()
     }
   } else {
     echo "Error dropping properties table: " . $conn->error . "\n";
-  }
-
-  // check images table
-  $dropImagesSql = "DROP TABLE IF EXISTS images";
-
-  if ($db->query($dropImagesSql) === TRUE) {
-    $imagesSql = "CREATE TABLE IF NOT EXISTS images (
-      `id` INT ( 6 ) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-      `zpid` VARCHAR ( 255 ) NOT NULL,
-      `url` VARCHAR ( 255 ) NOT NULL,
-      `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 
-    )";
-
-    if ($db->query($imagesSql) === TRUE) {
-      echo "Table images created successfully \n";
-    } else {
-      echo "Error creating images table: " . $conn->error . "\n";
-    }
-  } else {
-    echo "Error dropping images table: " . $conn->error . "\n";
-  }
-
-  // check price_history table
-  $dropPriceHistoriesSql = "DROP TABLE IF EXISTS price_histories";
-
-  if ($db->query($dropPriceHistoriesSql) === TRUE) {
-    $priceHistoriesSql = "CREATE TABLE IF NOT EXISTS price_histories (
-      `id` INT ( 6 ) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-      `zpid` VARCHAR ( 255 ) NOT NULL,
-      `date` DATE,
-      `event` VARCHAR ( 255 ),
-      `price` VARCHAR ( 255 ),
-      `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 
-    )";
-
-    if ($db->query($priceHistoriesSql) === TRUE) {
-      echo "Table price_histories created successfully \n";
-    } else {
-      echo "Error creating price_histories table: " . $conn->error . "\n";
-    }
-  } else {
-    echo "Error dropping price_histories table: " . $conn->error . "\n";
-  }
-
-  // check tax_history table
-  $dropTaxHistoriesSql = "DROP TABLE IF EXISTS tax_histories";
-
-  if ($db->query($dropTaxHistoriesSql) === TRUE) {
-    $taxHistoriesSql = "CREATE TABLE IF NOT EXISTS tax_histories (
-      `id` INT ( 6 ) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-      `zpid` VARCHAR ( 255 ) NOT NULL,
-      `year` INT ( 11 ),
-      `tax` VARCHAR ( 255 ),
-      `taxAssessment` VARCHAR ( 255 ),
-      `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 
-    )";
-
-    if ($db->query($taxHistoriesSql) === TRUE) {
-      echo "Table tax_histories created successfully \n";
-    } else {
-      echo "Error creating tax_histories table: " . $conn->error . "\n";
-    }
-  } else {
-    echo "Error dropping tax_histories table: " . $conn->error . "\n";
   }
 
   // check the selenium server
@@ -267,16 +199,16 @@ function scrapePropertyDetail($url)
 
       switch ($title) {
         case "bd":
-          $beds = $value;
+          $beds = floatval($value);
           break;
         case "ba":
-          $baths = $value;
+          $baths = floatval($value);
           break;
         case "sqft":
-          $sqft = $value;
+          $sqft = floatval($value);
           break;
         case "Acres":
-          $acres = $value;
+          $acres = floatval($value);
           break;
       }
     }
@@ -297,16 +229,16 @@ function scrapePropertyDetail($url)
 
         switch ($title) {
           case "bd":
-            $beds = $value;
+            $beds = floatval($value);
             break;
           case "ba":
-            $baths = $value;
+            $baths = floatval($value);
             break;
           case "sqft":
-            $sqft = $value;
+            $sqft = floatval($value);
             break;
           case "Acres":
-            $acres = $value;
+            $acres = floatval($value);
             break;
         }
       }

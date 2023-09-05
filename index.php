@@ -208,7 +208,7 @@ foreach ($chunks as $chunk) {
                             print_r($result);
                             print_r("\n");
 
-                            $exists = $db->query("SELECT * FROM properties WHERE zpid = $zpid");
+                            $exists = $db->query("SELECT * FROM properties WHERE zpid = '$zpid'");
                             if ($exists->num_rows > 0) {
                               echo "Duplicate zpid->> $zpid \n";
                               echo "State Alias->> $stateAlias \n";

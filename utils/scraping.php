@@ -168,7 +168,7 @@ function scrapePropertyDetail($url)
   }
 
   // get overview
-  $overviewElement = $detailHtml->findOne("div.Text-c11n-8-84-3__sc-aiai24-0.sc-oZIhv.hrfydd.jKaobh");
+  $overviewElement = $detailHtml->findOne("div.Text-c11n-8-84-3__sc-aiai24-0.sc-oZIhv.hrfydd");
   if ($overviewElement instanceof \voku\helper\SimpleHtmlDomBlank) {
     $overview = "";
   } else {

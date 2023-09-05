@@ -137,11 +137,7 @@ foreach ($chunks as $chunk) {
 
             $url = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/$stateAlias/?searchQueryState=$searchQueryState&dynamic=false";
 
-            print_r($url);
-            print_r("\n");
-
             $driver->get($url);
-            // sleep(2);
 
             try {
               $totalCount = $driver->findElement(WebDriverBy::cssSelector("div.ListHeader__NarrowViewWrapping-srp__sc-1rsgqpl-1.idxSRv.search-subtitle span.result-count"))->getText();
@@ -205,15 +201,11 @@ foreach ($chunks as $chunk) {
                             $result = array_merge(array("zpid" => $zpid, "url" => $link, "images" => json_encode($images)), scrapePropertyDetail($detailUrl));
                             $filter = json_encode($filterState);
 
-                            print_r($result);
-                            print_r("\n");
-
                             $exists = $db->query("SELECT * FROM properties WHERE zpid = '$zpid'");
                             if ($exists->num_rows > 0) {
                               echo "Duplicate zpid->> $zpid \n";
                               echo "State Alias->> $stateAlias \n";
                               echo "Filter->> $filter \n";
-                              exit();
                             } else {
                               $sql = "
                                 INSERT INTO properties
@@ -281,23 +273,13 @@ foreach ($chunks as $chunk) {
                                   '" . date('Y-m-d H:i:s') . "'
                                 )";
 
+                              echo "$sql \n";
+
                               if (!$db->query($sql)) {
                                 echo "Error inserting properties table: \n";
                                 echo $sql . "\n";
                               }
                             }
-
-
-                            // $properties[] = $result;
-                            // $counter++;
-
-                            // if ($counter === 100) {
-                            //   file_put_contents(__DIR__ . "/result/data-$fileCounter.json", json_encode($properties));
-                            //   $counter = 0;
-                            //   $properties = [];
-
-                            //   $fileCounter++;
-                            // }
                           } catch (NoSuchElementException $e) {
                           }
                         }
@@ -325,101 +307,6 @@ foreach ($chunks as $chunk) {
 // Wait for all child processes to finish
 foreach ($pids as $pid) {
   pcntl_waitpid($pid, $status);
-}
-
-exit();
-
-if (!empty($properties)) {
-  file_put_contents(__DIR__ . "/result/data-$fileCounter.json", json_encode($properties));
-}
-
-// Connect to DB
-$db  = new Database();
-if (!$db->connect($host, $username, $password, $dbname)) {
-  die("DB Connection failed: " . $conn->connect_error);
-}
-
-// initialize table
-_init();
-
-// store to MySQL DB
-$fileCounter = 1;
-while (file_exists(__DIR__ . "/result/data-$fileCounter.json")) {
-  $json = file_get_contents(__DIR__ . "/result/data-$fileCounter.json");
-  $properties = json_decode($json, true);
-
-  foreach ($properties as $property) {
-    $sql = "
-      INSERT INTO properties
-      (
-        zpid,
-        url,
-        images,
-        price,
-        address,
-        city,
-        state,
-        zipcode,
-        beds,
-        baths,
-        sqft,
-        acres,
-        type,
-        zestimate,
-        houseType,
-        builtYear,
-        heating,
-        cooling,
-        parking,
-        lot,
-        priceSqft,
-        agencyFee,
-        days,
-        views,
-        saves,
-        special,
-        overview,
-        createdAt
-      )
-      VALUES
-      (
-        '" . $db->makeSafe($property["zpid"]) . "',
-        '" . $db->makeSafe($property["url"]) . "',
-        '" . $db->makeSafe($property["images"]) . "',
-        '" . $db->makeSafe($property["price"]) . "',
-        '" . $db->makeSafe($property["address"]) . "',
-        '" . $db->makeSafe($property["city"]) . "',
-        '" . $db->makeSafe($property["state"]) . "',
-        '" . $db->makeSafe($property["zipcode"]) . "',
-        '" . $db->makeSafe($property["beds"]) . "',
-        '" . $db->makeSafe($property["baths"]) . "',
-        '" . $db->makeSafe($property["sqft"]) . "',
-        '" . $db->makeSafe($property["acres"]) . "',
-        '" . $db->makeSafe($property["type"]) . "',
-        '" . $db->makeSafe($property["zestimate"]) . "',
-        '" . $db->makeSafe($property["houseType"]) . "',
-        '" . $db->makeSafe($property["builtYear"]) . "',
-        '" . $db->makeSafe($property["heating"]) . "',
-        '" . $db->makeSafe($property["cooling"]) . "',
-        '" . $db->makeSafe($property["parking"]) . "',
-        '" . $db->makeSafe($property["lot"]) . "',
-        '" . $db->makeSafe($property["priceSqft"]) . "',
-        '" . $db->makeSafe($property["agencyFee"]) . "',
-        '" . $db->makeSafe($property["days"]) . "',
-        '" . $db->makeSafe($property["views"]) . "',
-        '" . $db->makeSafe($property["saves"]) . "',
-        '" . $db->makeSafe($property["special"]) . "',
-        '" . $db->makeSafe($property["overview"]) . "',
-        '" . date('Y-m-d H:i:s') . "'
-      )";
-
-    if (!$db->query($sql)) {
-      echo "Error inserting properties table: \n";
-      echo $sql . "\n";
-    }
-  }
-
-  $fileCounter++;
 }
 
 // download images

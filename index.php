@@ -186,7 +186,7 @@ foreach ($chunks as $chunk) {
                             $properties[] = $result;
                             $counter++;
 
-                            if ($counter === 1000) {
+                            if ($counter === 100) {
                               file_put_contents(__DIR__ . "/result/data-$fileCounter.json", json_encode($properties));
                               $counter = 0;
                               $properties = [];

@@ -190,11 +190,11 @@ foreach ($chunks as $chunk) {
                             $detailUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=" . $link;
 
                             logTimestamp("start detail scraping");
-
-                            $driver->get($detailUrl);
-                            $detailHtml = $driver->findElement(WebDriverBy::cssSelector("div.detail-page"));
+                            $driver1 = RemoteWebDriver::create($host, $capabilities);
+                            $driver1->get($detailUrl);
+                            $detailHtml = $driver1->findElement(WebDriverBy::cssSelector("div.detail-page"));
                             $result = array_merge(array("zpid" => $zpid, "url" => $link, "images" => json_encode($images)), scrapePropertyDetail($detailHtml));
-                            
+
                             logTimestamp("start db save");
 
                             print_r($result);

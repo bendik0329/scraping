@@ -116,6 +116,7 @@ foreach ($chunks as $chunk) {
 
             echo $url . "\n";
 
+            logTimestamp("start");
             $driver->get($url);
             // sleep(2);
 
@@ -146,6 +147,8 @@ foreach ($chunks as $chunk) {
 
                   $wait = new WebDriverWait($driver, 10);
                   $wait->until(WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::cssSelector("footer.site-footer")));
+
+                  logTimestamp("start list scraping");
 
                   $list = array();
                   $propertyElements = $driver->findElements(WebDriverBy::cssSelector("li.ListItem-c11n-8-84-3__sc-10e22w8-0.StyledListCardWrapper-srp__sc-wtsrtn-0.iCyebE.gTOWtl > div"));
@@ -178,21 +181,91 @@ foreach ($chunks as $chunk) {
                             $link = $element->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");
                             $detailUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=" . $link;
 
+                            logTimestamp("start detail scraping");
                             $result = array_merge(array("zpid" => $zpid, "url" => $link, "images" => json_encode($images)), scrapePropertyDetail($detailUrl));
-
+                            logTimestamp("start db save");
                             print_r($result);
                             print_r("\n");
 
-                            $properties[] = $result;
-                            $counter++;
+                            $sql = "
+                              INSERT INTO properties
+                              (
+                                zpid,
+                                url,
+                                images,
+                                price,
+                                address,
+                                city,
+                                state,
+                                zipcode,
+                                beds,
+                                baths,
+                                sqft,
+                                acres,
+                                type,
+                                zestimate,
+                                houseType,
+                                builtYear,
+                                heating,
+                                cooling,
+                                parking,
+                                lot,
+                                priceSqft,
+                                agencyFee,
+                                days,
+                                views,
+                                saves,
+                                special,
+                                overview,
+                                createdAt
+                              )
+                              VALUES
+                              (
+                                '" . $db->makeSafe($result["zpid"]) . "',
+                                '" . $db->makeSafe($result["url"]) . "',
+                                '" . $db->makeSafe($result["images"]) . "',
+                                '" . $db->makeSafe($result["price"]) . "',
+                                '" . $db->makeSafe($result["address"]) . "',
+                                '" . $db->makeSafe($result["city"]) . "',
+                                '" . $db->makeSafe($result["state"]) . "',
+                                '" . $db->makeSafe($result["zipcode"]) . "',
+                                '" . $db->makeSafe($result["beds"]) . "',
+                                '" . $db->makeSafe($result["baths"]) . "',
+                                '" . $db->makeSafe($result["sqft"]) . "',
+                                '" . $db->makeSafe($result["acres"]) . "',
+                                '" . $db->makeSafe($result["type"]) . "',
+                                '" . $db->makeSafe($result["zestimate"]) . "',
+                                '" . $db->makeSafe($result["houseType"]) . "',
+                                '" . $db->makeSafe($result["builtYear"]) . "',
+                                '" . $db->makeSafe($result["heating"]) . "',
+                                '" . $db->makeSafe($result["cooling"]) . "',
+                                '" . $db->makeSafe($result["parking"]) . "',
+                                '" . $db->makeSafe($result["lot"]) . "',
+                                '" . $db->makeSafe($result["priceSqft"]) . "',
+                                '" . $db->makeSafe($result["agencyFee"]) . "',
+                                '" . $db->makeSafe($result["days"]) . "',
+                                '" . $db->makeSafe($result["views"]) . "',
+                                '" . $db->makeSafe($result["saves"]) . "',
+                                '" . $db->makeSafe($result["special"]) . "',
+                                '" . $db->makeSafe($result["overview"]) . "',
+                                '" . date('Y-m-d H:i:s') . "'
+                              )";
 
-                            if ($counter === 100) {
-                              file_put_contents(__DIR__ . "/result/data-$fileCounter.json", json_encode($properties));
-                              $counter = 0;
-                              $properties = [];
-
-                              $fileCounter++;
+                            if (!$db->query($sql)) {
+                              echo "Error inserting properties table: \n";
+                              echo $sql . "\n";
                             }
+
+                            // $properties[] = $result;
+                            // $counter++;
+
+                            // if ($counter === 100) {
+                            //   file_put_contents(__DIR__ . "/result/data-$fileCounter.json", json_encode($properties));
+                            //   $counter = 0;
+                            //   $properties = [];
+
+                            //   $fileCounter++;
+                            // }
                           } catch (NoSuchElementException $e) {
                           }
                         }

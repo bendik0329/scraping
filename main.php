@@ -11,6 +11,34 @@ use Facebook\WebDriver\Exception\NoSuchElementException;
 use Facebook\WebDriver\WebDriverWait;
 use Facebook\WebDriver\WebDriverExpectedCondition;
 
+// load environment variable
+$envConfig = parse_ini_file(__DIR__ . "/.env");
+
+$host = $envConfig['DB_HOST'];
+$username = $envConfig['DB_USERNAME'];
+$password = $envConfig['DB_PASSWORD'];
+$dbname = $envConfig['DB_DATABASE'];
+$apiKey = $envConfig['API_KEY'];
+
+// // Connect to DB
+// $db  = new Database();
+// if (!$db->connect($host, $username, $password, $dbname)) {
+//   die("DB Connection failed: " . $conn->connect_error);
+// }
+
+// // initialize
+// _init();
+
+// // store to MySQL DB
+// $fileCounter = 1;
+// while (file_exists(__DIR__ . "/result/data-$fileCounter.json")) {
+//   $json = file_get_contents(__DIR__ . "/result/data-$fileCounter.json");
+//   $properties = json_decode($json, true);
+//   print_r($properties);
+//   $fileCounter++;
+// }
+
+// exit();
 // remove data files
 $resultDir = __DIR__ . "/result";
 if (!is_dir($resultDir)) {
@@ -35,14 +63,7 @@ if (file_exists($jsonFile)) {
   }
 }
 
-// load environment variable
-$envConfig = parse_ini_file(__DIR__ . "/.env");
 
-$host = $envConfig['DB_HOST'];
-$username = $envConfig['DB_USERNAME'];
-$password = $envConfig['DB_PASSWORD'];
-$dbname = $envConfig['DB_DATABASE'];
-$apiKey = $envConfig['API_KEY'];
 
 $host = 'http://localhost:4444/wd/hub';
 $capabilities = \Facebook\WebDriver\Remote\DesiredCapabilities::chrome();
@@ -235,16 +256,5 @@ foreach ($pids as $pid) {
 if (!empty($properties)) {
   file_put_contents(__DIR__ . "/result/data-$fileCounter.json", json_encode($properties));
 }
-
-// Connect to DB
-$db  = new Database();
-if (!$db->connect($host, $username, $password, $dbname)) {
-  die("DB Connection failed: " . $conn->connect_error);
-}
-
-// initialize
-_init();
-
-// store to MySQL DB
 
 exit();

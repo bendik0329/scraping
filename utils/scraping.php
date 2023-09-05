@@ -260,7 +260,7 @@ function scrapePropertyDetail($url)
 
       preg_match('/\d+(\.\d+)?/', $value, $matches);
       if (!empty($matches)) {
-        $value = $matches[0];
+        $value = floatval($matches[0]);
       } else {
         $value = 0;
       }
@@ -290,7 +290,7 @@ function scrapePropertyDetail($url)
       if ($title && $value) {
         preg_match('/\d+(\.\d+)?/', $value, $matches);
         if (!empty($matches)) {
-          $value = $matches[0];
+          $value = floatval($matches[0]);
         } else {
           $value = 0;
         }

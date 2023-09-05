@@ -27,21 +27,7 @@ if (!$db->connect($host, $username, $password, $dbname)) {
 }
 
 // initialize table
-// _init();
-
-$exists = $db->query("SELECT * FROM properties WHERE zpid = 123123123");
-print_r($exists);
-print_r("\n");
-
-if ($exists->num_rows > 0) {
-  echo "Duplicate zpid->> $zpid \n";
-  echo "State Alias->> $stateAlias \n";
-  echo "Filter->> $filter \n";
-} else {
- echo "there is no duplicate fields \n";
-}
-
-exit();
+_init();
 
 // remove data files
 $resultDir = __DIR__ . "/result";

@@ -682,3 +682,11 @@ function downloadImages()
     }
   }
 }
+
+function logTimestamp($event)
+{
+  $logFile = __DIR__ . "/../log/logfile.txt";
+  $timestamp = date('Y-m-d H:i:s');
+  $logMessage = $event . ' - ' . $timestamp . PHP_EOL;
+  file_put_contents($logFile, $logMessage, FILE_APPEND);
+}

@@ -20,6 +20,15 @@ $password = $envConfig['DB_PASSWORD'];
 $dbname = $envConfig['DB_DATABASE'];
 $apiKey = $envConfig['API_KEY'];
 
+// Connect to DB
+$db  = new Database();
+if (!$db->connect($host, $username, $password, $dbname)) {
+  die("DB Connection failed: " . $conn->connect_error);
+}
+
+// initialize table
+_init();
+
 // remove data files
 $resultDir = __DIR__ . "/result";
 if (!is_dir($resultDir)) {
@@ -294,6 +303,8 @@ foreach ($chunks as $chunk) {
 foreach ($pids as $pid) {
   pcntl_waitpid($pid, $status);
 }
+
+exit();
 
 if (!empty($properties)) {
   file_put_contents(__DIR__ . "/result/data-$fileCounter.json", json_encode($properties));

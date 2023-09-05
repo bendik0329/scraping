@@ -5,4 +5,5 @@ composer.phar
 .vscode
 /download/
 /result/
+/log/
 .env

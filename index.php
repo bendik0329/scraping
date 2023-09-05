@@ -213,6 +213,7 @@ foreach ($chunks as $chunk) {
                               echo "Duplicate zpid->> $zpid \n";
                               echo "State Alias->> $stateAlias \n";
                               echo "Filter->> $filter \n";
+                              exit();
                             } else {
                               $sql = "
                                 INSERT INTO properties

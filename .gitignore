@@ -4,5 +4,5 @@ composer.phar
 .idea
 .vscode
 /download/
-.env
 /result/
+.env

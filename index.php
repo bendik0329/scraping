@@ -137,6 +137,9 @@ foreach ($chunks as $chunk) {
 
             $url = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/$stateAlias/?searchQueryState=$searchQueryState&dynamic=false";
 
+            print_r($url);
+            print_r("\n");
+            
             $driver->get($url);
             // sleep(2);
 
@@ -200,7 +203,9 @@ foreach ($chunks as $chunk) {
                             $detailUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=" . $link;
 
                             $result = array_merge(array("zpid" => $zpid, "url" => $link, "images" => json_encode($images)), scrapePropertyDetail($detailUrl));
-                            
+                            print_r($result);
+                            print_r("\n");
+
                             $sql = "
                               INSERT INTO properties
                               (

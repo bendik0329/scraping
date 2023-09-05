@@ -29,7 +29,7 @@ if (!$db->connect($host, $username, $password, $dbname)) {
 // initialize table
 // _init();
 
-$exists = $db->query("SELECT * FROM properties WHERE zpid = $zpid");
+$exists = $db->query("SELECT * FROM properties WHERE zpid = 114519760");
 print_r($exists);
 print_r("\n");
 

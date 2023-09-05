@@ -137,9 +137,6 @@ foreach ($chunks as $chunk) {
 
             $url = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/$stateAlias/?searchQueryState=$searchQueryState&dynamic=false";
 
-            echo $url . "\n";
-
-            logTimestamp("start");
             $driver->get($url);
             // sleep(2);
 
@@ -170,8 +167,6 @@ foreach ($chunks as $chunk) {
 
                   $wait = new WebDriverWait($driver, 10);
                   $wait->until(WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::cssSelector("footer.site-footer")));
-
-                  logTimestamp("start list scraping");
 
                   $list = array();
                   $propertyElements = $driver->findElements(WebDriverBy::cssSelector("li.ListItem-c11n-8-84-3__sc-10e22w8-0.StyledListCardWrapper-srp__sc-wtsrtn-0.iCyebE.gTOWtl > div"));
@@ -204,11 +199,7 @@ foreach ($chunks as $chunk) {
                             $link = $element->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");
                             $detailUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=" . $link;
 
-                            logTimestamp("start detail scraping");
                             $result = array_merge(array("zpid" => $zpid, "url" => $link, "images" => json_encode($images)), scrapePropertyDetail($detailUrl));
-                            logTimestamp("start db save");
-                            print_r($result);
-                            print_r("\n");
 
                             $sql = "
                               INSERT INTO properties

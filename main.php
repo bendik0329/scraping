@@ -204,15 +204,15 @@ foreach ($chunks as $chunk) {
 
                   logTimestamp("start detail scraping");
 
-                  foreach ($list as $key => $item) {
-                    logTimestamp("start $key item detail scraping");
+                  foreach ($list as $key1 => $item) {
+                    logTimestamp("start $key1 item detail scraping");
                     $detailUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=" . $item["link"];
                     $driver->get($detailUrl);
                     $detailHtml = $driver->findElement(WebDriverBy::cssSelector("div.detail-page"));
 
                     $result = array_merge(array("zpid" => $item["zpid"], "url" => $item["link"], "images" => $item["images"]), scrapePropertyDetail($detailHtml));
 
-                    logTimestamp("start $key item db save");
+                    logTimestamp("start $key1 item db save");
 
                     print_r($result);
                     print_r("\n");

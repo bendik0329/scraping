@@ -170,6 +170,7 @@ function scrapePropertyDetail($url)
     $zipcode = "";
   } else {
     $addressText = $addressElement->text;
+    $addressText = str_replace([", ", ", "], ",", $addressText);
     $addressArray = explode(",", $addressText);
 
     if (isset($addressArray[0])) {
@@ -255,6 +256,7 @@ function scrapePropertyDetail($url)
     foreach ($bedBathElements as $bedBathElement) {
       $title = $bedBathElement->findOne("span > span")->text();
       $value = $bedBathElement->findOne("span > strong")->text();
+      $value = deformatNumber($value);
 
       preg_match('/\d+(\.\d+)?/', $value, $matches);
       if (!empty($matches)) {
@@ -343,7 +345,7 @@ function scrapePropertyDetail($url)
               $pattern = '/\b\d+\b/'; // Regular expression pattern to match any number
 
               if (preg_match($pattern, $builtYear, $matches)) {
-                $builtYear = $matches[0];
+                $builtYear = intval($matches[0]);
               } else {
                 $builtYear = 0;
               }
@@ -401,7 +403,7 @@ function scrapePropertyDetail($url)
             } else {
               preg_match('/\d+(\.\d+)?/', $agencyFee, $matches);
               if (!empty($matches)) {
-                $agencyFee = $matches[0];
+                $agencyFee = floatval($matches[0]);
               } else {
                 $agencyFee = 0;
               }
@@ -474,14 +476,12 @@ function scrapePropertyDetail($url)
 function deformatPrice($formated_price)
 {
   $currency = substr($formated_price, 0, 1);
-  $price = str_replace([$currency, ','], '', $formated_price);
-
-  return $price;
+  return floatval(str_replace([$currency, ','], '', $formated_price));
 }
 
 function deformatNumber($formated_number)
 {
-  return str_replace(',', '', $formated_number);
+  return floatval(str_replace(',', '', $formated_number));
 }
 
 function downloadImages()

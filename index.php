@@ -15,21 +15,8 @@ use Facebook\WebDriver\WebDriverDimension;
 use Facebook\WebDriver\WebDriverWait;
 use Facebook\WebDriver\WebDriverExpectedCondition;
 
-$array1 = array(
-  "key1" => "23234",
-  "key2" => "234234234",
-);
-
-$array2 = array(
-  "key3" => "asdasd",
-  "key4" => "qweqwe",
-);
-
-$array3 = array_merge($array1, $array2);
-print_r($array3);
-exit();
 $curl = curl_init();
-curl_setopt($curl, CURLOPT_URL, "https://api.scrapingdog.com/scrape?api_key=64ea0a7c389c1c508e3bb43b&url=https://www.zillow.com/homedetails/45819-Guhl-Ave-Posey-CA-93260/2069125985_zpid/");
+curl_setopt($curl, CURLOPT_URL, "https://api.scrapingdog.com/scrape?api_key=64ea0a7c389c1c508e3bb43b&url=https://www.zillow.com/homedetails/703-Farlow-Ave-Rapid-City-SD-57701/117814162_zpid/");
 curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($curl, CURLOPT_USERAGENT, USER_AGENT);
@@ -40,6 +27,65 @@ $htmlDomParser = HtmlDomParser::str_get_html($html);
 
 $detailHtml = $htmlDomParser->findOne("div.detail-page");
 
+// get address
+// get address
+$addressElement = $detailHtml->findOne("div.summary-container h1.Text-c11n-8-84-3__sc-aiai24-0.hrfydd");
+if ($addressElement instanceof \voku\helper\SimpleHtmlDomBlank) {
+  $address = "";
+  $city = "";
+  $state = "";
+  $zipcode = "";
+} else {
+  $addressText = $addressElement->text;
+  $addressText = str_replace([", ", ", "], ",", $addressText);
+  $addressArray = explode(",", $addressText);
+
+  if (isset($addressArray[0])) {
+    $address = trim($addressArray[0]);
+  } else {
+    $address = "";
+  }
+
+  if (isset($addressArray[1])) {
+    $city = trim($addressArray[1]);
+  } else {
+    $city = "";
+  }
+
+  if (isset($addressArray[2])) {
+    $state = trim($addressArray[2]);
+    $stateArray = explode(" ", trim($addressArray[2]));
+
+    if (isset($stateArray[0])) {
+      $state = $stateArray[0];
+    } else {
+      $state = "";
+    }
+
+    if (isset($stateArray[1])) {
+      $zipcode = $stateArray[1];
+    } else {
+      $zipcode = "";
+    }
+  } else {
+    $state = "";
+    $zipcode = "";
+  }
+}
+
+print_r("address->>" . $address);
+print_r("\n");
+
+print_r("city->>" . $city);
+print_r("\n");
+
+print_r("state->>" . $state);
+print_r("\n");
+
+print_r("zipcode->>" . $zipcode);
+print_r("\n");
+
+exit();
 // get price
 $priceElement = $detailHtml->findOne("div.summary-container div.hdp__sc-1s2b8ok-1.ckVIjE span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-1me8eh6-0.OByUh.fpfhCd > span");
 if ($priceElement instanceof \voku\helper\SimpleHtmlDomBlank) {

@@ -208,7 +208,7 @@ foreach ($chunks as $chunk) {
                     logTimestamp("start $key item detail scraping");
                     $detailUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=" . $item["link"];
                     $driver->get($detailUrl);
-                    $detailHtml = $driver1->findElement(WebDriverBy::cssSelector("div.detail-page"));
+                    $detailHtml = $driver->findElement(WebDriverBy::cssSelector("div.detail-page"));
 
                     $result = array_merge(array("zpid" => $item["zpid"], "url" => $item["link"], "images" => $item["images"]), scrapePropertyDetail($detailHtml));
 

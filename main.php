@@ -8,46 +8,49 @@ require_once  __DIR__ . '/utils/scraping.php';
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\Exception\NoSuchElementException;
-use Facebook\WebDriver\WebDriver;
-use Facebook\WebDriver\WebDriverKeys;
-use voku\helper\HtmlDomParser;
-use Facebook\WebDriver\WebDriverDimension;
 use Facebook\WebDriver\WebDriverWait;
 use Facebook\WebDriver\WebDriverExpectedCondition;
 
+// remove data files
+$resultDir = __DIR__ . "/result";
+if (!is_dir($resultDir)) {
+  mkdir($resultDir, 0777, true);
+} else {
+  $files = glob($resultDir . '/*');
+
+  foreach ($files as $file) {
+    if (is_file($file)) {
+      unlink($file);
+    }
+  }
+}
+
 // Save the JSON data to a file
-// $jsonFile = 'data.json';
-// if (file_exists($jsonFile)) {
-//   if (unlink($jsonFile)) {
-//     echo "File deleted successfully.";
-//   } else {
-//     echo "Unable to delete the file.";
-//   }
-// }
+$jsonFile = 'data.json';
+if (file_exists($jsonFile)) {
+  if (unlink($jsonFile)) {
+    echo "File deleted successfully.";
+  } else {
+    echo "Unable to delete the file.";
+  }
+}
 
 // load environment variable
 $envConfig = parse_ini_file(__DIR__ . "/.env");
 
-// $host = $envConfig['DB_HOST'];
-// $username = $envConfig['DB_USERNAME'];
-// $password = $envConfig['DB_PASSWORD'];
-// $dbname = $envConfig['DB_DATABASE'];
+$host = $envConfig['DB_HOST'];
+$username = $envConfig['DB_USERNAME'];
+$password = $envConfig['DB_PASSWORD'];
+$dbname = $envConfig['DB_DATABASE'];
 $apiKey = $envConfig['API_KEY'];
-
-// Connect to DB
-// $db  = new Database();
-// if (!$db->connect($host, $username, $password, $dbname)) {
-//   die("DB Connection failed: " . $conn->connect_error);
-// }
-
-// initialize
-// _init();
 
 $host = 'http://localhost:4444/wd/hub';
 $capabilities = \Facebook\WebDriver\Remote\DesiredCapabilities::chrome();
 $capabilities->setCapability('goog:chromeOptions', ['args' => ["--headless", "--user-agent=" . USER_AGENT]]);
+
 $properties = [];
-$total = 0;
+$counter = 0;
+$fileCounter = 1;
 
 $numParallel = 10;
 $pids = [];
@@ -57,7 +60,6 @@ foreach ($chunks as $chunk) {
   $pid = pcntl_fork();
 
   if ($pid == -1) {
-    // Fork failed
     die('Could not fork');
   } elseif ($pid == 0) {
     $driver = RemoteWebDriver::create($host, $capabilities);
@@ -186,16 +188,21 @@ foreach ($chunks as $chunk) {
                             $link = $element->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");
                             $detailUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=" . $link;
 
-                            $result = array_merge(array("zpid" => $zpid, "url" => $link, "images" => $images), scrapePropertyDetail($zpid, $detailUrl));
-                            $properties[] = $result;
-                            
+                            $result = array_merge(array("zpid" => $zpid, "url" => $link, "images" => json_encode($images)), scrapePropertyDetail($detailUrl));
+
                             print_r($result);
                             print_r("\n");
-                            // $list[] = array(
-                            //   "zpid" => $zpid,
-                            //   "link" => $link,
-                            //   "images" => $images,
-                            // );
+
+                            $properties[] = $result;
+                            $counter++;
+
+                            if ($counter === 10) {
+                              file_put_contents(__DIR__ . "/result/data-$fileCounter.json", json_encode($properties));
+                              $counter = 0;
+                              $properties = [];
+
+                              $fileCounter++;
+                            }
                           } catch (NoSuchElementException $e) {
                           }
                         }
@@ -203,26 +210,6 @@ foreach ($chunks as $chunk) {
                       }
                     }
                   }
-
-                  // foreach ($list as $item) {
-                  //   if ($item["zpid"] && $item["link"]) {
-                  //     $detailUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=" . $item["link"];
-
-                  //     $driver->get($detailUrl);
-                  //     sleep(2);
-
-                  //     $detailHtml = $driver->findElement(WebDriverBy::cssSelector("div.detail-page"));
-                  //     $result = scrapePropertyDetail($item["zpid"], $detailHtml);
-                  //     $result["zpid"] = $item["zpid"];
-                  //     $result["url"] = $item["link"];
-                  //     $result["images"] = $item["images"];
-
-                  //     print_r($result);
-                  //     print_r("\n");
-                  //     $properties[] = $result;
-                  //     $total++;
-                  //   }
-                  // }
 
                   $currentPage++;
                 }
@@ -236,7 +223,6 @@ foreach ($chunks as $chunk) {
 
     $driver->close();
   } else {
-    // Parent process
     $pids[] = $pid;
   }
 }
@@ -245,5 +231,20 @@ foreach ($chunks as $chunk) {
 foreach ($pids as $pid) {
   pcntl_waitpid($pid, $status);
 }
+
+if (!empty($properties)) {
+  file_put_contents(__DIR__ . "/result/data-$fileCounter.json", json_encode($properties));
+}
+
+// Connect to DB
+$db  = new Database();
+if (!$db->connect($host, $username, $password, $dbname)) {
+  die("DB Connection failed: " . $conn->connect_error);
+}
+
+// initialize
+_init();
+
+// store to MySQL DB
 
 exit();

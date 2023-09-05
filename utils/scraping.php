@@ -1,6 +1,7 @@
 <?php
 
 require_once  __DIR__ . '/database.php';
+require_once  __DIR__ . '/constants.php';
 
 use voku\helper\HtmlDomParser;
 
@@ -137,7 +138,7 @@ function _init()
   }
 }
 
-function scrapePropertyDetail($zpid, $url)
+function scrapePropertyDetail($url)
 {
   $curl = curl_init();
   curl_setopt($curl, CURLOPT_URL, $url);

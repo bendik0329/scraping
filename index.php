@@ -29,34 +29,6 @@ if (!$db->connect($host, $username, $password, $dbname)) {
 // initialize table
 _init();
 
-// remove data files
-$resultDir = __DIR__ . "/result";
-if (!is_dir($resultDir)) {
-  mkdir($resultDir, 0777, true);
-} else {
-  $files = glob($resultDir . '/*');
-
-  foreach ($files as $file) {
-    if (is_file($file)) {
-      unlink($file);
-    }
-  }
-}
-
-// clear log files
-$logDir = __DIR__ . "/log";
-if (!is_dir($logDir)) {
-  mkdir($logDir, 0777, true);
-} else {
-  $files = glob($logDir . '/*');
-
-  foreach ($files as $file) {
-    if (is_file($file)) {
-      unlink($file);
-    }
-  }
-}
-
 $host = 'http://localhost:4444/wd/hub';
 $capabilities = \Facebook\WebDriver\Remote\DesiredCapabilities::chrome();
 $capabilities->setCapability('goog:chromeOptions', ['args' => ["--headless", "--user-agent=" . USER_AGENT]]);

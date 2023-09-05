@@ -20,15 +20,17 @@ $password = $envConfig['DB_PASSWORD'];
 $dbname = $envConfig['DB_DATABASE'];
 $apiKey = $envConfig['API_KEY'];
 
-// // Connect to DB
-// $db  = new Database();
-// if (!$db->connect($host, $username, $password, $dbname)) {
-//   die("DB Connection failed: " . $conn->connect_error);
-// }
+// Connect to DB
+$db  = new Database();
+if (!$db->connect($host, $username, $password, $dbname)) {
+  die("DB Connection failed: " . $conn->connect_error);
+}
 
-// // initialize
-// _init();
+// initialize
+_init();
 
+print_r("asdfjalksdf");
+exit();
 // // store to MySQL DB
 // $fileCounter = 1;
 // while (file_exists(__DIR__ . "/result/data-$fileCounter.json")) {

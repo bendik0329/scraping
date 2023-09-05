@@ -43,6 +43,20 @@ if (!is_dir($resultDir)) {
   }
 }
 
+// clear log files
+$logDir = __DIR__ . "/log";
+if (!is_dir($logDir)) {
+  mkdir($logDir, 0777, true);
+} else {
+  $files = glob($logDir . '/*');
+
+  foreach ($files as $file) {
+    if (is_file($file)) {
+      unlink($file);
+    }
+  }
+}
+
 $host = 'http://localhost:4444/wd/hub';
 $capabilities = \Facebook\WebDriver\Remote\DesiredCapabilities::chrome();
 $capabilities->setCapability('goog:chromeOptions', ['args' => ["--headless", "--user-agent=" . USER_AGENT]]);

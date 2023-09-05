@@ -200,7 +200,7 @@ foreach ($chunks as $chunk) {
                             $detailUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=" . $link;
 
                             $result = array_merge(array("zpid" => $zpid, "url" => $link, "images" => json_encode($images)), scrapePropertyDetail($detailUrl));
-
+                            
                             $sql = "
                               INSERT INTO properties
                               (
@@ -231,6 +231,7 @@ foreach ($chunks as $chunk) {
                                 saves,
                                 special,
                                 overview,
+                                filter,
                                 createdAt
                               )
                               VALUES
@@ -262,6 +263,7 @@ foreach ($chunks as $chunk) {
                                 '" . $db->makeSafe($result["saves"]) . "',
                                 '" . $db->makeSafe($result["special"]) . "',
                                 '" . $db->makeSafe($result["overview"]) . "',
+                                '" . $db->makeSafe(json_encode($filterState)) . "',
                                 '" . date('Y-m-d H:i:s') . "'
                               )";
 

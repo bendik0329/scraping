@@ -90,20 +90,16 @@ function retryCurlRequest($url, $maxRetries)
   print_r($url);
   print_r("\n");
 
-  print_r($maxRetries);
-  print_r("\n");
-  
   $retryCount = 0;
   $html = '';
 
-  while (!$html instanceof \voku\helper\SimpleHtmlDomBlank || $retryCount < $maxRetries) {
+  while (!($html instanceof \voku\helper\SimpleHtmlDomBlank) && $retryCount < $maxRetries) {
     print_r("retry");
     print_r("\n");
-
     $response = sendCurlRequest($url);
     $html = $response->findOne("div.detail-page");
 
-    if ($html instanceof \voku\helper\SimpleHtmlDomBlank) {
+    if (!($html instanceof \voku\helper\SimpleHtmlDomBlank)) {
       $retryCount++;
     }
   }
@@ -125,6 +121,9 @@ function scrapePropertyDetail($detailHtml)
 
   // $detailHtml = $htmlDomParser->findOne("div.detail-page");
 
+  print_r($detailHtml);
+  print_r("\n");
+  
   // get price
   $priceElement = $detailHtml->findOne("div.summary-container div.hdp__sc-1s2b8ok-1.ckVIjE span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-1me8eh6-0.OByUh.fpfhCd > span");
   if ($priceElement instanceof \voku\helper\SimpleHtmlDomBlank) {

@@ -2,7 +2,6 @@
 
 require_once __DIR__ . '/vendor/autoload.php';
 require_once  __DIR__ . '/utils/constants.php';
-// require_once  __DIR__ . '/init.php';
 require_once  __DIR__ . '/utils/scraping.php';
 
 use Facebook\WebDriver\Remote\RemoteWebDriver;
@@ -249,7 +248,7 @@ function scrape($batch, $db)
 }
 
 // Divide states into batches of 5
-$stateBatches = array_chunk($states, 10);
+$stateBatches = array_chunk($states, 5);
 
 // Get the batch to scrape based on the startIndex
 $batchToScrape = isset($stateBatches[$startIndex]) ? $stateBatches[$startIndex] : [];

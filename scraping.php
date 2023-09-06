@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/vendor/autoload.php';
 require_once  __DIR__ . '/utils/constants.php';
-require_once  __DIR__ . '/init.php';
+// require_once  __DIR__ . '/init.php';
 require_once  __DIR__ . '/utils/scraping.php';
 
 use Facebook\WebDriver\Remote\RemoteWebDriver;
@@ -13,7 +13,18 @@ use Facebook\WebDriver\WebDriverExpectedCondition;
 
 // load environment variable
 $envConfig = parse_ini_file(__DIR__ . "/.env");
+
+$host = $envConfig['DB_HOST'];
+$username = $envConfig['DB_USERNAME'];
+$password = $envConfig['DB_PASSWORD'];
+$dbname = $envConfig['DB_DATABASE'];
 $apiKey = $envConfig['API_KEY'];
+
+// Connect to DB
+$db  = new Database();
+if (!$db->connect($host, $username, $password, $dbname)) {
+  die("DB Connection failed: " . $conn->connect_error);
+}
 
 // Set up Selenium WebDriver
 $host = 'http://localhost:4444/wd/hub';
@@ -79,8 +90,6 @@ function scrape($batch, $db)
       $searchQueryState = urlencode($queryString);
 
       $url = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/$stateAlias/?searchQueryState=$searchQueryState&dynamic=false";
-      print_r($url);
-      print_r("\n");
 
       $driver->get($url);
 
@@ -142,7 +151,6 @@ function scrape($batch, $db)
                         }
 
                         $link = $element->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");
-                        $filter = json_encode($filterState);
                         $detailUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=" . $link;
 
                         $detailHtml = retryCurlRequest($detailUrl);
@@ -182,8 +190,6 @@ function scrape($batch, $db)
                             saves,
                             special,
                             overview,
-                            stateAlias,
-                            filter,
                             createdAt
                           )
                           VALUES
@@ -215,8 +221,6 @@ function scrape($batch, $db)
                             '" . $db->makeSafe($result["saves"]) . "',
                             '" . $db->makeSafe($result["special"]) . "',
                             '" . $db->makeSafe($result["overview"]) . "',
-                            '" . $db->makeSafe($stateAlias) . "',
-                            '" . $db->makeSafe($filter) . "',
                             '" . date('Y-m-d H:i:s') . "'
                           )";
 
@@ -226,18 +230,7 @@ function scrape($batch, $db)
                         }
                       } catch (NoSuchElementException $e) {
                       }
-                    } else {
-                      print_r("zpid->>" . $zpid);
-                      print_r("\n");
-                      print_r("state->>" . $stateAlias);
-                      print_r("\n");
-                      print_r($sqft);
-                      print_r("\n");
                     }
-                    // $exists = $db->query("SELECT * FROM properties WHERE zpid = '$zpid'");
-                    // if ($exists->num_rows === 0) {
-
-                    // }
                   }
                 } catch (NoSuchElementException $e) {
                 }

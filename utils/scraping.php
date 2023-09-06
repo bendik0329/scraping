@@ -42,6 +42,7 @@ function _init()
       `saves` INT ( 11 ),
       `special` VARCHAR ( 255 ),
       `overview` TEXT,
+      `filter` TEXT,
       `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 
     )";
 
@@ -91,14 +92,11 @@ function retryCurlRequest($url, $maxRetries)
   $html = '';
 
   while ($retryCount < $maxRetries) {
-    print_r($url);
-    print_r("\n");
-    print_r("retry " . $retryCount);
-    print_r("\n");
     $response = sendCurlRequest($url);
     $html = $response->findOne("div.detail-page");
 
     if ($html instanceof \voku\helper\SimpleHtmlDomBlank) {
+      sleep(2);
       $retryCount++;
     } else {
       break;

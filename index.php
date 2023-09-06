@@ -26,6 +26,10 @@ if (!$db->connect($host, $username, $password, $dbname)) {
   die("DB Connection failed: " . $conn->connect_error);
 }
 
+$sql = "SELECT COUNT(*) AS count FROM properties WHERE zpid=251047592";
+$exists = $db->query($sql);
+print_r($exists);
+exit();
 // initialize table
 _init();
 

@@ -171,7 +171,7 @@ foreach ($chunks as $chunk) {
                               $link = $element->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");
                               $filter = json_encode($filterState);
                               $detailUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=" . $link;
-                              
+
                               $detailHtml = retryCurlRequest($detailUrl);
 
                               $result = scrapePropertyDetail($detailHtml);
@@ -297,29 +297,27 @@ foreach ($pids as $pid) {
 // download images
 $properties = $db->query("SELECT * FROM properties");
 
-if ($properties) {
-  if ($properties->num_rows > 0) {
-    while ($row = $properties->fetch_assoc()) {
-      try {
-        $zpid = $row['zpid'];
-        $images = json_decode($row['images'], true);
+if ($db->numrows($properties) > 0) {
+  while ($row = $db->fetchArray($properties)) {
+    try {
+      $zpid = $row['zpid'];
+      $images = json_decode($row['images'], true);
 
-        $imgFolder = __DIR__ . '/download/images/' . $zpid;
-        if (!file_exists($imgFolder)) {
-          mkdir($imgFolder, 0777, true);
-        }
+      $imgFolder = __DIR__ . '/download/images/' . $zpid;
+      if (!file_exists($imgFolder)) {
+        mkdir($imgFolder, 0777, true);
+      }
 
-        foreach ($images as $image) {
-          $imgPath = $imgFolder . "/" . basename($image);
-          if (!file_exists($imgPath)) {
-            $imgData = file_get_contents($image);
-            if ($imgData !== false) {
-              file_put_contents($imgPath, $imgData);
-            }
+      foreach ($images as $image) {
+        $imgPath = $imgFolder . "/" . basename($image);
+        if (!file_exists($imgPath)) {
+          $imgData = file_get_contents($image);
+          if ($imgData !== false) {
+            file_put_contents($imgPath, $imgData);
           }
         }
-      } catch (Exception $e) {
       }
+    } catch (Exception $e) {
     }
   }
 }

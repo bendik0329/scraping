@@ -32,7 +32,7 @@ $exists = $db->query($sql);
 print_r($exists);
 
 if ($exists) {
-  $row = mysqli_fetch_assoc($result);
+  $row = mysqli_fetch_assoc($exists);
   print_r($row);
 }
 

@@ -90,7 +90,7 @@ function retryCurlRequest($url, $maxRetries)
   $retryCount = 0;
   $html = '';
 
-  while (!$html instanceof \voku\helper\SimpleHtmlDomBlank && $retryCount < $maxRetries) {
+  while (!$html instanceof \voku\helper\SimpleHtmlDomBlank || $retryCount < $maxRetries) {
     print_r("retry");
     print_r("\n");
 

@@ -70,7 +70,7 @@ function _init()
   }
 }
 
-function scrapePropertyDetail($url)
+function sendCurlRequest($url)
 {
   $curl = curl_init();
   curl_setopt($curl, CURLOPT_URL, $url);
@@ -80,9 +80,44 @@ function scrapePropertyDetail($url)
   $html = curl_exec($curl);
   curl_close($curl);
 
-  $htmlDomParser = HtmlDomParser::str_get_html($html);
+  $result = HtmlDomParser::str_get_html($html);
 
-  $detailHtml = $htmlDomParser->findOne("div.detail-page");
+  return $result;
+}
+
+function retryCurlRequest($url, $maxRetries)
+{
+  $retryCount = 0;
+  $html = '';
+
+  while (!$html instanceof \voku\helper\SimpleHtmlDomBlank && $retryCount < $maxRetries) {
+    print_r("retry");
+    print_r("\n");
+
+    $response = sendCurlRequest($url);
+    $html = $response->findOne("div.detail-page");
+
+    if ($html instanceof \voku\helper\SimpleHtmlDomBlank) {
+      $retryCount++;
+    }
+  }
+
+  return $html;
+}
+
+function scrapePropertyDetail($detailHtml)
+{
+  // $curl = curl_init();
+  // curl_setopt($curl, CURLOPT_URL, $url);
+  // curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+  // curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+  // curl_setopt($curl, CURLOPT_USERAGENT, USER_AGENT);
+  // $html = curl_exec($curl);
+  // curl_close($curl);
+
+  // $htmlDomParser = HtmlDomParser::str_get_html($html);
+
+  // $detailHtml = $htmlDomParser->findOne("div.detail-page");
 
   // get price
   $priceElement = $detailHtml->findOne("div.summary-container div.hdp__sc-1s2b8ok-1.ckVIjE span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-1me8eh6-0.OByUh.fpfhCd > span");

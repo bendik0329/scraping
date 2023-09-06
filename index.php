@@ -36,6 +36,7 @@ $capabilities->setCapability('goog:chromeOptions', ['args' => ["--headless", "--
 $properties = [];
 $counter = 0;
 $fileCounter = 1;
+$maxRetries = 3;
 
 $numParallel = 10;
 $pids = [];
@@ -172,7 +173,9 @@ foreach ($chunks as $chunk) {
                             $link = $element->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");
                             $detailUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=" . $link;
 
-                            $result = array_merge(array("zpid" => $zpid, "url" => $link, "images" => json_encode($images)), scrapePropertyDetail($detailUrl));
+                            $detailHtml = retryCurlRequest($detailUrl, $maxRetries);
+
+                            $result = array_merge(array("zpid" => $zpid, "url" => $link, "images" => json_encode($images)), scrapePropertyDetail($detailHtml));
 
                             print_r($result);
                             print_r("\n");

@@ -87,6 +87,12 @@ function sendCurlRequest($url)
 
 function retryCurlRequest($url, $maxRetries)
 {
+  print_r($url);
+  print_r("\n");
+
+  print_r($maxRetries);
+  print_r("\n");
+  
   $retryCount = 0;
   $html = '';
 

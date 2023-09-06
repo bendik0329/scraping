@@ -29,8 +29,6 @@ function scrape($batch, $db)
   $driver = RemoteWebDriver::create($host, $capabilities);
 
   foreach ($batch as $state) {
-    print_r($state);
-    print_r("\n");
     foreach (SQFT_VALUES as $sqft) {
       $stateAlias = strtolower($state);
 

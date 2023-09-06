@@ -49,8 +49,8 @@ foreach ($chunks as $chunk) {
     $driver = RemoteWebDriver::create($host, $capabilities);
 
     foreach ($chunk as $state) {
-      foreach (BED_VALUES as $bed) {
-        foreach (BATH_VALUES as $bath) {
+      // foreach (BED_VALUES as $bed) {
+        // foreach (BATH_VALUES as $bath) {
           foreach (SQFT_VALUES as $sqft) {
             $stateAlias = strtolower($state);
 
@@ -63,12 +63,12 @@ foreach ($chunks as $chunk) {
             }
 
             $filterState = array(
-              "beds" => array(
-                "min" => $bed
-              ),
-              "baths" => array(
-                "min" => $bath
-              ),
+              // "beds" => array(
+              //   "min" => $bed
+              // ),
+              // "baths" => array(
+              //   "min" => $bath
+              // ),
               "sqft" => $sqft,
               "pmf" => array(
                 "value" => true
@@ -107,6 +107,8 @@ foreach ($chunks as $chunk) {
             $searchQueryState = urlencode($queryString);
 
             $url = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/$stateAlias/?searchQueryState=$searchQueryState&dynamic=false";
+            print_r($url);
+            print_r("\n");
 
             $driver->get($url);
 
@@ -258,10 +260,6 @@ foreach ($chunks as $chunk) {
                             print_r("\n");
                             print_r("state->>" . $stateAlias);
                             print_r("\n");
-                            print_r("bed->>" . $bed);
-                            print_r("\n");
-                            print_r("bath->>" . $bath);
-                            print_r("\n");
                             print_r($sqft);
                             print_r("\n");
                           }
@@ -281,8 +279,8 @@ foreach ($chunks as $chunk) {
             } catch (NoSuchElementException $e) {
             }
           }
-        }
-      }
+      //   }
+      // }
     }
 
     $driver->close();

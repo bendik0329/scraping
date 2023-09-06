@@ -53,8 +53,6 @@ if (!file_exists($lockFile)) {
       `saves` INT ( 11 ),
       `special` VARCHAR ( 255 ),
       `overview` TEXT,
-      `stateAlias` VARCHAR ( 255 ),
-      `filter` TEXT,
       `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 
     )";
 

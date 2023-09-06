@@ -93,7 +93,7 @@ function retryCurlRequest($url, $maxRetries)
   while ($retryCount < $maxRetries) {
     print_r($url);
     print_r("\n");
-    print_r("retry");
+    print_r("retry " . $retryCount);
     print_r("\n");
     $response = sendCurlRequest($url);
     $html = $response->findOne("div.detail-page");

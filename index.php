@@ -254,6 +254,8 @@ foreach ($chunks as $chunk) {
                             } catch (NoSuchElementException $e) {
                             }
                           } else {
+                            print_r("zpid->>" . $zpid);
+                            print_r("\n");
                             print_r("state->>" . $stateAlias);
                             print_r("\n");
                             print_r("bed->>" . $bed);

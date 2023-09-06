@@ -121,9 +121,6 @@ function scrapePropertyDetail($detailHtml)
 
   // $detailHtml = $htmlDomParser->findOne("div.detail-page");
 
-  print_r($detailHtml);
-  print_r("\n");
-  
   // get price
   $priceElement = $detailHtml->findOne("div.summary-container div.hdp__sc-1s2b8ok-1.ckVIjE span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-1me8eh6-0.OByUh.fpfhCd > span");
   if ($priceElement instanceof \voku\helper\SimpleHtmlDomBlank) {

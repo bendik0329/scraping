@@ -7,3 +7,4 @@ composer.phar
 /result/
 /log/
 .env
+.init_lock

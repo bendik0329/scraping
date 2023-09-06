@@ -87,20 +87,21 @@ function sendCurlRequest($url)
 
 function retryCurlRequest($url, $maxRetries)
 {
-  print_r($url);
-  print_r("\n");
-
   $retryCount = 0;
   $html = '';
 
-  while (!($html instanceof \voku\helper\SimpleHtmlDomBlank) && $retryCount < $maxRetries) {
+  while ($retryCount < $maxRetries) {
+    print_r($url);
+    print_r("\n");
     print_r("retry");
     print_r("\n");
     $response = sendCurlRequest($url);
     $html = $response->findOne("div.detail-page");
 
-    if (!($html instanceof \voku\helper\SimpleHtmlDomBlank)) {
+    if ($html instanceof \voku\helper\SimpleHtmlDomBlank) {
       $retryCount++;
+    } else {
+      break;
     }
   }
 

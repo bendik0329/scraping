@@ -28,7 +28,16 @@ if (!$db->connect($host, $username, $password, $dbname)) {
 
 $sql = "SELECT COUNT(*) AS count FROM properties WHERE zpid=251047592";
 $exists = $db->query($sql);
+
 print_r($exists);
+
+if ($exists) {
+  $row = mysqli_fetch_assoc($result);
+  print_r($row);
+}
+
+
+
 exit();
 // initialize table
 _init();

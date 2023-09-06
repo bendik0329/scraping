@@ -42,6 +42,7 @@ function _init()
       `saves` INT ( 11 ),
       `special` VARCHAR ( 255 ),
       `overview` TEXT,
+      `stateAlias` VARCHAR ( 255 ),
       `filter` TEXT,
       `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 
     )";
@@ -86,9 +87,10 @@ function sendCurlRequest($url)
   return $result;
 }
 
-function retryCurlRequest($url, $maxRetries)
+function retryCurlRequest($url)
 {
   $retryCount = 0;
+  $maxRetries = 5;
   $html = '';
 
   while ($retryCount < $maxRetries) {

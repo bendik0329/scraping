@@ -264,9 +264,5 @@ $stateBatches = array_chunk($states, 1);
 // Get the batch to scrape based on the startIndex
 $batchToScrape = isset($stateBatches[$startIndex]) ? $stateBatches[$startIndex] : [];
 
-print_r($stateBatches);
-print_r($batchToScrape);
-exit();
-
 // Scrape and store the batch of states
 scrape($batchToScrape, $db);

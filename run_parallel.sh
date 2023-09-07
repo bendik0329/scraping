@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Run init file
-php init.php
+# php init.php
 
 # Run 10 parallel instances
 for i in {0..9}; do

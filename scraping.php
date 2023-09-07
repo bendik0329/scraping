@@ -261,11 +261,12 @@ function scrape($batch, $db)
 // Divide states into batches of 5
 $stateBatches = array_chunk($states, 1);
 
-print_r($stateBatches);
-exit();
-
 // Get the batch to scrape based on the startIndex
 $batchToScrape = isset($stateBatches[$startIndex]) ? $stateBatches[$startIndex] : [];
+
+print_r($stateBatches);
+print_r($batchToScrape);
+exit();
 
 // Scrape and store the batch of states
 scrape($batchToScrape, $db);

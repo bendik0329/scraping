@@ -33,6 +33,9 @@ $capabilities->setCapability('goog:chromeOptions', ['args' => ["--headless", "--
 $states = STATE_LIST;
 $startIndex = intval($argv[1]);
 
+print_r($startIndex);
+exit();
+
 function scrape($batch, $db)
 {
   global $host, $capabilities, $apiKey;

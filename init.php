@@ -17,9 +17,6 @@ if (!$db->connect($host, $username, $password, $dbname)) {
   die("DB Connection failed: " . $conn->connect_error);
 }
 
-print_r("init function");
-print_r("\n");
-
 // check properties table
 $dropPropertiesSql = "DROP TABLE IF EXISTS properties";
 

@@ -92,7 +92,7 @@ function scrape($batch, $db)
 
       print_r($url);
       print_r("\n");
-      
+
       $driver->get($url);
 
       try {
@@ -259,7 +259,7 @@ function scrape($batch, $db)
 }
 
 // Divide states into batches of 5
-$stateBatches = array_chunk($states, 10);
+$stateBatches = array_chunk($states, 1);
 
 // Get the batch to scrape based on the startIndex
 $batchToScrape = isset($stateBatches[$startIndex]) ? $stateBatches[$startIndex] : [];

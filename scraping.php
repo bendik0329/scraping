@@ -251,6 +251,7 @@ function scrape($batch, $db)
           }
         }
       } catch (NoSuchElementException $e) {
+        print_r($e);
       }
     }
   }

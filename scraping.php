@@ -33,9 +33,6 @@ $capabilities->setCapability('goog:chromeOptions', ['args' => ["--headless", "--
 $states = STATE_LIST;
 $startIndex = intval($argv[1]);
 
-print_r($startIndex);
-exit();
-
 function scrape($batch, $db)
 {
   global $host, $capabilities, $apiKey;
@@ -263,6 +260,9 @@ function scrape($batch, $db)
 
 // Divide states into batches of 5
 $stateBatches = array_chunk($states, 1);
+
+print_r($stateBatches);
+exit();
 
 // Get the batch to scrape based on the startIndex
 $batchToScrape = isset($stateBatches[$startIndex]) ? $stateBatches[$startIndex] : [];

@@ -52,7 +52,7 @@ if ($db->numrows($properties) > 0) {
 
         } else {
           echo 'The URL is not from Google Maps.';
-          $imgPath = $imgFolder . "/" . basename($image);
+          $imgPath = $imgFolder . "/" . basename($url);
         }
 
         if (!file_exists($imgPath)) {

@@ -23,7 +23,7 @@ if (is_dir($downloadDir)) {
   $command = "rm -rf $downloadDir";
   shell_exec($command);
 }
-exit();
+
 // download images
 $properties = $db->query("SELECT * FROM properties");
 

@@ -11,7 +11,7 @@ $envConfig = parse_ini_file(__DIR__ . "/.env");
 $apiKey = $envConfig['API_KEY'];
 
 for ($i = 0; $i <= 100; $i++) {
-  $url = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/homedetails/506-E-Philadelphia-St-Rapid-City-SD-57701/117808623_zpid/";
+  $url = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/homedetails/9887-Macarthur-Blvd-I-Oakland-CA-94605/2063699609_zpid/";
   $curl = curl_init();
   curl_setopt($curl, CURLOPT_URL, $url);
   curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
@@ -23,16 +23,15 @@ for ($i = 0; $i <= 100; $i++) {
   $htmlDomParser = HtmlDomParser::str_get_html($html);
   $detailHtml = $htmlDomParser->findOne("div.detail-page");
 
-  // get price
-  $priceElement = $detailHtml->findOne("div.summary-container div.hdp__sc-1s2b8ok-1.ckVIjE span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-1me8eh6-0.OByUh.fpfhCd > span");
-  if ($priceElement instanceof \voku\helper\SimpleHtmlDomBlank) {
-    $price = 0;
+  // get overview
+  $overviewElement = $detailHtml->findOne("div.Text-c11n-8-84-3__sc-aiai24-0.sc-oZIhv.hrfydd");
+  if ($overviewElement instanceof \voku\helper\SimpleHtmlDomBlank) {
+    $overview = "";
   } else {
-    $priceText = $priceElement->text();
-    $price = deformatPrice($priceText);
+    $overview = $overviewElement->text();
   }
 
-  print_r("price->>" . $price);
+  print_r("overview->>" . $overview);
   print_r("\n");
 }
 

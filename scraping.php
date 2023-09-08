@@ -44,16 +44,18 @@ function scrape($batch, $db)
       foreach (CAT_VALUES as $cat) {
         $stateAlias = strtolower($state);
 
-        if ($sqft["min"] === 0) {
-          unset($sqft["min"]);
+        $sqftValue = $sqft;
+        
+        if ($sqftValue["min"] === 0) {
+          unset($sqftValue["min"]);
         }
 
-        if ($sqft["max"] === 0) {
-          unset($sqft["max"]);
+        if ($sqftValue["max"] === 0) {
+          unset($sqftValue["max"]);
         }
 
         $filterState = array(
-          "sqft" => $sqft,
+          "sqft" => $sqftValue,
           "pmf" => array(
             "value" => true
           ),

@@ -24,11 +24,11 @@ if ($db->numrows($properties) > 0) {
   while ($row = $db->fetchArray($properties)) {
     try {
       $zpid = $row['zpid'];
-      $url = $row['image'];
+      $imgUrl = $row['image'];
 
       
-      if ($image && filter_var($image, FILTER_VALIDATE_URL)) {
-        print_r("url->>" . $url);
+      if ($imgUrl && filter_var($imgUrl, FILTER_VALIDATE_URL)) {
+        print_r("url->>" . $imgUrl);
         print_r("\n");
 
         $imgFolder = __DIR__ . '/download/images/' . $zpid;
@@ -36,12 +36,12 @@ if ($db->numrows($properties) > 0) {
           mkdir($imgFolder, 0777, true);
         }
 
-        if (strpos($url, 'maps.googleapis.com') !== false) {
+        if (strpos($imgUrl, 'maps.googleapis.com') !== false) {
           echo 'The URL is from Google Maps.';
           $imgPath = $imgFolder . "/image.jpg";
 
-          $url = str_replace('&amp;', '&', $url);
-          $url = preg_replace('/&signature=[^&]*/', '', $url);
+          $imgUrl = str_replace('&amp;', '&', $imgUrl);
+          $imgUrl = preg_replace('/&signature=[^&]*/', '', $imgUrl);
 
         } else {
           echo 'The URL is not from Google Maps.';
@@ -49,7 +49,7 @@ if ($db->numrows($properties) > 0) {
         }
 
         if (!file_exists($imgPath)) {
-          $imgData = file_get_contents($url);
+          $imgData = file_get_contents($imgUrl);
           if ($imgData !== false) {
             file_put_contents($imgPath, $imgData);
           }

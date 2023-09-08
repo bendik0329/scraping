@@ -51,7 +51,8 @@ if ($db->query($dropPropertiesSql) === TRUE) {
     `special` VARCHAR ( 255 ),
     `overview` TEXT,
     `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 
-  )";
+  )
+  ENGINE = MyISAM";
 
   if ($db->query($createPropertiesSql) === TRUE) {
     echo "Table properties created successfully \n";

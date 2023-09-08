@@ -17,6 +17,12 @@ if (!$db->connect($host, $username, $password, $dbname)) {
   die("DB Connection failed: " . $conn->connect_error);
 }
 
+// reset download directory
+$downloadDir = __DIR__ . "/download";
+if (is_dir($downloadDir)) {
+  rmdir($downloadDir);
+}
+exit();
 // download images
 $properties = $db->query("SELECT * FROM properties");
 

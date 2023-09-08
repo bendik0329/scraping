@@ -24,17 +24,32 @@ if ($db->numrows($properties) > 0) {
   while ($row = $db->fetchArray($properties)) {
     try {
       $zpid = $row['zpid'];
-      $image = $row['image'];
+      $url = $row['image'];
 
+      
       if ($image && filter_var($image, FILTER_VALIDATE_URL)) {
+        print_r("url->>" . $url);
+        print_r("\n");
+
         $imgFolder = __DIR__ . '/download/images/' . $zpid;
         if (!file_exists($imgFolder)) {
           mkdir($imgFolder, 0777, true);
         }
 
-        $imgPath = $imgFolder . "/" . basename($image);
+        if (strpos($url, 'maps.googleapis.com') !== false) {
+          echo 'The URL is from Google Maps.';
+          $imgPath = $imgFolder . "/image.jpg";
+
+          $url = str_replace('&amp;', '&', $url);
+          $url = preg_replace('/&signature=[^&]*/', '', $url);
+
+        } else {
+          echo 'The URL is not from Google Maps.';
+          $imgPath = $imgFolder . "/" . basename($image);
+        }
+
         if (!file_exists($imgPath)) {
-          $imgData = file_get_contents($image);
+          $imgData = file_get_contents($url);
           if ($imgData !== false) {
             file_put_contents($imgPath, $imgData);
           }

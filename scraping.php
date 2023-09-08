@@ -93,6 +93,9 @@ function scrape($batch, $db)
 
         $url = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/$stateAlias/?searchQueryState=$searchQueryState&dynamic=false";
 
+        print_r($url);
+        print_r("\n");
+        
         $driver->get($url);
 
         try {

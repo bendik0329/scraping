@@ -11,4 +11,5 @@ done
 # Wait for all instances to finish
 wait
 
+# Download Images
 php download-images.php

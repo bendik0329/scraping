@@ -17,7 +17,7 @@ function _init()
       `id` INT ( 6 ) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
       `zpid` INT ( 11 ) NOT NULL UNIQUE,
       `url` VARCHAR ( 255 ) NOT NULL,
-      `images` TEXT,
+      `image` VARCHAR ( 255 ) NOT NULL,
       `price` INT ( 11 ),
       `address` VARCHAR ( 255 ),
       `city` VARCHAR ( 255 ),
@@ -119,6 +119,14 @@ function scrapePropertyDetail($detailHtml)
   // $htmlDomParser = HtmlDomParser::str_get_html($html);
 
   // $detailHtml = $htmlDomParser->findOne("div.detail-page");
+
+  // get image
+  $imgElement = $detailHtml->findOne("div.media-column-container ul.hdp__sc-1wi9vqt-0.dDzspE.ds-media-col.media-stream li:nth-child(1) img");
+  if ($imgElement instanceof \voku\helper\SimpleHtmlDomBlank) {
+    $image = "";
+  } else {
+    $image = $imgElement->getAttribute("src");
+  }
 
   // get price
   $priceElement = $detailHtml->findOne("div.summary-container div.hdp__sc-1s2b8ok-1.ckVIjE span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-1me8eh6-0.OByUh.fpfhCd > span");
@@ -414,6 +422,7 @@ function scrapePropertyDetail($detailHtml)
   }
 
   return array(
+    "image" => $image,
     "price" => $price,
     "address" => $address,
     "city" => $city,

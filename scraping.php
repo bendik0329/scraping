@@ -95,9 +95,6 @@ function scrape($batch, $db)
 
         $url = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/$stateAlias/?searchQueryState=$searchQueryState&dynamic=false";
 
-        print_r($url);
-        print_r("\n");
-        
         $driver->get($url);
 
         try {
@@ -152,13 +149,13 @@ function scrape($batch, $db)
                       $exists = $db->query("SELECT * FROM properties WHERE zpid=$zpid");
                       if ($db->numrows($exists) === 0) {
                         try {
-                          $images = array();
-                          $imgElements = $element->findElements(WebDriverBy::cssSelector("a.Anchor-c11n-8-84-3__sc-hn4bge-0.kxrUt.carousel-photo picture img.Image-c11n-8-84-3__sc-1rtmhsc-0"));
-                          if (count($imgElements) > 0) {
-                            foreach ($imgElements as $imgElement) {
-                              $images[] = $imgElement->getAttribute("src");;
-                            }
-                          }
+                          // $images = array();
+                          // $imgElements = $element->findElements(WebDriverBy::cssSelector("a.Anchor-c11n-8-84-3__sc-hn4bge-0.kxrUt.carousel-photo picture img.Image-c11n-8-84-3__sc-1rtmhsc-0"));
+                          // if (count($imgElements) > 0) {
+                          //   foreach ($imgElements as $imgElement) {
+                          //     $images[] = $imgElement->getAttribute("src");;
+                          //   }
+                          // }
 
                           $link = $element->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");
                           $detailUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=" . $link;
@@ -174,7 +171,7 @@ function scrape($batch, $db)
                               (
                                 zpid,
                                 url,
-                                images,
+                                image,
                                 price,
                                 address,
                                 city,
@@ -205,7 +202,7 @@ function scrape($batch, $db)
                               (
                                 '" . $db->makeSafe($zpid) . "',
                                 '" . $db->makeSafe($link) . "',
-                                '" . $db->makeSafe(json_encode($images)) . "',
+                                '" . $db->makeSafe($result["image"]) . "',
                                 '" . $db->makeSafe($result["price"]) . "',
                                 '" . $db->makeSafe($result["address"]) . "',
                                 '" . $db->makeSafe($result["city"]) . "',
@@ -260,7 +257,9 @@ function scrape($batch, $db)
 }
 
 // Divide states into batches of 5
-$stateBatches = array_chunk($states, 1);
+$stateBatches = array_chunk($states, 5);
+print_r($stateBatches);
+exit();
 
 // Get the batch to scrape based on the startIndex
 $batchToScrape = isset($stateBatches[$startIndex]) ? $stateBatches[$startIndex] : [];

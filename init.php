@@ -25,7 +25,7 @@ if ($db->query($dropPropertiesSql) === TRUE) {
     `id` INT ( 6 ) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     `zpid` INT ( 11 ) NOT NULL UNIQUE,
     `url` VARCHAR ( 255 ) NOT NULL,
-    `images` TEXT,
+    `image` VARCHAR ( 255 ) NOT NULL,
     `price` INT ( 11 ),
     `address` VARCHAR ( 255 ),
     `city` VARCHAR ( 255 ),

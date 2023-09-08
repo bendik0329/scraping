@@ -22,36 +22,32 @@ $downloadDir = __DIR__ . "/download";
 if (is_dir($downloadDir)) {
   $command = "rm -rf $downloadDir";
   shell_exec($command);
+  echo "Download directory reseted!\n";
 }
 
 // download images
 $properties = $db->query("SELECT * FROM properties");
 
 if ($db->numrows($properties) > 0) {
+  echo "Downloading images...\n";
   while ($row = $db->fetchArray($properties)) {
     try {
       $zpid = $row['zpid'];
       $imgUrl = $row['image'];
 
-      
-      if ($imgUrl && filter_var($imgUrl, FILTER_VALIDATE_URL)) {
-        print_r("url->>" . $imgUrl);
-        print_r("\n");
 
+      if ($imgUrl && filter_var($imgUrl, FILTER_VALIDATE_URL)) {
         $imgFolder = __DIR__ . '/download/images/' . $zpid;
         if (!file_exists($imgFolder)) {
           mkdir($imgFolder, 0777, true);
         }
 
         if (strpos($imgUrl, 'maps.googleapis.com') !== false) {
-          echo 'The URL is from Google Maps.';
           $imgPath = $imgFolder . "/image.jpg";
 
           $imgUrl = str_replace('&amp;', '&', $imgUrl);
           $imgUrl = preg_replace('/&signature=[^&]*/', '', $imgUrl);
-
         } else {
-          echo 'The URL is not from Google Maps.';
           $imgPath = $imgFolder . "/" . basename($imgUrl);
         }
 
@@ -67,5 +63,5 @@ if ($db->numrows($properties) > 0) {
   }
 }
 
-echo "Image download completed!";
+echo "Image download completed!\n";
 exit();

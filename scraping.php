@@ -91,6 +91,9 @@ function scrape($batch, $db)
 
       $url = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/$stateAlias/?searchQueryState=$searchQueryState&dynamic=false";
 
+      print_r("url->>" . $url);
+      print_r("\n");
+      
       $driver->get($url);
 
       try {
@@ -106,7 +109,7 @@ function scrape($batch, $db)
 
           print_r("total count->>" . $totalCount);
           print_r("\n");
-          
+
           // while ($currentPage <= $maxPage) {
           //   if ($currentPage != 1) {
           //     $pagination = array(

@@ -114,6 +114,9 @@ function scrape($db)
           $currentPage = 1;
           $maxPage = ceil($totalCount / $itemsPerPage);
 
+          print_r("max page->>" . $maxPage);
+          print_r("\n");
+          
           while ($currentPage <= $maxPage) {
             if ($currentPage != 1) {
               $pagination = array(
@@ -241,6 +244,10 @@ function scrape($db)
                 }
               }
             }
+
+            print_r("current page->>" . $currentPage);;
+            print_r("\n");
+            print_r("\n");
 
             print_r($list);
             print_r("\n");

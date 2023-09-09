@@ -34,34 +34,17 @@ $capabilities->setCapability('goog:chromeOptions', ['args' => ["--headless", "--
 function scrape($db)
 {
   global $host, $capabilities, $apiKey;
-  $driver = RemoteWebDriver::create($host, $capabilities);
-  $result = array();
+  // $driver = RemoteWebDriver::create($host, $capabilities);
+  // $result = array();
 
   foreach (STATE_LIST as $state) {
-    foreach (SQFT_VALUES as $sqft) {
-      foreach (CAT_VALUES as $cat) {
+    foreach (LISTING_TYPE as $type) {
+      foreach (CATEGORY as $category) {
         $stateAlias = strtolower($state);
-
-        $sqftValue = $sqft;
-
-        if ($sqftValue["min"] === 0) {
-          unset($sqftValue["min"]);
-        }
-
-        if ($sqftValue["max"] === 0) {
-          unset($sqftValue["max"]);
-        }
-
+        
         $filterState = array(
-          "sqft" => $sqftValue,
-          "pmf" => array(
-            "value" => true
-          ),
           "sort" => array(
             "value" => "globalrelevanceex"
-          ),
-          "isAllHomes" => array(
-            "value" => True
           ),
           "nc" => array(
             "value" => false
@@ -72,19 +55,30 @@ function scrape($db)
           "cmsn" => array(
             "value" => false
           ),
-          "pf" => array(
-            "value" => true
-          ),
           "fsba" => array(
+            "value" => false
+          ),
+          "fore" => array(
+            "value" => false
+          ),
+          "auc" => array(
+            "value" => false
+          ),
+          "pmf" => array(
+            "value" => false
+          ),
+          "pf" => array(
             "value" => false
           )
         );
 
+        $filterState[$type]["value"] = true;
+        
         $query = array(
           "pagination" => new stdClass(),
           "usersSearchTerm" => $state,
           "filterState" => $filterState,
-          "category" => $cat,
+          "category" => $category,
           "isListVisible" => true,
         );
 
@@ -93,34 +87,92 @@ function scrape($db)
 
         $url = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/$stateAlias/?searchQueryState=$searchQueryState&dynamic=false";
 
-        $driver->get($url);
-
-        try {
-          $totalCount = $driver->findElement(WebDriverBy::cssSelector("div.ListHeader__NarrowViewWrapping-srp__sc-1rsgqpl-1.idxSRv.search-subtitle span.result-count"))->getText();
-          $totalCount = str_replace(",", "", $totalCount);
-          preg_match('/\d+/', $totalCount, $matches);
-
-          if (isset($matches[0])) {
-            $totalCount = intval($matches[0]);
-          }
-        } catch (NoSuchElementException $e) {
-          $totalCount = 0;
-        }
-
-        echo "total count->>$totalCount\n";
-
-        $result[] = array(
-          "url" => $url,
-          "count" => $totalCount,
-        );
+        echo "$url\n";
       }
     }
+    // foreach (SQFT_VALUES as $sqft) {
+    //   foreach (CAT_VALUES as $cat) {
+    //     $stateAlias = strtolower($state);
+
+    //     $sqftValue = $sqft;
+
+    //     if ($sqftValue["min"] === 0) {
+    //       unset($sqftValue["min"]);
+    //     }
+
+    //     if ($sqftValue["max"] === 0) {
+    //       unset($sqftValue["max"]);
+    //     }
+
+    //     $filterState = array(
+    //       "sqft" => $sqftValue,
+    //       "pmf" => array(
+    //         "value" => true
+    //       ),
+    //       "sort" => array(
+    //         "value" => "globalrelevanceex"
+    //       ),
+    //       "isAllHomes" => array(
+    //         "value" => True
+    //       ),
+    //       "nc" => array(
+    //         "value" => false
+    //       ),
+    //       "fsbo" => array(
+    //         "value" => false
+    //       ),
+    //       "cmsn" => array(
+    //         "value" => false
+    //       ),
+    //       "pf" => array(
+    //         "value" => true
+    //       ),
+    //       "fsba" => array(
+    //         "value" => false
+    //       )
+    //     );
+
+    //     $query = array(
+    //       "pagination" => new stdClass(),
+    //       "usersSearchTerm" => $state,
+    //       "filterState" => $filterState,
+    //       "category" => $cat,
+    //       "isListVisible" => true,
+    //     );
+
+    //     $queryString = json_encode($query);
+    //     $searchQueryState = urlencode($queryString);
+
+    //     $url = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/$stateAlias/?searchQueryState=$searchQueryState&dynamic=false";
+
+    //     $driver->get($url);
+
+    //     try {
+    //       $totalCount = $driver->findElement(WebDriverBy::cssSelector("div.ListHeader__NarrowViewWrapping-srp__sc-1rsgqpl-1.idxSRv.search-subtitle span.result-count"))->getText();
+    //       $totalCount = str_replace(",", "", $totalCount);
+    //       preg_match('/\d+/', $totalCount, $matches);
+
+    //       if (isset($matches[0])) {
+    //         $totalCount = intval($matches[0]);
+    //       }
+    //     } catch (NoSuchElementException $e) {
+    //       $totalCount = 0;
+    //     }
+
+    //     echo "total count->>$totalCount\n";
+
+    //     $result[] = array(
+    //       "url" => $url,
+    //       "count" => $totalCount,
+    //     );
+    //   }
+    // }
   }
 
-  array2csv($result);
-  echo json_encode($result);
+  // array2csv($result);
+  // echo json_encode($result);
 
-  $driver->close();
+  // $driver->close();
 }
 
 function array2csv($data, $delimiter = ',', $enclosure = '"', $escape_char = "\\")

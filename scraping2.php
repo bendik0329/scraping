@@ -101,86 +101,144 @@ function scrape($db)
           $totalCount = 0;
         }
 
-        echo "total count->>$totalCount\n";
+        print_r("total count->>" . $totalCount);
+        print_r("\n");
+
+        if ($totalCount > 0) {
+          $itemsPerPage = 41;
+          $currentPage = 1;
+          $maxPage = ceil($totalCount / $itemsPerPage);
+
+          while ($currentPage <= $maxPage) {
+            if ($currentPage != 1) {
+              $pagination = array(
+                "currentPage" => $currentPage,
+              );
+              $query["pagination"] = $pagination;
+
+              $queryString = json_encode($query);
+              $searchQueryState = urlencode($queryString);
+              $pageUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/$stateAlias/?searchQueryState=$searchQueryState&dynamic=false";
+
+              $driver->get($pageUrl);
+            }
+
+            $wait = new WebDriverWait($driver, 10);
+            $wait->until(WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::cssSelector("footer.site-footer")));
+
+            $propertyElements = $driver->findElements(WebDriverBy::cssSelector("li.ListItem-c11n-8-84-3__sc-10e22w8-0.StyledListCardWrapper-srp__sc-wtsrtn-0.iCyebE.gTOWtl > div"));
+
+            foreach ($propertyElements as $propertyElement) {
+              $renderStatus = $propertyElement->getAttribute("data-renderstrat");
+              if ($renderStatus) {
+                $driver->executeScript('arguments[0].scrollIntoView(true);', array($propertyElement));
+                $wait = new WebDriverWait($driver, 10);
+                $wait->until(function () use ($propertyElement) {
+                  $attributeValue = $propertyElement->getAttribute('data-renderstrat');
+                  return $attributeValue !== 'timeout';
+                });
+
+                try {
+                  $element = $propertyElement->findElement(WebDriverBy::cssSelector("article.property-card"));
+                  $zpid = str_replace("zpid_", "", $element->getAttribute("id"));
+                  $zpid = intval($zpid);
+
+                  if ($zpid) {
+                    $exists = $db->query("SELECT * FROM properties WHERE zpid=$zpid");
+                    if ($db->numrows($exists) === 0) {
+                      try {
+                        $link = $element->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");
+                        $detailUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=" . $link;
+
+                        $detailHtml = retryCurlRequest($detailUrl);
+                        // sleep(2);
+
+                        if ($detailHtml && !($detailHtml instanceof \voku\helper\SimpleHtmlDomBlank)) {
+                          $result = scrapePropertyDetail($detailHtml);
+
+                          $sql = "
+                            INSERT INTO properties
+                            (
+                              zpid,
+                              url,
+                              image,
+                              price,
+                              address,
+                              city,
+                              state,
+                              zipcode,
+                              beds,
+                              baths,
+                              sqft,
+                              acres,
+                              type,
+                              zestimate,
+                              houseType,
+                              builtYear,
+                              heating,
+                              cooling,
+                              parking,
+                              lot,
+                              priceSqft,
+                              agencyFee,
+                              days,
+                              views,
+                              saves,
+                              special,
+                              overview,
+                              createdAt
+                            )
+                            VALUES
+                            (
+                              '" . $db->makeSafe($zpid) . "',
+                              '" . $db->makeSafe($link) . "',
+                              '" . $db->makeSafe($result["image"]) . "',
+                              '" . $db->makeSafe($result["price"]) . "',
+                              '" . $db->makeSafe($result["address"]) . "',
+                              '" . $db->makeSafe($result["city"]) . "',
+                              '" . $db->makeSafe($result["state"]) . "',
+                              '" . $db->makeSafe($result["zipcode"]) . "',
+                              '" . $db->makeSafe($result["beds"]) . "',
+                              '" . $db->makeSafe($result["baths"]) . "',
+                              '" . $db->makeSafe($result["sqft"]) . "',
+                              '" . $db->makeSafe($result["acres"]) . "',
+                              '" . $db->makeSafe($result["type"]) . "',
+                              '" . $db->makeSafe($result["zestimate"]) . "',
+                              '" . $db->makeSafe($result["houseType"]) . "',
+                              '" . $db->makeSafe($result["builtYear"]) . "',
+                              '" . $db->makeSafe($result["heating"]) . "',
+                              '" . $db->makeSafe($result["cooling"]) . "',
+                              '" . $db->makeSafe($result["parking"]) . "',
+                              '" . $db->makeSafe($result["lot"]) . "',
+                              '" . $db->makeSafe($result["priceSqft"]) . "',
+                              '" . $db->makeSafe($result["agencyFee"]) . "',
+                              '" . $db->makeSafe($result["days"]) . "',
+                              '" . $db->makeSafe($result["views"]) . "',
+                              '" . $db->makeSafe($result["saves"]) . "',
+                              '" . $db->makeSafe($result["special"]) . "',
+                              '" . $db->makeSafe($result["overview"]) . "',
+                              '" . date('Y-m-d H:i:s') . "'
+                            )";
+
+                          if (!$db->query($sql)) {
+                            echo "Error inserting properties table: \n";
+                            echo $sql . "\n";
+                          }
+                        }
+                      } catch (NoSuchElementException $e) {
+                      }
+                    }
+                  }
+                } catch (NoSuchElementException $e) {
+                }
+              }
+            }
+
+            $currentPage++;
+          }
+        }
       }
     }
-    // foreach (SQFT_VALUES as $sqft) {
-    //   foreach (CAT_VALUES as $cat) {
-    //     $stateAlias = strtolower($state);
-
-    //     $sqftValue = $sqft;
-
-    //     if ($sqftValue["min"] === 0) {
-    //       unset($sqftValue["min"]);
-    //     }
-
-    //     if ($sqftValue["max"] === 0) {
-    //       unset($sqftValue["max"]);
-    //     }
-
-    //     $filterState = array(
-    //       "sqft" => $sqftValue,
-    //       "pmf" => array(
-    //         "value" => true
-    //       ),
-    //       "sort" => array(
-    //         "value" => "globalrelevanceex"
-    //       ),
-    //       "isAllHomes" => array(
-    //         "value" => True
-    //       ),
-    //       "nc" => array(
-    //         "value" => false
-    //       ),
-    //       "fsbo" => array(
-    //         "value" => false
-    //       ),
-    //       "cmsn" => array(
-    //         "value" => false
-    //       ),
-    //       "pf" => array(
-    //         "value" => true
-    //       ),
-    //       "fsba" => array(
-    //         "value" => false
-    //       )
-    //     );
-
-    //     $query = array(
-    //       "pagination" => new stdClass(),
-    //       "usersSearchTerm" => $state,
-    //       "filterState" => $filterState,
-    //       "category" => $cat,
-    //       "isListVisible" => true,
-    //     );
-
-    //     $queryString = json_encode($query);
-    //     $searchQueryState = urlencode($queryString);
-
-    //     $url = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/$stateAlias/?searchQueryState=$searchQueryState&dynamic=false";
-
-    //     $driver->get($url);
-
-    //     try {
-    //       $totalCount = $driver->findElement(WebDriverBy::cssSelector("div.ListHeader__NarrowViewWrapping-srp__sc-1rsgqpl-1.idxSRv.search-subtitle span.result-count"))->getText();
-    //       $totalCount = str_replace(",", "", $totalCount);
-    //       preg_match('/\d+/', $totalCount, $matches);
-
-    //       if (isset($matches[0])) {
-    //         $totalCount = intval($matches[0]);
-    //       }
-    //     } catch (NoSuchElementException $e) {
-    //       $totalCount = 0;
-    //     }
-
-    //     echo "total count->>$totalCount\n";
-
-    //     $result[] = array(
-    //       "url" => $url,
-    //       "count" => $totalCount,
-    //     );
-    //   }
-    // }
   }
 
   // array2csv($result);

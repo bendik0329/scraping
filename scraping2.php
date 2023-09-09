@@ -31,12 +31,13 @@ $host = 'http://localhost:4444/wd/hub';
 $capabilities = \Facebook\WebDriver\Remote\DesiredCapabilities::chrome();
 $capabilities->setCapability('goog:chromeOptions', ['args' => ["--headless", "--user-agent=" . USER_AGENT]]);
 
-$startIndex = intval($argv[1]);
+// $startIndex = intval($argv[1]);
 
 function scrape($db)
 {
   global $host, $capabilities, $apiKey;
   $driver = RemoteWebDriver::create($host, $capabilities);
+  $total = 0;
   // $result = array();
 
   foreach (STATE_LIST as $state) {
@@ -99,9 +100,6 @@ function scrape($db)
 
           $url = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/$stateAlias/?searchQueryState=$searchQueryState&dynamic=false";
 
-          print_r($url);
-          print_r("\n");
-
           $driver->get($url);
 
           try {
@@ -115,6 +113,8 @@ function scrape($db)
           } catch (NoSuchElementException $e) {
             $totalCount = 0;
           }
+
+          $total += $totalCount;
 
           print_r("total count->>" . $totalCount);
           print_r("\n");
@@ -277,6 +277,8 @@ function scrape($db)
       }
     }
   }
+
+  print_r("SUM->>" . $total);
 
   // array2csv($result);
   // echo json_encode($result);

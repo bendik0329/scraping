@@ -91,7 +91,7 @@ function scrape($db)
 
         print_r($url);
         print_r("\n");
-
+        
         $driver->get($url);
 
         try {
@@ -127,6 +127,9 @@ function scrape($db)
               $queryString = json_encode($query);
               $searchQueryState = urlencode($queryString);
               $pageUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/$stateAlias/?searchQueryState=$searchQueryState&dynamic=false";
+
+              print_r($pageUrl);
+              print_r("\n");
 
               $driver->get($pageUrl);
             }

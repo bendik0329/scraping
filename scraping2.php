@@ -34,14 +34,14 @@ $capabilities->setCapability('goog:chromeOptions', ['args' => ["--headless", "--
 function scrape($db)
 {
   global $host, $capabilities, $apiKey;
-  // $driver = RemoteWebDriver::create($host, $capabilities);
+  $driver = RemoteWebDriver::create($host, $capabilities);
   // $result = array();
 
   foreach (STATE_LIST as $state) {
     foreach (LISTING_TYPE as $type) {
       foreach (CATEGORY as $category) {
         $stateAlias = strtolower($state);
-        
+
         $filterState = array(
           "sort" => array(
             "value" => "globalrelevanceex"
@@ -73,7 +73,7 @@ function scrape($db)
         );
 
         $filterState[$type]["value"] = true;
-        
+
         $query = array(
           "pagination" => new stdClass(),
           "usersSearchTerm" => $state,
@@ -87,7 +87,21 @@ function scrape($db)
 
         $url = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/$stateAlias/?searchQueryState=$searchQueryState&dynamic=false";
 
-        echo "$url\n";
+        $driver->get($url);
+
+        try {
+          $totalCount = $driver->findElement(WebDriverBy::cssSelector("div.ListHeader__NarrowViewWrapping-srp__sc-1rsgqpl-1.idxSRv.search-subtitle span.result-count"))->getText();
+          $totalCount = str_replace(",", "", $totalCount);
+          preg_match('/\d+/', $totalCount, $matches);
+
+          if (isset($matches[0])) {
+            $totalCount = intval($matches[0]);
+          }
+        } catch (NoSuchElementException $e) {
+          $totalCount = 0;
+        }
+
+        echo "total count->>$totalCount\n";
       }
     }
     // foreach (SQFT_VALUES as $sqft) {
@@ -172,7 +186,7 @@ function scrape($db)
   // array2csv($result);
   // echo json_encode($result);
 
-  // $driver->close();
+  $driver->close();
 }
 
 function array2csv($data, $delimiter = ',', $enclosure = '"', $escape_char = "\\")

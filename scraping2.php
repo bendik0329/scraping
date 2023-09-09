@@ -116,7 +116,7 @@ function scrape($db)
 
           print_r("max page->>" . $maxPage);
           print_r("\n");
-          
+
           while ($currentPage <= $maxPage) {
             if ($currentPage != 1) {
               $pagination = array(
@@ -131,8 +131,8 @@ function scrape($db)
               $driver->get($pageUrl);
             }
 
-            $wait = new WebDriverWait($driver, 10);
-            $wait->until(WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::cssSelector("footer.site-footer")));
+            // $wait = new WebDriverWait($driver, 10);
+            // $wait->until(WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::cssSelector("footer.site-footer")));
 
             $list = array();
 
@@ -142,6 +142,7 @@ function scrape($db)
               $renderStatus = $propertyElement->getAttribute("data-renderstrat");
               if ($renderStatus) {
                 $driver->executeScript('arguments[0].scrollIntoView(true);', array($propertyElement));
+                
                 $wait = new WebDriverWait($driver, 10);
                 $wait->until(function () use ($propertyElement) {
                   $attributeValue = $propertyElement->getAttribute('data-renderstrat');

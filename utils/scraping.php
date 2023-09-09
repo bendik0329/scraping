@@ -92,15 +92,21 @@ function retryCurlRequest($url)
   $html = '';
 
   while ($retryCount < $maxRetries) {
-    $response = sendCurlRequest($url);
-    $html = $response->findOne("div.detail-page");
+    try {
+      $response = sendCurlRequest($url);
+      $html = $response->findOne("div.detail-page");
 
-    if ($html instanceof \voku\helper\SimpleHtmlDomBlank) {
-      sleep(2);
-      $retryCount++;
-    } else {
+      if ($html instanceof \voku\helper\SimpleHtmlDomBlank) {
+        sleep(2);
+        $retryCount++;
+      } else {
+        break;
+      }
+    } catch (Exception $e) {
+      echo "Error Occured in this url->>" . $url . "\n";
       break;
     }
+    
   }
 
   return $html;

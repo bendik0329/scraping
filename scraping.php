@@ -163,7 +163,7 @@ function scrape($batch, $db)
                           $detailHtml = retryCurlRequest($detailUrl);
                           // sleep(2);
 
-                          if (!($detailHtml instanceof \voku\helper\SimpleHtmlDomBlank)) {
+                          if ($detailHtml && !($detailHtml instanceof \voku\helper\SimpleHtmlDomBlank)) {
                             $result = scrapePropertyDetail($detailHtml);
 
                             $sql = "

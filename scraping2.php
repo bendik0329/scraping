@@ -94,7 +94,11 @@ function getPageUrl($state, $type, $category, $sqft = [0, 0], $currentPage = 0)
 {
   global $apiKey;
 
+  echo "state->>$state \n";
+  echo "type->>$type \n";
+  echo "category->>$category \n";
   echo "min->>$sqft[0] and max->>$sqft[1] \n";
+  echo "currentPage->>$currentPage \n";
 
   $stateAlias = strtolower($state);
 

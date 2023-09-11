@@ -55,9 +55,16 @@ const STATE_LIST = [
   // 'WY'
 ];
 
-const LISTING_TYPE = ["fore", "auc", "pmf", "pf"];
-const CATEGORY = ['cat1', 'cat2'];
-
+const LISTING_TYPE = [
+  // "fore", 
+  // "auc", 
+  // "pmf", 
+  "pf"
+];
+const CATEGORY = [
+  // "cat1", 
+  "cat2"
+];
 
 const BED_VALUES = [1, 2, 3, 4, 5];
 const BATH_VALUES = [1, 1.5, 2, 3, 4];

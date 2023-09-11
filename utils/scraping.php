@@ -77,16 +77,13 @@ function sendCurlRequest($url)
   curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
   curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
   curl_setopt($curl, CURLOPT_USERAGENT, USER_AGENT);
-  $html = curl_exec($curl);
-  $statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-  print_r("statusCode->>" . $statusCode);
-  print_r("\n");
 
+  sleep(2);
+  
+  $response = curl_exec($curl);
   curl_close($curl);
-
-  $result = HtmlDomParser::str_get_html($html);
-
-  return $result;
+  
+  return HtmlDomParser::str_get_html($response);
 }
 
 function retryCurlRequest($url)

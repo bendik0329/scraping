@@ -68,7 +68,9 @@ function _main($db)
             }
           }
 
-          $count = getPropertyCount($driver, $state, $type, $category, [7500, 0]);
+          $pageUrl = getPageUrl($state, $type, $category, [7500, 0]);
+          $count = getPropertyCount($driver, $pageUrl);
+
           $total += $count;
         }
       }

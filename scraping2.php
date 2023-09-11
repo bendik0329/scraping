@@ -90,14 +90,14 @@ function _main($db)
   $driver->close();
 }
 
-function getPageUrl($state, $type, $category, $sqft = [0, 0], $currentPage = 0)
+function getPageUrl($state, $type, $category, $range = [0, 0], $currentPage = 0)
 {
   global $apiKey;
 
   echo "state->>$state \n";
   echo "type->>$type \n";
   echo "category->>$category \n";
-  echo "min->>$sqft[0] and max->>$sqft[1] \n";
+  echo "min->>$range[0] and max->>$range[1] \n";
   echo "currentPage->>$currentPage \n";
 
   $stateAlias = strtolower($state);
@@ -132,21 +132,21 @@ function getPageUrl($state, $type, $category, $sqft = [0, 0], $currentPage = 0)
     )
   );
 
-  $sqftValue = [
-    "min" => $sqft[0],
-    "max" => $sqft[1],
+  $sqft = [
+    "min" => $range[0],
+    "max" => $range[1],
   ];
 
-  if ($sqftValue["min"] === 0) {
-    unset($sqftValue["min"]);
+  if ($sqft["min"] === 0) {
+    unset($sqft["min"]);
   }
 
-  if ($sqftValue["max"] === 0) {
-    unset($sqftValue["max"]);
+  if ($sqft["max"] === 0) {
+    unset($sqft["max"]);
   }
 
-  if (!empty($sqftValue)) {
-    $filterState["sqft"] = $sqftValue;
+  if (!empty($sqft)) {
+    $filterState["sqft"] = $sqft;
   }
 
   $filterState[$type]["value"] = true;
@@ -197,7 +197,7 @@ function getPropertyCount($driver, $url)
   return $count;
 }
 
-function scrapeProperties($driver, $db, $count, $state, $type, $category, $range)
+function scrapeProperties($driver, $db, $count, $state, $type, $category, $range = [0, 0])
 {
   global $apiKey;
   $itemsPerPage = 41;

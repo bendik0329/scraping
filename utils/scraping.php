@@ -78,6 +78,10 @@ function sendCurlRequest($url)
   curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
   curl_setopt($curl, CURLOPT_USERAGENT, USER_AGENT);
   $html = curl_exec($curl);
+  $statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+  print_r("statusCode->>" . $statusCode);
+  print_r("\n");
+
   curl_close($curl);
 
   $result = HtmlDomParser::str_get_html($html);
@@ -109,8 +113,8 @@ function retryCurlRequest($url)
     
   }
 
-  print_r($html);
-  print_r("\n");
+  // print_r($html);
+  // print_r("\n");
   return $html;
 }
 

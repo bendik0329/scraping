@@ -87,11 +87,8 @@ function getPageUrl($state, $type, $category, $sqft = [0, 0], $currentPage = 0)
 {
   global $apiKey;
 
-  print_r($sqft);
-  print_r("\n");
-
   echo "min->>$sqft[0] and max->>$sqft[1] \n";
-  
+
   $stateAlias = strtolower($state);
 
   $filterState = array(
@@ -163,8 +160,6 @@ function getPageUrl($state, $type, $category, $sqft = [0, 0], $currentPage = 0)
 
   $url = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/$stateAlias/?searchQueryState=$searchQueryState&dynamic=false";
 
-  echo $url . "\n";
-
   return $url;
 }
 
@@ -186,7 +181,7 @@ function getPropertyCount($driver, $url)
     $count = 0;
   }
 
-  echo "count->>" . $count . "\n";
+  echo "count->>" . $count . "\n\n";
 
   return $count;
 }

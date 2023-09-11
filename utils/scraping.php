@@ -94,7 +94,7 @@ function retryCurlRequest($url)
   while ($retryCount < $maxRetries) {
     try {
       $response = sendCurlRequest($url);
-      $html = $response->findOne("div.detail-page");
+      $html = $response->findOne("#details-page-container");
 
       if ($html instanceof \voku\helper\SimpleHtmlDomBlank) {
         sleep(2);
@@ -109,6 +109,8 @@ function retryCurlRequest($url)
     
   }
 
+  print_r($html);
+  print_r("\n");
   return $html;
 }
 

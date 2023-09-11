@@ -11,7 +11,7 @@ $envConfig = parse_ini_file(__DIR__ . "/.env");
 $apiKey = $envConfig['API_KEY'];
 
 for ($i = 0; $i <= 100; $i++) {
-  $url = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/homedetails/9887-Macarthur-Blvd-I-Oakland-CA-94605/2063699609_zpid/";
+  $url = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/homedetails/14714-Broadway-Whittier-CA-90604/21433344_zpid/";
   $curl = curl_init();
   curl_setopt($curl, CURLOPT_URL, $url);
   curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);

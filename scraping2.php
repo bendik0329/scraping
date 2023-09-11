@@ -234,6 +234,9 @@ function scrapeProperties($driver, $db, $count, $state, $type, $category, $range
                 $link = $element->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");
                 $detailUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=" . $link;
 
+                print_r("zpid->>" . $zpid);
+                print_r("\n");
+                
                 $detailHtml = retryCurlRequest($detailUrl);
 
                 if ($detailHtml instanceof \voku\helper\SimpleHtmlDomBlank) {

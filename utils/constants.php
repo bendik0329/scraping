@@ -56,13 +56,13 @@ const STATE_LIST = [
 ];
 
 const LISTING_TYPE = [
-  // "fore", 
-  // "auc", 
-  // "pmf", 
+  "fore", 
+  "auc", 
+  "pmf", 
   "pf"
 ];
 const CATEGORY = [
-  // "cat1", 
+  "cat1", 
   "cat2"
 ];
 

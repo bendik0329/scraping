@@ -47,7 +47,7 @@ function _main($db)
 
         if ($count > 0 && $count <= 820) {
           $total += $count;
-          // scrapeProperties($driver, $db, $count, $state, $type, $category);
+          scrapeProperties($driver, $db, $count, $state, $type, $category);
         } elseif ($count > 820) {
           $start = 0;
           $end = 7500;
@@ -60,7 +60,7 @@ function _main($db)
 
             if ($count > 0 && $count <= 820) {
               $total += $count;
-              // scrapeProperties($driver, $db, $count, $state, $type, $category, $range);
+              scrapeProperties($driver, $db, $count, $state, $type, $category, $range);
             } elseif ($count > 820) {
               $mid = $range[0] + floor(($range[1] - $range[0]) / 2);
               $ranges[] = [$range[0], $mid];
@@ -68,10 +68,15 @@ function _main($db)
             }
           }
 
-          $pageUrl = getPageUrl($state, $type, $category, [7500, 0]);
-          $count = getPropertyCount($driver, $pageUrl);
+          $start = 7501;
+          $end = 0;
+          $range = [$start, $end];
 
+          $pageUrl = getPageUrl($state, $type, $category, $range);
+          $count = getPropertyCount($driver, $pageUrl);
           $total += $count;
+
+          scrapeProperties($driver, $db, $count, $state, $type, $category, $range);
         }
       }
     }
@@ -191,7 +196,6 @@ function getPropertyCount($driver, $url)
 function scrapeProperties($driver, $db, $count, $state, $type, $category, $range)
 {
   global $apiKey;
-
   $itemsPerPage = 41;
   $currentPage = 1;
   $maxPage = ceil($count / $itemsPerPage);
@@ -295,7 +299,6 @@ function scrapeProperties($driver, $db, $count, $state, $type, $category, $range
                       '" . date('Y-m-d H:i:s') . "'
                     )";
 
-                  
                   if (!$db->query($sql)) {
                     echo "Error inserting properties table: \n";
                     echo $sql . "\n";

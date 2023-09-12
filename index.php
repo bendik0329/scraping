@@ -31,7 +31,7 @@ $host = 'http://localhost:4444/wd/hub';
 $capabilities = \Facebook\WebDriver\Remote\DesiredCapabilities::chrome();
 $capabilities->setCapability('goog:chromeOptions', ['args' => ["--headless", "--user-agent=" . USER_AGENT]]);
 
-// $startIndex = intval($argv[1]);
+$startIndex = intval($argv[1]);
 
 function _main($batch, $db)
 {

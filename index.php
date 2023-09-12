@@ -37,7 +37,6 @@ function _main($batch, $db)
 {
   global $host, $capabilities;
   $driver = RemoteWebDriver::create($host, $capabilities);
-  $total = 0;
 
   foreach ($batch as $state) {
     foreach (LISTING_TYPE as $type) {
@@ -46,7 +45,6 @@ function _main($batch, $db)
         $count = getPropertyCount($driver, $pageUrl);
 
         if ($count > 0 && $count <= 820) {
-          $total += $count;
           scrapeProperties($driver, $db, $count, $state, $type, $category);
         } elseif ($count > 820) {
           $start = 0;
@@ -59,7 +57,6 @@ function _main($batch, $db)
             $count = getPropertyCount($driver, $pageUrl);
 
             if ($count > 0 && $count <= 820) {
-              $total += $count;
               scrapeProperties($driver, $db, $count, $state, $type, $category, $range);
             } elseif ($count > 820) {
               $mid = $range[0] + floor(($range[1] - $range[0]) / 2);
@@ -74,7 +71,6 @@ function _main($batch, $db)
 
           $pageUrl = getPageUrl($state, $type, $category, $range);
           $count = getPropertyCount($driver, $pageUrl);
-          $total += $count;
 
           scrapeProperties($driver, $db, $count, $state, $type, $category, $range);
         }
@@ -313,7 +309,7 @@ function scrapeProperties($driver, $db, $count, $state, $type, $category, $range
 }
 
 // Divide states into batches of 5
-$stateBatches = array_chunk(STATE_LIST, 5);
+$stateBatches = array_chunk(STATE_LIST, 1);
 
 // Get the batch to scrape based on the startIndex
 $batchToScrape = isset($stateBatches[$startIndex]) ? $stateBatches[$startIndex] : [];

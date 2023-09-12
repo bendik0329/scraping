@@ -48,8 +48,14 @@ if ($db->query($dropPropertiesSql) === TRUE) {
     `days` INT ( 11 ),
     `views` INT ( 11 ),
     `saves` INT ( 11 ),
-    `special` VARCHAR ( 255 ),
     `overview` TEXT,
+    `rentZestimate` INT ( 11 ),
+    `latitude` VARCHAR ( 255 ),
+    `longitude` VARCHAR ( 255 ),
+    `agent` VARCHAR ( 255 ),
+    `broker` VARCHAR ( 255 ),
+    `coAgent` VARCHAR ( 255 ),
+    `coAgentOffice` VARCHAR ( 255 ),
     `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 
   )
   ENGINE = MyISAM";

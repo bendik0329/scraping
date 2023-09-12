@@ -258,6 +258,8 @@ function scrapeProperties($driver, $db, $count, $state, $type, $category, $range
                       city,
                       state,
                       zipcode,
+                      latitude,
+                      longitude,
                       beds,
                       baths,
                       sqft,
@@ -275,8 +277,12 @@ function scrapeProperties($driver, $db, $count, $state, $type, $category, $range
                       days,
                       views,
                       saves,
-                      special,
                       overview,
+                      rentZestimate,
+                      agent,
+                      broker,
+                      coAgent,
+                      coAgentOffice,
                       createdAt
                     )
                     VALUES
@@ -289,6 +295,8 @@ function scrapeProperties($driver, $db, $count, $state, $type, $category, $range
                       '" . $db->makeSafe($result["city"]) . "',
                       '" . $db->makeSafe($result["state"]) . "',
                       '" . $db->makeSafe($result["zipcode"]) . "',
+                      '" . $db->makeSafe($result["latitude"]) . "',
+                      '" . $db->makeSafe($result["longitude"]) . "',
                       '" . $db->makeSafe($result["beds"]) . "',
                       '" . $db->makeSafe($result["baths"]) . "',
                       '" . $db->makeSafe($result["sqft"]) . "',
@@ -306,8 +314,12 @@ function scrapeProperties($driver, $db, $count, $state, $type, $category, $range
                       '" . $db->makeSafe($result["days"]) . "',
                       '" . $db->makeSafe($result["views"]) . "',
                       '" . $db->makeSafe($result["saves"]) . "',
-                      '" . $db->makeSafe($result["special"]) . "',
                       '" . $db->makeSafe($result["overview"]) . "',
+                      '" . $db->makeSafe($result["rentZestimate"]) . "',
+                      '" . $db->makeSafe($result["agent"]) . "',
+                      '" . $db->makeSafe($result["broker"]) . "',
+                      '" . $db->makeSafe($result["coAgent"]) . "',
+                      '" . $db->makeSafe($result["coAgentOffice"]) . "',
                       '" . date('Y-m-d H:i:s') . "'
                     )";
 

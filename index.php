@@ -160,6 +160,9 @@ function getPageUrl($state, $type, $category, $range = [0, 0], $currentPage = 0)
 
   $url = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/$stateAlias/?searchQueryState=$searchQueryState&dynamic=false";
 
+  print_r($url);
+  print_r("\n");
+  
   return $url;
 }
 

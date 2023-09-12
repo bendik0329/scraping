@@ -305,7 +305,7 @@ function scrapeProperties($driver, $db, $count, $state, $type, $category, $range
 }
 
 // Divide states into batches of 5
-$stateBatches = array_chunk(STATE_LIST, 5);
+$stateBatches = array_chunk(STATE_LIST, 4);
 
 // Get the batch to scrape based on the startIndex
 $batchToScrape = isset($stateBatches[$startIndex]) ? $stateBatches[$startIndex] : [];

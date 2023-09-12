@@ -40,7 +40,6 @@ function _init()
       `days` INT ( 11 ),
       `views` INT ( 11 ),
       `saves` INT ( 11 ),
-      `special` VARCHAR ( 255 ),
       `overview` TEXT,
       `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 
     )";

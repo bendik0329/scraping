@@ -82,23 +82,12 @@ function _main($batch, $db)
     }
   }
 
-  print_r("total count->>" . $total);
-
-  // array2csv($result);
-  // echo json_encode($result);
-
   $driver->close();
 }
 
 function getPageUrl($state, $type, $category, $range = [0, 0], $currentPage = 0)
 {
   global $apiKey;
-
-  echo "state->>$state \n";
-  echo "type->>$type \n";
-  echo "category->>$category \n";
-  echo "min->>$range[0] and max->>$range[1] \n";
-  echo "currentPage->>$currentPage \n";
 
   $stateAlias = strtolower($state);
 
@@ -191,8 +180,6 @@ function getPropertyCount($driver, $url)
   } catch (NoSuchElementException $e) {
     $count = 0;
   }
-
-  echo "count->>" . $count . "\n\n";
 
   return $count;
 }
@@ -323,7 +310,7 @@ function scrapeProperties($driver, $db, $count, $state, $type, $category, $range
 }
 
 // Divide states into batches of 5
-$stateBatches = array_chunk(LISTING_TYPE, 1);
+$stateBatches = array_chunk(STATE_LIST, 1);
 
 // Get the batch to scrape based on the startIndex
 $batchToScrape = isset($stateBatches[$startIndex]) ? $stateBatches[$startIndex] : [];

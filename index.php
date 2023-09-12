@@ -9,7 +9,6 @@ use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\Exception\NoSuchElementException;
 use Facebook\WebDriver\WebDriverWait;
-use Facebook\WebDriver\WebDriverExpectedCondition;
 
 // load environment variable
 $envConfig = parse_ini_file(__DIR__ . "/.env");
@@ -156,9 +155,6 @@ function getPageUrl($state, $type, $category, $range = [0, 0], $currentPage = 0)
 
   $url = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/$stateAlias/?searchQueryState=$searchQueryState&dynamic=false";
 
-  print_r($url);
-  print_r("\n");
-  
   return $url;
 }
 
@@ -309,7 +305,7 @@ function scrapeProperties($driver, $db, $count, $state, $type, $category, $range
 }
 
 // Divide states into batches of 5
-$stateBatches = array_chunk(STATE_LIST, 1);
+$stateBatches = array_chunk(STATE_LIST, 10);
 
 // Get the batch to scrape based on the startIndex
 $batchToScrape = isset($stateBatches[$startIndex]) ? $stateBatches[$startIndex] : [];

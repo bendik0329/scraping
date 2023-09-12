@@ -4,7 +4,7 @@
 php init.php
 
 # Run 10 parallel instances
-for i in {0..0}; do
+for i in {0..4}; do
   php index.php $i &
 done
 

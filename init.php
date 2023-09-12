@@ -31,8 +31,6 @@ if ($db->query($dropPropertiesSql) === TRUE) {
     `city` VARCHAR ( 255 ),
     `state` VARCHAR ( 255 ),
     `zipcode` VARCHAR ( 255 ),
-    `latitude` VARCHAR ( 255 ),
-    `longitude` VARCHAR ( 255 ),
     `beds` FLOAT ( 4 ),
     `baths` FLOAT ( 4 ),
     `sqft` FLOAT ( 4 ),
@@ -51,11 +49,6 @@ if ($db->query($dropPropertiesSql) === TRUE) {
     `views` INT ( 11 ),
     `saves` INT ( 11 ),
     `overview` TEXT,
-    `rentZestimate` INT ( 11 ),
-    `agent` VARCHAR ( 255 ),
-    `broker` VARCHAR ( 255 ),
-    `coAgent` VARCHAR ( 255 ),
-    `coAgentOffice` VARCHAR ( 255 ),
     `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 
   )
   ENGINE = MyISAM";

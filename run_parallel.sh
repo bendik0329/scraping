@@ -4,8 +4,8 @@
 php init.php
 
 # Run 10 parallel instances
-for i in {0..9}; do
-  php scraping.php $i &
+for i in {0..49}; do
+  php index.php $i &
 done
 
 # Wait for all instances to finish

@@ -183,30 +183,6 @@ function scrapeLayoutContainer($html)
     }
   }
 
-  // get latitude and longitude
-  $mapElement = $html->findOne("div.commute-map-container figure.media-stream-map img");
-  if ($mapElement instanceof \voku\helper\SimpleHtmlDomBlank) {
-    $latitude = "";
-    $longitude = "";
-  } else {
-    $mapUrl = $mapElement->text();
-    $parsedMapUrl = parse_url($mapUrl);
-    $queryString = $parsedMapUrl['query'];
-    parse_str($queryString, $queryParameters);
-
-    if (isset($queryParameters['center'][0])) {
-      $latitude = $queryParameters['center'][0];
-    } else {
-      $latitude = "";
-    }
-
-    if (isset($queryParameters['center'][1])) {
-      $longitude = $queryParameters['center'][1];
-    } else {
-      $longitude = "";
-    }
-  }
-
   // get type
   $typeElement = $html->findOne("div.dpf__sc-1yftt2a-0.bNENJa span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-1yftt2a-1.hrfydd.ixkFNb");
   if ($typeElement instanceof \voku\helper\SimpleHtmlDomBlank) {
@@ -234,24 +210,6 @@ function scrapeLayoutContainer($html)
     $overview = "";
   } else {
     $overview = $overviewElement->text();
-  }
-
-  // get rent zestimate
-  $rentZestimateElement = $html->findOne("#ds-rental-home-values div.Spacer-c11n-8-84-3__sc-17suqs2-0.gQfVEX span");
-  if ($rentZestimateElement instanceof \voku\helper\SimpleHtmlDomBlank) {
-    $rentZestimate = 0;
-  } else {
-    $rentZestimate = $rentZestimateElement->text();
-    if ($rentZestimate === "None") {
-      $rentZestimate = 0;
-    } else {
-      preg_match('/([^\d\s]+[\d,]+)/', $rentZestimate, $matches);
-      if (!empty($matches)) {
-        $rentZestimate = deformatPrice($matches[0]);
-      } else {
-        $rentZestimate = 0;
-      }
-    }
   }
 
   // get bed, bath info
@@ -457,46 +415,6 @@ function scrapeLayoutContainer($html)
     }
   }
 
-  // get agent list info
-  $agent = "";
-  $broker = "";
-  $coAgent = "";
-  $coAgentOffice = "";
-
-  $agentListElements = $html->find("div.hdp__sc-1efa1dd-0.fGCGQt p.Text-c11n-8-84-3__sc-aiai24-0.hrfydd");
-  if (count($agentListElements) > 0) {
-    foreach ($agentListElements as $agentListElement) {
-      $type = $agentListElement->getAttribute("data-testid");
-
-      $valueElement = $agentListElement->findOne("button");
-      if ($valueElement instanceof \voku\helper\SimpleHtmlDomBlank) {
-        $valueElement = $agentListElement->findOne("span.Text-c11n-8-84-3__sc-aiai24-0.hrfydd");
-        if ($valueElement instanceof \voku\helper\SimpleHtmlDomBlank) {
-          $value = "";
-        } else {
-          $value = $valueElement->text();
-        }
-      } else {
-        $value = $valueElement->text();
-      }
-
-      switch ($type) {
-        case "attribution-LISTING_AGENT":
-          $agent = $value;
-          break;
-        case "attribution-BROKER":
-          $broker = $value;
-          break;
-        case "attribution-CO_LISTING_AGENT":
-          $coAgent = $value;
-          break;
-        case "attribution-CO_LISTING_AGENT_OFFICE":
-          $coAgentOffice = $value;
-          break;
-      }
-    }
-  }
-
   return array(
     "image" => $image,
     "price" => $price,
@@ -504,8 +422,6 @@ function scrapeLayoutContainer($html)
     "city" => $city,
     "state" => $state,
     "zipcode" => $zipcode,
-    "latitude" => $latitude,
-    "longitude" => $longitude,
     "beds" => $beds,
     "baths" => $baths,
     "sqft" => $sqft,
@@ -524,11 +440,6 @@ function scrapeLayoutContainer($html)
     "days" => $days,
     "views" => $views,
     "saves" => $saves,
-    "rentZestimate" => $rentZestimate,
-    "agent" => $agent,
-    "broker" => $broker,
-    "coAgent" => $coAgent,
-    "coAgentOffice" => $coAgentOffice,
   );
 }
 
@@ -596,30 +507,6 @@ function scrapeLayoutContainerDesktop($html)
     }
   }
 
-  // get latitude and longitude
-  $mapElement = $html->findOne("div.commute-map-container figure.media-stream-map img");
-  if ($mapElement instanceof \voku\helper\SimpleHtmlDomBlank) {
-    $latitude = "";
-    $longitude = "";
-  } else {
-    $mapUrl = $mapElement->text();
-    $parsedMapUrl = parse_url($mapUrl);
-    $queryString = $parsedMapUrl['query'];
-    parse_str($queryString, $queryParameters);
-
-    if (isset($queryParameters['center'][0])) {
-      $latitude = $queryParameters['center'][0];
-    } else {
-      $latitude = "";
-    }
-
-    if (isset($queryParameters['center'][1])) {
-      $longitude = $queryParameters['center'][1];
-    } else {
-      $longitude = "";
-    }
-  }
-  
   // get type
   $typeElement = $html->findOne("div.dpf__sc-1yftt2a-0.bNENJa span.Text-c11n-8-84-3__sc-aiai24-0.dpf__sc-1yftt2a-1.hrfydd.ixkFNb");
   if ($typeElement instanceof \voku\helper\SimpleHtmlDomBlank) {
@@ -647,24 +534,6 @@ function scrapeLayoutContainerDesktop($html)
     $overview = "";
   } else {
     $overview = $overviewElement->text();
-  }
-
-  // get rent zestimate
-  $rentZestimateElement = $html->findOne("#ds-rental-home-values div.Spacer-c11n-8-84-3__sc-17suqs2-0.gQfVEX span");
-  if ($rentZestimateElement instanceof \voku\helper\SimpleHtmlDomBlank) {
-    $rentZestimate = 0;
-  } else {
-    $rentZestimate = $rentZestimateElement->text();
-    if ($rentZestimate === "None") {
-      $rentZestimate = 0;
-    } else {
-      preg_match('/([^\d\s]+[\d,]+)/', $rentZestimate, $matches);
-      if (!empty($matches)) {
-        $rentZestimate = deformatPrice($matches[0]);
-      } else {
-        $rentZestimate = 0;
-      }
-    }
   }
 
   // get bed, bath info
@@ -833,46 +702,6 @@ function scrapeLayoutContainerDesktop($html)
     }
   }
 
-  // get agent list info
-  $agent = "";
-  $broker = "";
-  $coAgent = "";
-  $coAgentOffice = "";
-
-  $agentListElements = $html->find("div.hdp__sc-1efa1dd-0.fGCGQt p.Text-c11n-8-84-3__sc-aiai24-0.hrfydd");
-  if (count($agentListElements) > 0) {
-    foreach ($agentListElements as $agentListElement) {
-      $type = $agentListElement->getAttribute("data-testid");
-
-      $valueElement = $agentListElement->findOne("button");
-      if ($valueElement instanceof \voku\helper\SimpleHtmlDomBlank) {
-        $valueElement = $agentListElement->findOne("span.Text-c11n-8-84-3__sc-aiai24-0.hrfydd");
-        if ($valueElement instanceof \voku\helper\SimpleHtmlDomBlank) {
-          $value = "";
-        } else {
-          $value = $valueElement->text();
-        }
-      } else {
-        $value = $valueElement->text();
-      }
-
-      switch ($type) {
-        case "attribution-LISTING_AGENT":
-          $agent = $value;
-          break;
-        case "attribution-BROKER":
-          $broker = $value;
-          break;
-        case "attribution-CO_LISTING_AGENT":
-          $coAgent = $value;
-          break;
-        case "attribution-CO_LISTING_AGENT_OFFICE":
-          $coAgentOffice = $value;
-          break;
-      }
-    }
-  }
-
   return array(
     "image" => $image,
     "price" => $price,
@@ -880,8 +709,6 @@ function scrapeLayoutContainerDesktop($html)
     "city" => $city,
     "state" => $state,
     "zipcode" => $zipcode,
-    "latitude" => $latitude,
-    "longitude" => $longitude,
     "beds" => $beds,
     "baths" => $baths,
     "sqft" => $sqft,
@@ -900,11 +727,6 @@ function scrapeLayoutContainerDesktop($html)
     "days" => $days,
     "views" => $views,
     "saves" => $saves,
-    "rentZestimate" => $rentZestimate,
-    "agent" => $agent,
-    "broker" => $broker,
-    "coAgent" => $coAgent,
-    "coAgentOffice" => $coAgentOffice,
   );
 }
 
@@ -948,12 +770,4 @@ function downloadImages()
       }
     }
   }
-}
-
-function logTimestamp($event)
-{
-  $logFile = __DIR__ . "/../log/logfile.txt";
-  $timestamp = date('Y-m-d H:i:s');
-  $logMessage = $event . ' - ' . $timestamp . PHP_EOL;
-  file_put_contents($logFile, $logMessage, FILE_APPEND);
 }

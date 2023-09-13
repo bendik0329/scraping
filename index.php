@@ -1,10 +1,7 @@
 <?php
-
 require_once __DIR__ . '/vendor/autoload.php';
 require_once  __DIR__ . '/utils/constants.php';
 require_once  __DIR__ . '/utils/database.php';
-// require_once  __DIR__ . '/init.php';
-// require_once  __DIR__ . '/utils/scraping.php';
 
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverBy;
@@ -242,7 +239,6 @@ function scrapeProperties($driver, $db, $count, $state, $type, $category, $range
 
                   $result = array(
                     "image" => isset($property["desktopWebHdpImageLink"]) ? $property["desktopWebHdpImageLink"] : "",
-                    "homeStatus" => isset($property["homeStatus"]) ? $property["homeStatus"] : "",
                     "streetAddress" => isset($property["address"]["streetAddress"]) ? $property["address"]["streetAddress"] : "",
                     "city" => isset($property["address"]["city"]) ? $property["address"]["city"] : "",
                     "state" => isset($property["address"]["state"]) ? $property["address"]["state"] : "",
@@ -290,16 +286,12 @@ function scrapeProperties($driver, $db, $count, $state, $type, $category, $range
                     "description" => isset($property["description"]) ? $property["description"] : "",
                   );
 
-                  print_r($result);
-                  print_r("\n");
-
                   $sql = "
                     INSERT INTO properties
                     (
                       zpid,
                       url,
                       image,
-                      homeStatus,
                       streetAddress,
                       city,
                       state,
@@ -348,7 +340,6 @@ function scrapeProperties($driver, $db, $count, $state, $type, $category, $range
                       '" . $db->makeSafe($zpid) . "',
                       '" . $db->makeSafe($link) . "',
                       '" . $db->makeSafe($result["image"]) . "',
-                      '" . $db->makeSafe($result["homeStatus"]) . "',
                       '" . $db->makeSafe($result["streetAddress"]) . "',
                       '" . $db->makeSafe($result["city"]) . "',
                       '" . $db->makeSafe($result["state"]) . "',
@@ -370,9 +361,9 @@ function scrapeProperties($driver, $db, $count, $state, $type, $category, $range
                       '" . $db->makeSafe($result["homeType"]) . "',
                       '" . $db->makeSafe($result["yearBuilt"]) . "',
                       '" . $db->makeSafe($result["hasHeating"] ? 1 : 0) . "',
-                      '" . $db->makeSafe($result["heating"]) . "',
+                      '" . $db->makeSafe(json_encode($result["heating"])) . "',
                       '" . $db->makeSafe($result["hasCooling"] ? 1 : 0) . "',
-                      '" . $db->makeSafe($result["cooling"]) . "',
+                      '" . $db->makeSafe(json_encode($result["cooling"])) . "',
                       '" . $db->makeSafe($result["hasGarage"] ? 1 : 0) . "',
                       '" . $db->makeSafe($result["hasAttachedGarage"] ? 1 : 0) . "',
                       '" . $db->makeSafe($result["parkingCapacity"]) . "',
@@ -416,6 +407,8 @@ $stateBatches = array_chunk(STATE_LIST, 5);
 
 // Get the batch to scrape based on the startIndex
 $batchToScrape = isset($stateBatches[$startIndex]) ? $stateBatches[$startIndex] : [];
+
+echo "Scraping is in progress... \n";
 
 // Scrape and store the batch of states
 _main($batchToScrape, $db);

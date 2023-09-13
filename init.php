@@ -26,7 +26,6 @@ if ($db->query($dropPropertiesSql) === TRUE) {
     `zpid` INT ( 0 ) NOT NULL UNIQUE,
     `url` VARCHAR ( 255 ) NOT NULL,
     `image` TEXT,
-    `homeStatus` VARCHAR ( 50 ),
     `streetAddress` VARCHAR ( 50 ),
     `city` VARCHAR ( 50 ),
     `state` VARCHAR ( 50 ),

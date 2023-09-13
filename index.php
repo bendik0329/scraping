@@ -40,45 +40,38 @@ function _main($batch, $db)
     foreach (LISTING_TYPE as $type) {
       foreach (CATEGORY as $category) {
         $pageUrl = getPageUrl($state, $type, $category);
-
-        print_r($pageUrl);
-        print_r("\n");
-        exit();
-        
         $count = getPropertyCount($driver, $pageUrl);
 
-        print_r("count->>" . $count);
-        print_r("\n");
-        // if ($count > 0 && $count <= 820) {
-        //   scrapeProperties($driver, $db, $count, $state, $type, $category);
-        // } elseif ($count > 820) {
-        //   $start = 0;
-        //   $end = 7500;
-        //   $ranges = [[$start, $end]];
+        if ($count > 0 && $count <= 820) {
+          scrapeProperties($driver, $db, $count, $state, $type, $category);
+        } elseif ($count > 820) {
+          $start = 0;
+          $end = 7500;
+          $ranges = [[$start, $end]];
 
-        //   while (!empty($ranges)) {
-        //     $range = array_shift($ranges);
-        //     $pageUrl = getPageUrl($state, $type, $category, $range);
-        //     $count = getPropertyCount($driver, $pageUrl);
+          while (!empty($ranges)) {
+            $range = array_shift($ranges);
+            $pageUrl = getPageUrl($state, $type, $category, $range);
+            $count = getPropertyCount($driver, $pageUrl);
 
-        //     if ($count > 0 && $count <= 820) {
-        //       scrapeProperties($driver, $db, $count, $state, $type, $category, $range);
-        //     } elseif ($count > 820) {
-        //       $mid = $range[0] + floor(($range[1] - $range[0]) / 2);
-        //       $ranges[] = [$range[0], $mid];
-        //       $ranges[] = [$mid + 1, $range[1]];
-        //     }
-        //   }
+            if ($count > 0 && $count <= 820) {
+              scrapeProperties($driver, $db, $count, $state, $type, $category, $range);
+            } elseif ($count > 820) {
+              $mid = $range[0] + floor(($range[1] - $range[0]) / 2);
+              $ranges[] = [$range[0], $mid];
+              $ranges[] = [$mid + 1, $range[1]];
+            }
+          }
 
-        //   $start = 7501;
-        //   $end = 0;
-        //   $range = [$start, $end];
+          $start = 7501;
+          $end = 0;
+          $range = [$start, $end];
 
-        //   $pageUrl = getPageUrl($state, $type, $category, $range);
-        //   $count = getPropertyCount($driver, $pageUrl);
+          $pageUrl = getPageUrl($state, $type, $category, $range);
+          $count = getPropertyCount($driver, $pageUrl);
 
-        //   scrapeProperties($driver, $db, $count, $state, $type, $category, $range);
-        // }
+          scrapeProperties($driver, $db, $count, $state, $type, $category, $range);
+        }
       }
     }
   }
@@ -161,6 +154,8 @@ function getPageUrl($state, $type, $category, $range = [0, 0], $currentPage = 0)
 
   $url = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/$stateAlias/?searchQueryState=$searchQueryState&dynamic=false";
 
+  print_r($url);
+  print_r("\n");
   return $url;
 }
 
@@ -181,6 +176,10 @@ function getPropertyCount($driver, $url)
   } catch (NoSuchElementException $e) {
     $count = 0;
   }
+
+  print_r("count->>" . $count);
+  print_r("\n");
+  print_r("\n");
 
   return $count;
 }
@@ -443,7 +442,8 @@ function sendCurlRequest($url)
   $response = curl_exec($curl);
   curl_close($curl);
 
-  return HtmlDomParser::str_get_html($response);
+  return $response;
+  // return HtmlDomParser::str_get_html($response);
 }
 
 function retryCurlRequest($url)
@@ -453,27 +453,45 @@ function retryCurlRequest($url)
   $html = '';
 
   while ($retryCount < $maxRetries) {
-    try {
-      $response = sendCurlRequest($url);
-      $html = $response->findOne("script[id=__NEXT_DATA__]");
+    $response = sendCurlRequest($url);
 
-      if ($html instanceof \voku\helper\SimpleHtmlDomBlank) {
-        sleep(2);
-        $retryCount++;
-      } else {
-        break;
-      }
+    try {
+      $htmlDomParser = HtmlDomParser::str_get_html($response);
     } catch (Exception $e) {
       echo "Error Occured in this url->>" . $url . "\n";
       break;
     }
+
+    $html = $htmlDomParser->findOne("script[id=__NEXT_DATA__]");
+    if ($html instanceof \voku\helper\SimpleHtmlDomBlank) {
+      sleep(2);
+      $retryCount++;
+    } else {
+      break;
+    }
+
+    // try {
+    //   $response = sendCurlRequest($url);
+    //   $htmlDomParser = HtmlDomParser::str_get_html($response);
+    //   $html = $htmlDomParser->findOne("script[id=__NEXT_DATA__]");
+
+    //   if ($html instanceof \voku\helper\SimpleHtmlDomBlank) {
+    //     sleep(2);
+    //     $retryCount++;
+    //   } else {
+    //     break;
+    //   }
+    // } catch (Exception $e) {
+    //   echo "Error Occured in this url->>" . $url . "\n";
+    //   break;
+    // }
   }
 
   return $html;
 }
 
 // Divide states into batches of 5
-$stateBatches = array_chunk(STATE_LIST, 1);
+$stateBatches = array_chunk(STATE_LIST, 5);
 
 // Get the batch to scrape based on the startIndex
 $batchToScrape = isset($stateBatches[$startIndex]) ? $stateBatches[$startIndex] : [];

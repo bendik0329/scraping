@@ -12,4 +12,4 @@ done
 wait
 
 # Download Images
-php download-images.php
+php downloads.php

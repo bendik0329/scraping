@@ -51,9 +51,16 @@ if ($db->numrows($properties) > 0) {
         }
 
         if (!file_exists($imgPath)) {
-          $imgData = file_get_contents($imgUrl);
-          if ($imgData !== false) {
-            file_put_contents($imgPath, $imgData);
+          try {
+            $imgData = file_get_contents($imgUrl);
+            if ($imgData !== false) {
+              file_put_contents($imgPath, $imgData);
+            }
+          } catch (Exception $e) {
+            print_r($e);
+            print_r("\n");
+            print_r($imgUrl);
+            print_r("\n");
           }
         }
       }

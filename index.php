@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/vendor/autoload.php';
 require_once  __DIR__ . '/utils/constants.php';
+require_once  __DIR__ . '/utils/database.php';
 // require_once  __DIR__ . '/init.php';
 // require_once  __DIR__ . '/utils/scraping.php';
 
@@ -291,7 +292,7 @@ function scrapeProperties($driver, $db, $count, $state, $type, $category, $range
 
                   print_r($result);
                   print_r("\n");
-                  
+
                   $sql = "
                     INSERT INTO properties
                     (

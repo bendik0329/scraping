@@ -2,7 +2,7 @@
 
 # Run init file
 echo "Initialize Database..."
-# php init.php
+php init.php
 
 # Run 10 parallel instances
 echo "Running 10 parallel scraping instances..."
@@ -16,4 +16,4 @@ wait
 
 # Download Images
 echo "Downloading Images..."
-# php downloads.php
+php downloads.php

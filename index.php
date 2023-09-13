@@ -43,6 +43,7 @@ function _main($batch, $db)
 
         print_r($pageUrl);
         print_r("\n");
+        exit();
         
         $count = getPropertyCount($driver, $pageUrl);
 

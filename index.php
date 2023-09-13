@@ -216,8 +216,6 @@ function scrapeProperties($driver, $db, $count, $state, $type, $category, $range
                 $detailUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=" . $link;
                 $dataElement = retryCurlRequest($detailUrl);
 
-                $dataElement =  HtmlDomParser::str_get_html($response);
-
                 if ($dataElement !== '' || !($dataElement instanceof \voku\helper\SimpleHtmlDomBlank)) {
                   $jsonString = $dataElement->text();
                   $data = json_decode($jsonString, true);

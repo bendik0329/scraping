@@ -214,28 +214,21 @@ function scrapeProperties($driver, $db, $count, $state, $type, $category, $range
               try {
                 $link = $element->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");
                 if ($link) {
-                  $detailUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=" . $link;
-                  $curl = curl_init();
-                  curl_setopt($curl, CURLOPT_URL, $detailUrl);
-                  curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
-                  curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-                  curl_setopt($curl, CURLOPT_USERAGENT, USER_AGENT);
-                  $response = curl_exec($curl);
-                  curl_close($curl);
-
                   try {
+                    $detailUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=" . $link;
+                    $curl = curl_init();
+                    curl_setopt($curl, CURLOPT_URL, $detailUrl);
+                    curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+                    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($curl, CURLOPT_USERAGENT, USER_AGENT);
+                    $response = curl_exec($curl);
+                    curl_close($curl);
+
+                    sleep(2);
+
                     $html =  HtmlDomParser::str_get_html($response);
-
-                    $dataElement = $html->findOne("script#__NEXT_DATA__");
-
-                    if ($dataElement instanceof \voku\helper\SimpleHtmlDomBlank) {
-                      print_r("there is no data element");
-                      print_r("\n");
-                      print_r("zpid->>" . $zpid);
-                      print_r("\n");
-                      print_r("link->>" . $link);
-                      print_r("\n");
-                    } else {
+                    $dataElement = $html->find('script[id=__NEXT_DATA__]', 0);
+                    if ($dataElement) {
                       $jsonString = $dataElement->text();
                       $data = json_decode($jsonString, true);
                       $gdpClientCache = json_decode($data['props']['pageProps']['gdpClientCache'], true);
@@ -393,7 +386,185 @@ function scrapeProperties($driver, $db, $count, $state, $type, $category, $range
                         echo "Error inserting properties table: \n";
                         echo $sql . "\n";
                       }
+                    } else {
+                      print_r("there is no data element");
+                      print_r("\n");
+                      print_r("zpid->>" . $zpid);
+                      print_r("\n");
+                      print_r("link->>" . $link);
+                      print_r("\n");
                     }
+
+                    // $html =  HtmlDomParser::str_get_html($response);
+
+                    // $dataElement = $html->findOne("script#__NEXT_DATA__");
+
+                    // if ($dataElement instanceof \voku\helper\SimpleHtmlDomBlank) {
+                    //   print_r("there is no data element");
+                    //   print_r("\n");
+                    //   print_r("zpid->>" . $zpid);
+                    //   print_r("\n");
+                    //   print_r("link->>" . $link);
+                    //   print_r("\n");
+                    // } else {
+                    //   $jsonString = $dataElement->text();
+                    //   $data = json_decode($jsonString, true);
+                    //   $gdpClientCache = json_decode($data['props']['pageProps']['gdpClientCache'], true);
+
+                    //   $property = array();
+                    //   foreach ($gdpClientCache as $value) {
+                    //     $property = $value['property'];
+                    //   }
+
+                    //   $result = array(
+                    //     "image" => isset($property["desktopWebHdpImageLink"]) ? $property["desktopWebHdpImageLink"] : "",
+                    //     "streetAddress" => isset($property["address"]["streetAddress"]) ? $property["address"]["streetAddress"] : "",
+                    //     "city" => isset($property["address"]["city"]) ? $property["address"]["city"] : "",
+                    //     "state" => isset($property["address"]["state"]) ? $property["address"]["state"] : "",
+                    //     "zipcode" => isset($property["address"]["zipcode"]) ? $property["address"]["zipcode"] : "",
+                    //     "latitude" => isset($property["latitude"]) ? $property["latitude"] : "",
+                    //     "longitude" => isset($property["longitude"]) ? $property["longitude"] : "",
+                    //     "country" => isset($property["country"]) ? $property["country"] : "",
+                    //     "bedrooms" => isset($property["bedrooms"]) ? $property["bedrooms"] : 0,
+                    //     "bathrooms" => isset($property["bathrooms"]) ? $property["bathrooms"] : 0,
+                    //     "livingAreaUnits" => isset($property["livingAreaUnits"]) ? $property["livingAreaUnits"] : "",
+                    //     "livingAreaValue" => isset($property["livingAreaValue"]) ? $property["livingAreaValue"] : 0,
+                    //     "lotAreaUnits" => isset($property["lotAreaUnits"]) ? $property["lotAreaUnits"] : "",
+                    //     "lotAreaValue" => isset($property["lotAreaValue"]) ? $property["lotAreaValue"] : 0,
+                    //     "currency" => isset($property["currency"]) ? $property["currency"] : "",
+                    //     "price" => isset($property["price"]) ? $property["price"] : 0,
+                    //     "zestimate" => isset($property["zestimate"]) ? $property["zestimate"] : 0,
+                    //     "rentZestimate" => isset($property["rentZestimate"]) ? $property["rentZestimate"] : 0,
+                    //     "homeType" => isset($property["homeType"]) ? $property["homeType"] : "",
+                    //     "yearBuilt" => isset($property["yearBuilt"]) ? $property["yearBuilt"] : 0,
+
+                    //     "hasHeating" => isset($property["resoFacts"]["hasHeating"]) ? $property["resoFacts"]["hasHeating"] : false,
+                    //     "heating" => $property["resoFacts"]["hasHeating"] ? $property["resoFacts"]["heating"] : "",
+
+                    //     "hasCooling" => isset($property["resoFacts"]["hasCooling"]) ? $property["resoFacts"]["hasCooling"] : false,
+                    //     "cooling" => $property["resoFacts"]["hasCooling"] ? $property["resoFacts"]["cooling"] : "",
+
+                    //     "hasGarage" => isset($property["resoFacts"]["hasGarage"]) ? $property["resoFacts"]["hasGarage"] : false,
+                    //     "hasAttachedGarage" => isset($property["resoFacts"]["hasAttachedGarage"]) ? $property["resoFacts"]["hasAttachedGarage"] : false,
+                    //     "parkingCapacity" => isset($property["resoFacts"]["parkingCapacity"]) ? $property["resoFacts"]["parkingCapacity"] : 0,
+                    //     "garageParkingCapacity" => isset($property["resoFacts"]["garageParkingCapacity"]) ? $property["resoFacts"]["garageParkingCapacity"] : 0,
+
+                    //     "pricePerSquareFoot" => isset($property["resoFacts"]["pricePerSquareFoot"]) ? $property["resoFacts"]["pricePerSquareFoot"] : 0,
+                    //     "buyerAgencyCompensation" => isset($property["resoFacts"]["buyerAgencyCompensation"]) ? $property["resoFacts"]["buyerAgencyCompensation"] : 0,
+                    //     "pageViewCount" => isset($property["pageViewCount"]) ? $property["pageViewCount"] : 0,
+                    //     "favoriteCount" => isset($property["favoriteCount"]) ? $property["favoriteCount"] : 0,
+                    //     "daysOnZillow" => isset($property["daysOnZillow"]) ? $property["daysOnZillow"] : 0,
+                    //     "agentName" => isset($property["attributionInfo"]["agentName"]) ? $property["attributionInfo"]["agentName"] : "",
+                    //     "agentPhoneNumber" => isset($property["attributionInfo"]["agentPhoneNumber"]) ? $property["attributionInfo"]["agentPhoneNumber"] : "",
+                    //     "brokerName" => isset($property["attributionInfo"]["brokerName"]) ? $property["attributionInfo"]["brokerName"] : "",
+                    //     "brokerPhoneNumber" => isset($property["attributionInfo"]["brokerPhoneNumber"]) ? $property["attributionInfo"]["brokerPhoneNumber"] : "",
+                    //     "coAgentName" => isset($property["attributionInfo"]["coAgentName"]) ? $property["attributionInfo"]["coAgentName"] : "",
+                    //     "coAgentNumber" => isset($property["attributionInfo"]["coAgentNumber"]) ? $property["attributionInfo"]["coAgentNumber"] : "",
+                    //     "buyerAgentName" => isset($property["attributionInfo"]["buyerAgentName"]) ? $property["attributionInfo"]["buyerAgentName"] : "",
+                    //     "description" => isset($property["description"]) ? $property["description"] : "",
+                    //   );
+
+                    //   $sql = "
+                    //     INSERT INTO properties
+                    //     (
+                    //       zpid,
+                    //       url,
+                    //       image,
+                    //       streetAddress,
+                    //       city,
+                    //       state,
+                    //       zipcode,
+                    //       latitude,
+                    //       longitude,
+                    //       country,
+                    //       bedrooms,
+                    //       bathrooms,
+                    //       livingAreaUnits,
+                    //       livingAreaValue,
+                    //       lotAreaUnits,
+                    //       lotAreaValue,
+                    //       currency,
+                    //       price,
+                    //       zestimate,
+                    //       rentZestimate,
+                    //       homeType,
+                    //       yearBuilt,
+                    //       hasHeating,
+                    //       heating,
+                    //       hasCooling,
+                    //       cooling,
+                    //       hasGarage,
+                    //       hasAttachedGarage,
+                    //       parkingCapacity,
+                    //       garageParkingCapacity,
+                    //       pricePerSquareFoot,
+                    //       buyerAgencyCompensation,
+                    //       pageViewCount,
+                    //       favoriteCount,
+                    //       daysOnZillow,
+                    //       agentName,
+                    //       agentPhoneNumber,
+                    //       brokerName,
+                    //       brokerPhoneNumber,
+                    //       coAgentName,
+                    //       coAgentNumber,
+                    //       buyerAgentName,
+                    //       description,
+                    //       createdAt
+                    //     )
+                    //     VALUES
+                    //     (
+                    //       '" . $db->makeSafe($zpid) . "',
+                    //       '" . $db->makeSafe($link) . "',
+                    //       '" . $db->makeSafe($result["image"]) . "',
+                    //       '" . $db->makeSafe($result["streetAddress"]) . "',
+                    //       '" . $db->makeSafe($result["city"]) . "',
+                    //       '" . $db->makeSafe($result["state"]) . "',
+                    //       '" . $db->makeSafe($result["zipcode"]) . "',
+                    //       '" . $db->makeSafe($result["latitude"]) . "',
+                    //       '" . $db->makeSafe($result["longitude"]) . "',
+                    //       '" . $db->makeSafe($result["country"]) . "',
+                    //       '" . $db->makeSafe($result["bedrooms"]) . "',
+                    //       '" . $db->makeSafe($result["bathrooms"]) . "',
+                    //       '" . $db->makeSafe($result["livingAreaUnits"]) . "',
+                    //       '" . $db->makeSafe($result["livingAreaValue"]) . "',
+                    //       '" . $db->makeSafe($result["lotAreaUnits"]) . "',
+                    //       '" . $db->makeSafe($result["lotAreaValue"]) . "',
+                    //       '" . $db->makeSafe($result["currency"]) . "',
+                    //       '" . $db->makeSafe($result["price"]) . "',
+                    //       '" . $db->makeSafe($result["zestimate"]) . "',
+                    //       '" . $db->makeSafe($result["rentZestimate"]) . "',
+                    //       '" . $db->makeSafe($result["homeType"]) . "',
+                    //       '" . $db->makeSafe($result["yearBuilt"]) . "',
+                    //       '" . $db->makeSafe($result["hasHeating"] ? 1 : 0) . "',
+                    //       '" . $db->makeSafe(json_encode($result["heating"])) . "',
+                    //       '" . $db->makeSafe($result["hasCooling"] ? 1 : 0) . "',
+                    //       '" . $db->makeSafe(json_encode($result["cooling"])) . "',
+                    //       '" . $db->makeSafe($result["hasGarage"] ? 1 : 0) . "',
+                    //       '" . $db->makeSafe($result["hasAttachedGarage"] ? 1 : 0) . "',
+                    //       '" . $db->makeSafe($result["parkingCapacity"]) . "',
+                    //       '" . $db->makeSafe($result["garageParkingCapacity"]) . "',
+                    //       '" . $db->makeSafe($result["pricePerSquareFoot"]) . "',
+                    //       '" . $db->makeSafe($result["buyerAgencyCompensation"]) . "',
+                    //       '" . $db->makeSafe($result["pageViewCount"]) . "',
+                    //       '" . $db->makeSafe($result["favoriteCount"]) . "',
+                    //       '" . $db->makeSafe($result["daysOnZillow"]) . "',
+                    //       '" . $db->makeSafe($result["agentName"]) . "',
+                    //       '" . $db->makeSafe($result["agentPhoneNumber"]) . "',
+                    //       '" . $db->makeSafe($result["brokerName"]) . "',
+                    //       '" . $db->makeSafe($result["brokerPhoneNumber"]) . "',
+                    //       '" . $db->makeSafe($result["coAgentName"]) . "',
+                    //       '" . $db->makeSafe($result["coAgentNumber"]) . "',
+                    //       '" . $db->makeSafe($result["buyerAgentName"]) . "',
+                    //       '" . $db->makeSafe($result["description"]) . "',
+                    //       '" . date('Y-m-d H:i:s') . "'
+                    //     )";
+
+                    //   if (!$db->query($sql)) {
+                    //     echo "Error inserting properties table: \n";
+                    //     echo $sql . "\n";
+                    //   }
+                    // }
                   } catch (Exception $e) {
                     print_r($e);
                     print_r("\n");

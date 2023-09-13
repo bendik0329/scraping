@@ -408,7 +408,5 @@ $stateBatches = array_chunk(STATE_LIST, 5);
 // Get the batch to scrape based on the startIndex
 $batchToScrape = isset($stateBatches[$startIndex]) ? $stateBatches[$startIndex] : [];
 
-echo "Scraping is in progress... \n";
-
 // Scrape and store the batch of states
 _main($batchToScrape, $db);

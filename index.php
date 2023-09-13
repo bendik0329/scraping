@@ -42,36 +42,38 @@ function _main($batch, $db)
         $pageUrl = getPageUrl($state, $type, $category);
         $count = getPropertyCount($driver, $pageUrl);
 
-        if ($count > 0 && $count <= 820) {
-          scrapeProperties($driver, $db, $count, $state, $type, $category);
-        } elseif ($count > 820) {
-          $start = 0;
-          $end = 7500;
-          $ranges = [[$start, $end]];
+        print_r("count->>" . $count);
+        print_r("\n");
+        // if ($count > 0 && $count <= 820) {
+        //   scrapeProperties($driver, $db, $count, $state, $type, $category);
+        // } elseif ($count > 820) {
+        //   $start = 0;
+        //   $end = 7500;
+        //   $ranges = [[$start, $end]];
 
-          while (!empty($ranges)) {
-            $range = array_shift($ranges);
-            $pageUrl = getPageUrl($state, $type, $category, $range);
-            $count = getPropertyCount($driver, $pageUrl);
+        //   while (!empty($ranges)) {
+        //     $range = array_shift($ranges);
+        //     $pageUrl = getPageUrl($state, $type, $category, $range);
+        //     $count = getPropertyCount($driver, $pageUrl);
 
-            if ($count > 0 && $count <= 820) {
-              scrapeProperties($driver, $db, $count, $state, $type, $category, $range);
-            } elseif ($count > 820) {
-              $mid = $range[0] + floor(($range[1] - $range[0]) / 2);
-              $ranges[] = [$range[0], $mid];
-              $ranges[] = [$mid + 1, $range[1]];
-            }
-          }
+        //     if ($count > 0 && $count <= 820) {
+        //       scrapeProperties($driver, $db, $count, $state, $type, $category, $range);
+        //     } elseif ($count > 820) {
+        //       $mid = $range[0] + floor(($range[1] - $range[0]) / 2);
+        //       $ranges[] = [$range[0], $mid];
+        //       $ranges[] = [$mid + 1, $range[1]];
+        //     }
+        //   }
 
-          $start = 7501;
-          $end = 0;
-          $range = [$start, $end];
+        //   $start = 7501;
+        //   $end = 0;
+        //   $range = [$start, $end];
 
-          $pageUrl = getPageUrl($state, $type, $category, $range);
-          $count = getPropertyCount($driver, $pageUrl);
+        //   $pageUrl = getPageUrl($state, $type, $category, $range);
+        //   $count = getPropertyCount($driver, $pageUrl);
 
-          scrapeProperties($driver, $db, $count, $state, $type, $category, $range);
-        }
+        //   scrapeProperties($driver, $db, $count, $state, $type, $category, $range);
+        // }
       }
     }
   }

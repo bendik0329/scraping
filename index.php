@@ -289,6 +289,9 @@ function scrapeProperties($driver, $db, $count, $state, $type, $category, $range
                     "description" => isset($property["description"]) ? $property["description"] : "",
                   );
 
+                  print_r($result);
+                  print_r("\n");
+                  
                   $sql = "
                     INSERT INTO properties
                     (

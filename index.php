@@ -40,6 +40,10 @@ function _main($batch, $db)
     foreach (LISTING_TYPE as $type) {
       foreach (CATEGORY as $category) {
         $pageUrl = getPageUrl($state, $type, $category);
+
+        print_r($pageUrl);
+        print_r("\n");
+        
         $count = getPropertyCount($driver, $pageUrl);
 
         print_r("count->>" . $count);

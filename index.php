@@ -399,6 +399,8 @@ function scrapeProperties($driver, $db, $count, $state, $type, $category, $range
                         print_r("\n");
                         print_r($data);
                         print_r("\n");
+                        print_r($detailUrl);
+                        print_r("\n");
                       }
                     } else {
                       print_r("there is no data element");

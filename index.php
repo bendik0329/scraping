@@ -233,6 +233,8 @@ function scrapeProperties($driver, $db, $count, $state, $type, $category, $range
                       print_r("\n");
                       print_r("zpid->>" . $zpid);
                       print_r("\n");
+                      print_r("link->>" . $link);
+                      print_r("\n");
                     } else {
                       $jsonString = $dataElement->text();
                       $data = json_decode($jsonString, true);

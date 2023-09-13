@@ -256,7 +256,6 @@ function scrapeProperties($driver, $db, $count, $state, $type, $category, $range
                     "price" => isset($property["price"]) ? $property["price"] : 0,
                     "zestimate" => isset($property["zestimate"]) ? $property["zestimate"] : 0,
                     "rentZestimate" => isset($property["rentZestimate"]) ? $property["rentZestimate"] : 0,
-                    "parcelId" => isset($property["parcelId"]) ? $property["parcelId"] : 0,
                     "homeType" => isset($property["homeType"]) ? $property["homeType"] : "",
                     "yearBuilt" => isset($property["yearBuilt"]) ? $property["yearBuilt"] : 0,
                 
@@ -309,7 +308,6 @@ function scrapeProperties($driver, $db, $count, $state, $type, $category, $range
                       price,
                       zestimate,
                       rentZestimate,
-                      parcelId,
                       homeType,
                       yearBuilt,
                       hasHeating,
@@ -357,7 +355,6 @@ function scrapeProperties($driver, $db, $count, $state, $type, $category, $range
                       '" . $db->makeSafe($result["price"]) . "',
                       '" . $db->makeSafe($result["zestimate"]) . "',
                       '" . $db->makeSafe($result["rentZestimate"]) . "',
-                      '" . $db->makeSafe($result["parcelId"]) . "',
                       '" . $db->makeSafe($result["homeType"]) . "',
                       '" . $db->makeSafe($result["yearBuilt"]) . "',
                       '" . $db->makeSafe($result["hasHeating"] ? 1 : 0) . "',

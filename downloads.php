@@ -29,7 +29,6 @@ if (is_dir($downloadDir)) {
 $properties = $db->query("SELECT * FROM properties");
 
 if ($db->numrows($properties) > 0) {
-  echo "Downloading images...\n";
   while ($row = $db->fetchArray($properties)) {
     try {
       $zpid = $row['zpid'];

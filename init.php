@@ -17,13 +17,13 @@ if (!$db->connect($host, $username, $password, $dbname)) {
   die("DB Connection failed: " . $conn->connect_error);
 }
 
-$tableName = "properties";
+$tableName = "properties2";
 
-// check properties table exists or not
+// check table exists or not
 $tableExists = $db->query("SHOW TABLES LIKE '$tableName'");
 
 if ($db->numrows($tableExists) === 0) {
-  $createPropertiesSql = "CREATE TABLE IF NOT EXISTS properties (
+  $createPropertiesSql = "CREATE TABLE IF NOT EXISTS $tableName (
     `id` INT ( 0 ) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     `zpid` INT ( 0 ) NOT NULL UNIQUE,
     `url` VARCHAR ( 255 ) NOT NULL,
@@ -74,12 +74,12 @@ if ($db->numrows($tableExists) === 0) {
   ENGINE = MyISAM";
 
   if ($db->query($createPropertiesSql) === TRUE) {
-    echo "Table properties created successfully \n";
+    echo "Table $tableName created successfully \n";
   } else {
-    echo "Error creating properties table: " . $conn->error . "\n";
+    echo "Error creating $tableName table: " . $conn->error . "\n";
   }
 } else {
-  echo "Table properties already exists \n";
+  echo "Table $tableName already exists \n";
 }
 
 

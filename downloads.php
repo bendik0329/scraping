@@ -49,7 +49,7 @@ if ($db->numrows($properties) > 0) {
 
         $imgPath = $imgFolder . "/image.jpg";
         if (!file_exists($imgPath)) {
-          $curl = curl_init($imageUrl);
+          $curl = curl_init($imgUrl);
           curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
           curl_setopt($curl, CURLOPT_BINARYTRANSFER, true);
           $imageData = curl_exec($curl);
@@ -58,7 +58,7 @@ if ($db->numrows($properties) > 0) {
             echo 'cURL error: ' . curl_error($curl);
           } else {
             file_put_contents($imgPath, $imageData);
-            curl_close($ch);
+            curl_close($curl);
             echo 'Image saved successfully!';
           }
         }

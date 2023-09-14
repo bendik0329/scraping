@@ -9,10 +9,10 @@ function _init()
 {
   global $db, $conn;
 
-  // check properties table
-  $dropPropertiesSql = "DROP TABLE IF EXISTS properties";
+  // check table
+  $dropSql = "DROP TABLE IF EXISTS properties";
 
-  if ($db->query($dropPropertiesSql) === TRUE) {
+  if ($db->query($dropSql) === TRUE) {
     $createPropertiesSql = "CREATE TABLE IF NOT EXISTS properties (
       `id` INT ( 6 ) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
       `zpid` INT ( 11 ) NOT NULL UNIQUE,

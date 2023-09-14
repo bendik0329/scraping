@@ -16,6 +16,7 @@ $host = $envConfig['DB_HOST'];
 $username = $envConfig['DB_USERNAME'];
 $password = $envConfig['DB_PASSWORD'];
 $dbname = $envConfig['DB_DATABASE'];
+$tableName = $envConfig['DB_TABLE'];
 $apiKey = $envConfig['API_KEY'];
 
 // Connect to DB
@@ -180,7 +181,7 @@ function getPropertyCount($driver, $url)
 
 function scrapeProperties($driver, $db, $count, $state, $type, $category, $range = [0, 0])
 {
-  global $apiKey;
+  global $apiKey, $tableName;
   $itemsPerPage = 41;
   $currentPage = 1;
   $maxPage = ceil($count / $itemsPerPage);
@@ -209,7 +210,7 @@ function scrapeProperties($driver, $db, $count, $state, $type, $category, $range
           $zpid = intval($zpid);
 
           if ($zpid) {
-            $exists = $db->query("SELECT * FROM properties WHERE zpid=$zpid");
+            $exists = $db->query("SELECT * FROM $tableName WHERE zpid=$zpid");
             if ($db->numrows($exists) === 0) {
               try {
                 $homeStatus = HOME_STATUS;
@@ -279,7 +280,7 @@ function scrapeProperties($driver, $db, $count, $state, $type, $category, $range
                       );
 
                       $sql = "
-                        INSERT INTO properties
+                        INSERT INTO $tableName
                         (
                           zpid,
                           url,
@@ -377,7 +378,7 @@ function scrapeProperties($driver, $db, $count, $state, $type, $category, $range
                         )";
 
                       if (!$db->query($sql)) {
-                        echo "Error inserting properties table: \n";
+                        echo "Error inserting $tableName table: \n";
                         echo $sql . "\n";
                       }
                     }

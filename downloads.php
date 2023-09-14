@@ -10,6 +10,7 @@ $host = $envConfig['DB_HOST'];
 $username = $envConfig['DB_USERNAME'];
 $password = $envConfig['DB_PASSWORD'];
 $dbname = $envConfig['DB_DATABASE'];
+$tableName = $envConfig['DB_TABLE'];
 
 // Connect to DB
 $db  = new Database();
@@ -26,7 +27,7 @@ if (is_dir($downloadDir)) {
 }
 
 // download images
-$properties = $db->query("SELECT * FROM properties");
+$properties = $db->query("SELECT * FROM $tableName");
 
 if ($db->numrows($properties) > 0) {
   while ($row = $db->fetchArray($properties)) {

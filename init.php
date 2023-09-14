@@ -10,6 +10,7 @@ $host = $envConfig['DB_HOST'];
 $username = $envConfig['DB_USERNAME'];
 $password = $envConfig['DB_PASSWORD'];
 $dbname = $envConfig['DB_DATABASE'];
+$tableName = $envConfig['DB_TABLE'];
 
 // Connect to DB
 $db  = new Database();
@@ -17,13 +18,11 @@ if (!$db->connect($host, $username, $password, $dbname)) {
   die("DB Connection failed: " . $conn->connect_error);
 }
 
-$tableName = "properties2";
-
 // check table exists or not
 $tableExists = $db->query("SHOW TABLES LIKE '$tableName'");
 
 if ($db->numrows($tableExists) === 0) {
-  $createPropertiesSql = "CREATE TABLE IF NOT EXISTS $tableName (
+  $createSql = "CREATE TABLE IF NOT EXISTS $tableName (
     `id` INT ( 0 ) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     `zpid` INT ( 0 ) NOT NULL UNIQUE,
     `url` VARCHAR ( 255 ) NOT NULL,
@@ -73,7 +72,7 @@ if ($db->numrows($tableExists) === 0) {
   )
   ENGINE = MyISAM";
 
-  if ($db->query($createPropertiesSql) === TRUE) {
+  if ($db->query($createSql) === TRUE) {
     echo "Table $tableName created successfully \n";
   } else {
     echo "Error creating $tableName table: " . $conn->error . "\n";

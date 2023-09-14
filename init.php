@@ -22,7 +22,7 @@ $tableName = "properties";
 // check properties table exists or not
 $tableExists = $db->query("SHOW TABLES LIKE '$tableName'");
 
-if ($db->numrows($exists) === 0) {
+if ($db->numrows($tableExists) === 0) {
   $createPropertiesSql = "CREATE TABLE IF NOT EXISTS properties (
     `id` INT ( 0 ) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     `zpid` INT ( 0 ) NOT NULL UNIQUE,

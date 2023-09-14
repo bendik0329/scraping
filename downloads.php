@@ -18,19 +18,29 @@ if (!$db->connect($host, $username, $password, $dbname)) {
   die("DB Connection failed: " . $conn->connect_error);
 }
 
-// delete download directory
+// check download directory
 $downloadDir = __DIR__ . "/download";
-if (is_dir($downloadDir)) {
-  $command = "rm -rf $downloadDir";
-  shell_exec($command);
-  echo "Download directory reseted!\n";
+if (!is_dir($downloadDir)) {
+  // Create the directory
+  mkdir($directory, 0777, true);
+  echo "Download Directory created successfully! \n";
+} else {
+  echo "Download Directory already exists! \n";
 }
 
-// download images
-$properties = $db->query("SELECT * FROM $tableName");
+// delete download directory
 
-if ($db->numrows($properties) > 0) {
-  while ($row = $db->fetchArray($properties)) {
+// if (is_dir($downloadDir)) {
+//   $command = "rm -rf $downloadDir";
+//   shell_exec($command);
+//   echo "Download directory reseted!\n";
+// }
+
+// download images
+$data = $db->query("SELECT * FROM $tableName");
+
+if ($db->numrows($data) > 0) {
+  while ($row = $db->fetchArray($data)) {
     try {
       $zpid = $row['zpid'];
       $imgUrl = $row['image'];

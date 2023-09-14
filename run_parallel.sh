@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # Run init file
-echo "Initialize Database..."
-php init.php
+# echo "Initialize Database..."
+# php init.php
 
 # Run 10 parallel instances
 echo "Running 10 parallel scraping instances..."
-for i in {0..0}; do
+for i in {0..24}; do
   php index.php $i &
 done
 
@@ -15,5 +15,5 @@ echo "Waiting for all instances to finish..."
 wait
 
 # Download Images
-echo "Downloading Images..."
-php downloads.php
+# echo "Downloading Images..."
+# php downloads.php

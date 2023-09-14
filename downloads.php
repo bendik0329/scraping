@@ -44,6 +44,8 @@ if ($db->numrows($properties) > 0) {
           $imgUrl = str_replace('&amp;', '&', $imgUrl);
         }
 
+        print_r($zpid);
+        print_r("\n");
         print_r($imgUrl);
         print_r("\n");
 
@@ -59,7 +61,7 @@ if ($db->numrows($properties) > 0) {
           } else {
             file_put_contents($imgPath, $imageData);
             curl_close($curl);
-            echo 'Image saved successfully!';
+            echo "Image saved successfully!\n";
           }
         }
 

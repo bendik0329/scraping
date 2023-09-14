@@ -212,6 +212,7 @@ function scrapeProperties($driver, $db, $count, $state, $type, $category, $range
             $exists = $db->query("SELECT * FROM properties WHERE zpid=$zpid");
             if ($db->numrows($exists) === 0) {
               try {
+                $homeStatus = HOME_STATUS;
                 $link = $element->findElement(WebDriverBy::cssSelector("div.property-card-data > a"))->getAttribute("href");
                 $detailUrl = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=" . $link;
                 $dataElement = retryCurlRequest($detailUrl);
@@ -301,6 +302,7 @@ function scrapeProperties($driver, $db, $count, $state, $type, $category, $range
                           zestimate,
                           rentZestimate,
                           homeType,
+                          homeStatus,
                           yearBuilt,
                           hasHeating,
                           heating,
@@ -348,6 +350,7 @@ function scrapeProperties($driver, $db, $count, $state, $type, $category, $range
                           '" . $db->makeSafe($result["zestimate"]) . "',
                           '" . $db->makeSafe($result["rentZestimate"]) . "',
                           '" . $db->makeSafe($result["homeType"]) . "',
+                          '" . $db->makeSafe($homeStatus[$type]) . "',
                           '" . $db->makeSafe($result["yearBuilt"]) . "',
                           '" . $db->makeSafe($result["hasHeating"] ? 1 : 0) . "',
                           '" . $db->makeSafe(json_encode($result["heating"])) . "',
@@ -435,7 +438,7 @@ function retryCurlRequest($url)
 }
 
 // Divide states into batches of 5
-$stateBatches = array_chunk(STATE_LIST, 5);
+$stateBatches = array_chunk(STATE_LIST, 1);
 
 // Get the batch to scrape based on the startIndex
 $batchToScrape = isset($stateBatches[$startIndex]) ? $stateBatches[$startIndex] : [];

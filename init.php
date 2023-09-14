@@ -17,10 +17,12 @@ if (!$db->connect($host, $username, $password, $dbname)) {
   die("DB Connection failed: " . $conn->connect_error);
 }
 
-// check properties table
-$dropPropertiesSql = "DROP TABLE IF EXISTS properties";
+$tableName = "properties";
 
-if ($db->query($dropPropertiesSql) === TRUE) {
+// check properties table exists or not
+$tableExists = $db->query("SHOW TABLES LIKE '$tableName'");
+
+if ($db->numrows($exists) === 0) {
   $createPropertiesSql = "CREATE TABLE IF NOT EXISTS properties (
     `id` INT ( 0 ) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     `zpid` INT ( 0 ) NOT NULL UNIQUE,
@@ -44,6 +46,7 @@ if ($db->query($dropPropertiesSql) === TRUE) {
     `zestimate` INT ( 0 ),
     `rentZestimate` INT ( 0 ),
     `homeType` VARCHAR ( 50 ),
+    `homeStatus` VARCHAR ( 50 ),
     `yearBuilt` INT ( 0 ),
     `hasHeating` TINYINT ( 1 ),
     `heating` TEXT,
@@ -54,7 +57,7 @@ if ($db->query($dropPropertiesSql) === TRUE) {
     `parkingCapacity` INT ( 0 ),
     `garageParkingCapacity` INT ( 0 ),
     `pricePerSquareFoot` INT ( 0 ),
-    `buyerAgencyCompensation` VARCHAR ( 50 ),
+    `buyerAgencyCompensation` VARCHAR ( 255 ),
     `pageViewCount` INT ( 0 ),
     `favoriteCount` INT ( 0 ),
     `daysOnZillow` INT ( 0 ),
@@ -76,8 +79,10 @@ if ($db->query($dropPropertiesSql) === TRUE) {
     echo "Error creating properties table: " . $conn->error . "\n";
   }
 } else {
-  echo "Error dropping properties table: " . $conn->error . "\n";
+  echo "Table properties already exists \n";
 }
+
+
 
 // check the selenium server
 if (PHP_OS === "Linux") {

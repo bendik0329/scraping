@@ -34,18 +34,19 @@ if ($db->numrows($properties) > 0) {
       $zpid = $row['zpid'];
       $imgUrl = $row['image'];
 
-      if ($imgUrl && filter_var($imgUrl, FILTER_VALIDATE_URL)) {
-        $imgFolder = __DIR__ . '/download/images/' . $zpid;
-        if (!file_exists($imgFolder)) {
-          mkdir($imgFolder, 0777, true);
-        }
+      $imgFolder = __DIR__ . '/download/images/' . $zpid;
+      $imgPath = $imgFolder . "/image.jpg";
 
-        if (strpos($imgUrl, 'maps.googleapis.com') !== false) {
-          $imgUrl = str_replace('&amp;', '&', $imgUrl);
-        }
+      if (!file_exists($imgPath)) {
+        if ($imgUrl && filter_var($imgUrl, FILTER_VALIDATE_URL)) {
+          if (!file_exists($imgFolder)) {
+            mkdir($imgFolder, 0777, true);
+          }
 
-        $imgPath = $imgFolder . "/image.jpg";
-        if (!file_exists($imgPath)) {
+          if (strpos($imgUrl, 'maps.googleapis.com') !== false) {
+            $imgUrl = str_replace('&amp;', '&', $imgUrl);
+          }
+
           $curl = curl_init($imgUrl);
           curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
           curl_setopt($curl, CURLOPT_BINARYTRANSFER, true);

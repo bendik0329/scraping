@@ -36,7 +36,7 @@ if ($db->numrows($properties) > 0) {
 
 
       if ($imgUrl && filter_var($imgUrl, FILTER_VALIDATE_URL)) {
-        
+
 
         $imgFolder = __DIR__ . '/download/images/' . $zpid;
         if (!file_exists($imgFolder)) {
@@ -54,10 +54,16 @@ if ($db->numrows($properties) > 0) {
 
         print_r($imgUrl);
         print_r("\n");
-        
+
         if (!file_exists($imgPath)) {
           try {
-            $imgData = file_get_contents($imgUrl);
+            $arrContextOptions = array(
+              "ssl" => array(
+                "verify_peer" => false,
+                "verify_peer_name" => false,
+              ),
+            );
+            $imgData = file_get_contents($imgUrl, false, stream_context_create($arrContextOptions));
             if ($imgData !== false) {
               file_put_contents($imgPath, $imgData);
             }

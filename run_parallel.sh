@@ -6,7 +6,7 @@ php init.php
 
 # Run 10 parallel instances
 echo "Running 10 parallel scraping instances..."
-for i in {0..9}; do
+for i in {0..0}; do
   php index.php $i &
 done
 

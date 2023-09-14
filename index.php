@@ -154,8 +154,6 @@ function getPageUrl($state, $type, $category, $range = [0, 0], $currentPage = 0)
 
   $url = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.zillow.com/$stateAlias/?searchQueryState=$searchQueryState&dynamic=false";
 
-  print_r($url);
-  print_r("\n");
   return $url;
 }
 
@@ -176,10 +174,6 @@ function getPropertyCount($driver, $url)
   } catch (NoSuchElementException $e) {
     $count = 0;
   }
-
-  print_r("count->>" . $count);
-  print_r("\n");
-  print_r("\n");
 
   return $count;
 }
@@ -383,47 +377,14 @@ function scrapeProperties($driver, $db, $count, $state, $type, $category, $range
                         echo "Error inserting properties table: \n";
                         echo $sql . "\n";
                       }
-                    } else {
-                      print_r("gdp client cache is not array or object");
-                      print_r("\n");
-                      print_r($gdpClientCache);
-                      print_r("\n");
                     }
-                  } else {
-                    print_r("gdp client cache doesnt exists");
-                    print_r("\n");
-                    print_r($data);
-                    print_r("\n");
-                    print_r($detailUrl);
-                    print_r("\n");
                   }
-                } else {
-                  print_r("there is no data element");
-                  print_r("\n");
-                  print_r("zpid->>" . $zpid);
-                  print_r("\n");
-                  print_r("link->>" . $link);
-                  print_r("\n");
                 }
               } catch (NoSuchElementException $e) {
-                print_r("No such link element");
-                print_r("\n");
-                print_r("zpid->>" . $zpid);
-                print_r("\n");
               }
             }
           }
         } catch (NoSuchElementException $e) {
-          print_r("No such property card element");
-          print_r("\n");
-          print_r("state->>" . $state);
-          print_r("\n");
-          print_r("type->>" . $type);
-          print_r("\n");
-          print_r("category->>" . $category);
-          print_r("\n");
-          print_r($range);
-          print_r("\n");
         }
       }
     }
@@ -443,7 +404,6 @@ function sendCurlRequest($url)
   curl_close($curl);
 
   return $response;
-  // return HtmlDomParser::str_get_html($response);
 }
 
 function retryCurlRequest($url)
@@ -458,7 +418,7 @@ function retryCurlRequest($url)
     try {
       $htmlDomParser = HtmlDomParser::str_get_html($response);
     } catch (Exception $e) {
-      echo "Error Occured in this url->>" . $url . "\n";
+      echo "Html Dom Parser Error at " . $url . "\n";
       break;
     }
 
@@ -469,29 +429,13 @@ function retryCurlRequest($url)
     } else {
       break;
     }
-
-    // try {
-    //   $response = sendCurlRequest($url);
-    //   $htmlDomParser = HtmlDomParser::str_get_html($response);
-    //   $html = $htmlDomParser->findOne("script[id=__NEXT_DATA__]");
-
-    //   if ($html instanceof \voku\helper\SimpleHtmlDomBlank) {
-    //     sleep(2);
-    //     $retryCount++;
-    //   } else {
-    //     break;
-    //   }
-    // } catch (Exception $e) {
-    //   echo "Error Occured in this url->>" . $url . "\n";
-    //   break;
-    // }
   }
 
   return $html;
 }
 
 // Divide states into batches of 5
-$stateBatches = array_chunk(STATE_LIST, 1);
+$stateBatches = array_chunk(STATE_LIST, 5);
 
 // Get the batch to scrape based on the startIndex
 $batchToScrape = isset($stateBatches[$startIndex]) ? $stateBatches[$startIndex] : [];

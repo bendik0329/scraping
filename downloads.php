@@ -44,11 +44,6 @@ if ($db->numrows($properties) > 0) {
           $imgUrl = str_replace('&amp;', '&', $imgUrl);
         }
 
-        print_r($zpid);
-        print_r("\n");
-        print_r($imgUrl);
-        print_r("\n");
-
         $imgPath = $imgFolder . "/image.jpg";
         if (!file_exists($imgPath)) {
           $curl = curl_init($imgUrl);
@@ -57,46 +52,12 @@ if ($db->numrows($properties) > 0) {
           $imageData = curl_exec($curl);
 
           if (curl_errno($curl)) {
-            echo 'cURL error: ' . curl_error($curl);
+            echo "cURL error: " . curl_error($curl) . "\n";
           } else {
             file_put_contents($imgPath, $imageData);
             curl_close($curl);
-            echo "Image saved successfully!\n";
           }
         }
-
-
-
-        // if (strpos($imgUrl, 'maps.googleapis.com') !== false) {
-        //   $imgPath = $imgFolder . "/image.jpg";
-        //   $imgUrl = str_replace('&amp;', '&', $imgUrl);
-        //   // $imgUrl = preg_replace('/&signature=[^&]*/', '', $imgUrl);
-        // } else {
-        //   $imgPath = $imgFolder . "/" . basename($imgUrl);
-        // }
-
-        // print_r($imgUrl);
-        // print_r("\n");
-
-        // if (!file_exists($imgPath)) {
-        //   try {
-        //     $arrContextOptions = array(
-        //       "ssl" => array(
-        //         "verify_peer" => false,
-        //         "verify_peer_name" => false,
-        //       ),
-        //     );
-        //     $imgData = file_get_contents($imgUrl, false, stream_context_create($arrContextOptions));
-        //     if ($imgData !== false) {
-        //       file_put_contents($imgPath, $imgData);
-        //     }
-        //   } catch (Exception $e) {
-        //     print_r($e);
-        //     print_r("\n");
-        //     print_r($imgUrl);
-        //     print_r("\n");
-        //   }
-        // }
       }
     } catch (Exception $e) {
     }

@@ -36,6 +36,9 @@ if ($db->numrows($properties) > 0) {
 
 
       if ($imgUrl && filter_var($imgUrl, FILTER_VALIDATE_URL)) {
+        print_r($imgUrl);
+        print_r("\n");
+        
         $imgFolder = __DIR__ . '/download/images/' . $zpid;
         if (!file_exists($imgFolder)) {
           mkdir($imgFolder, 0777, true);

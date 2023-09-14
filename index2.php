@@ -227,6 +227,8 @@ function scrapeProperties($htmlDomParser, $db, $count, $state, $type, $category,
         }
       }
     }
+
+    $currentPage++;
   }
 }
 

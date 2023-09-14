@@ -18,24 +18,6 @@ if (!$db->connect($host, $username, $password, $dbname)) {
   die("DB Connection failed: " . $conn->connect_error);
 }
 
-// check download directory
-$downloadDir = __DIR__ . "/download";
-if (!is_dir($downloadDir)) {
-  // Create the directory
-  mkdir($directory, 0777, true);
-  echo "Download Directory created successfully! \n";
-} else {
-  echo "Download Directory already exists! \n";
-}
-
-// delete download directory
-
-// if (is_dir($downloadDir)) {
-//   $command = "rm -rf $downloadDir";
-//   shell_exec($command);
-//   echo "Download directory reseted!\n";
-// }
-
 // download images
 $data = $db->query("SELECT * FROM $tableName");
 

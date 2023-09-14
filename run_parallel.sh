@@ -7,7 +7,7 @@
 # Run 10 parallel instances
 echo "Running 10 parallel scraping instances..."
 for i in {0..24}; do
-  php index.php $i &
+  php index2.php $i &
 done
 
 # Wait for all instances to finish

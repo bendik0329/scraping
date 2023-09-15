@@ -247,12 +247,12 @@ function scrapeProperties($htmlDomParser, $db, $count, $state, $type, $category,
                   zpid,
                   url,
                   image,
-                  paramState
-                  paramType
-                  paramCategory
-                  paramRange1
-                  paramRange2
-                  paramPage
+                  paramState,
+                  paramType,
+                  paramCategory,
+                  paramRange1,
+                  paramRange2,
+                  paramPage,
                   street,
                   city,
                   state,

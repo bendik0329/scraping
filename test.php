@@ -35,52 +35,54 @@ function _main($batch, $db)
 
         $count = getPropertyCount($htmlDomParser);
 
-        if ($count > 0 && $count <= 820) {
-          // scrapeProperties($htmlDomParser, $db, $count, $state, $type, $category);
-          echo "count: $count \n";
-          $total += $count;
-        } elseif ($count > 820) {
-          $start = 0;
-          $end = 7500;
-          $ranges = [[$start, $end]];
+        echo "state: $state, type: $type, category: $category, count: $count \n";
+        $total += $count;
+        // if ($count > 0 && $count <= 820) {
+        //   // scrapeProperties($htmlDomParser, $db, $count, $state, $type, $category);
+        //   echo "count: $count \n";
+        //   $total += $count;
+        // } elseif ($count > 820) {
+        //   $start = 0;
+        //   $end = 7500;
+        //   $ranges = [[$start, $end]];
 
-          while (!empty($ranges)) {
-            $range = array_shift($ranges);
-            $pageUrl = getPageUrl($state, $type, $category, $range);
-            $html = sendCurlRequest($pageUrl);
-            $htmlDomParser = HtmlDomParser::str_get_html($html);
+        //   while (!empty($ranges)) {
+        //     $range = array_shift($ranges);
+        //     $pageUrl = getPageUrl($state, $type, $category, $range);
+        //     $html = sendCurlRequest($pageUrl);
+        //     $htmlDomParser = HtmlDomParser::str_get_html($html);
 
-            $count = getPropertyCount($htmlDomParser);
+        //     $count = getPropertyCount($htmlDomParser);
 
-            if ($count > 0 && $count <= 820) {
-              // scrapeProperties($htmlDomParser, $db, $count, $state, $type, $category, $range);
-              echo "count: $count \n";
-              $total += $count;
-            } elseif ($count > 820) {
-              $mid = $range[0] + floor(($range[1] - $range[0]) / 2);
-              $ranges[] = [$range[0], $mid];
-              $ranges[] = [$mid + 1, $range[1]];
-            }
-          }
+        //     if ($count > 0 && $count <= 820) {
+        //       // scrapeProperties($htmlDomParser, $db, $count, $state, $type, $category, $range);
+        //       echo "count: $count \n";
+        //       $total += $count;
+        //     } elseif ($count > 820) {
+        //       $mid = $range[0] + floor(($range[1] - $range[0]) / 2);
+        //       $ranges[] = [$range[0], $mid];
+        //       $ranges[] = [$mid + 1, $range[1]];
+        //     }
+        //   }
 
-          $start = 7501;
-          $end = 0;
-          $range = [$start, $end];
+        //   $start = 7501;
+        //   $end = 0;
+        //   $range = [$start, $end];
 
-          $pageUrl = getPageUrl($state, $type, $category, $range);
-          $html = sendCurlRequest($pageUrl);
-          $htmlDomParser = HtmlDomParser::str_get_html($html);
+        //   $pageUrl = getPageUrl($state, $type, $category, $range);
+        //   $html = sendCurlRequest($pageUrl);
+        //   $htmlDomParser = HtmlDomParser::str_get_html($html);
 
-          $count = getPropertyCount($htmlDomParser);
-          // scrapeProperties($htmlDomParser, $db, $count, $state, $type, $category, $range);
-          echo "last count: $count \n";
-          if ($count > 820) {
-            echo "state: $state \n";
-            echo "state: $type \n";
-            echo "state: $category \n";
-          }
-          $total += $count;
-        }
+        //   $count = getPropertyCount($htmlDomParser);
+        //   // scrapeProperties($htmlDomParser, $db, $count, $state, $type, $category, $range);
+        //   echo "last count: $count \n";
+        //   if ($count > 820) {
+        //     echo "state: $state \n";
+        //     echo "state: $type \n";
+        //     echo "state: $category \n";
+        //   }
+        //   $total += $count;
+        // }
       }
     }
   }

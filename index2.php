@@ -61,15 +61,44 @@ function _main($batch, $db)
             }
           }
 
-          $start = 7501;
-          $end = 0;
-          $range = [$start, $end];
-
-          $pageUrl = getPageUrl($state, $type, $category, $range);
+          $pageUrl = getPageUrl($state, $type, $category, [7501, 0]);
           $html = sendCurlRequest($pageUrl);
           $htmlDomParser = HtmlDomParser::str_get_html($html);
 
           $count = getPropertyCount($htmlDomParser);
+
+          if ($count > 0 && $count <= 820) {
+            scrapeProperties($htmlDomParser, $db, $count, $state, $type, $category);
+            $total += $count;
+          } elseif ($count > 820) {
+            $start = 7501;
+            $mid = $start + 2500;
+            $end = 0;
+            $ranges = [[$start, $mid], [$mid + 1, $end]];
+
+            while (!empty($ranges)) {
+              $range = array_shift($ranges);
+              $pageUrl = getPageUrl($state, $type, $category, $range);
+              $html = sendCurlRequest($pageUrl);
+              $htmlDomParser = HtmlDomParser::str_get_html($html);
+
+              $count = getPropertyCount($htmlDomParser);
+
+              if ($count > 0 && $count <= 820) {
+                scrapeProperties($htmlDomParser, $db, $count, $state, $type, $category, $range);
+                $total += $count;
+              } elseif ($count > 820) {
+                if ($range[1] === 0) {
+                  $mid = $range[0] + 2500;
+                } else {
+                  $mid = $range[0] + floor(($range[1] - $range[0]) / 2);
+                }
+
+                $ranges[] = [$range[0], $mid];
+                $ranges[] = [$mid + 1, $range[1]];
+              }
+            }
+          }
           scrapeProperties($htmlDomParser, $db, $count, $state, $type, $category, $range);
           $total += $count;
         }
@@ -315,6 +344,8 @@ function scrapeProperties($htmlDomParser, $db, $count, $state, $type, $category,
                   echo "Error inserting $tableName table: \n";
                   echo $sql . "\n";
                 }
+              } else {
+                echo "$zpid already exists \n";
               }
             }
           }

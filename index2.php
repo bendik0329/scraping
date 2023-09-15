@@ -52,7 +52,7 @@ function _main($batch, $db)
             $count = getPropertyCount($htmlDomParser);
 
             if ($count > 0 && $count <= 820) {
-              scrapeProperties($htmlDomParser, $db, $count, $state, $type, $category);
+              scrapeProperties($htmlDomParser, $db, $count, $state, $type, $category, $range);
               $total += $count;
             } elseif ($count > 820) {
               $mid = $range[0] + floor(($range[1] - $range[0]) / 2);
@@ -70,7 +70,7 @@ function _main($batch, $db)
           $htmlDomParser = HtmlDomParser::str_get_html($html);
 
           $count = getPropertyCount($htmlDomParser);
-          scrapeProperties($htmlDomParser, $db, $count, $state, $type, $category);
+          scrapeProperties($htmlDomParser, $db, $count, $state, $type, $category, $range);
           $total += $count;
         }
       }

@@ -350,7 +350,7 @@ function retryCurlRequest($url)
 }
 
 // Divide states into batches of 5
-$stateBatches = array_chunk(STATE_LIST, 5);
+$stateBatches = array_chunk(STATE_LIST, 1);
 
 // Get the batch to scrape based on the startIndex
 $batchToScrape = isset($stateBatches[$startIndex]) ? $stateBatches[$startIndex] : [];

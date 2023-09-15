@@ -33,8 +33,8 @@ function _main($batch, $db)
     foreach (LISTING_TYPE as $type) {
       foreach (CATEGORY as $category) {
         $pageUrl = getPageUrl($state, $type, $category);
-        $htmlDomParser = getHtmlDomParser($pageUrl, "div.search-page-container");
-        $count = getPropertyCount($htmlDomParser);
+        $html = getHtmlElement($pageUrl, "div.search-page-container");
+        $count = getPropertyCount($html);
 
         $data[] = array(
           "state" => $state,
@@ -56,7 +56,7 @@ function _main($batch, $db)
         //   while (!empty($ranges)) {
         //     $range = array_shift($ranges);
         //     $pageUrl = getPageUrl($state, $type, $category, $range);
-        //     $html = getHtmlDomParser($pageUrl, "div.search-page-container");
+        //     $html = getHtmlElement($pageUrl, "div.search-page-container");
         //     $count = getPropertyCount($html);
 
         //     if ($count > 0 && $count <= 820) {
@@ -71,7 +71,7 @@ function _main($batch, $db)
 
         //   $range = [7501, 0];
         //   $pageUrl = getPageUrl($state, $type, $category, $range);
-        //   $html = getHtmlDomParser($pageUrl, "div.search-page-container");
+        //   $html = getHtmlElement($pageUrl, "div.search-page-container");
         //   $count = getPropertyCount($html);
 
         //   if ($count > 0 && $count <= 820) {
@@ -86,7 +86,7 @@ function _main($batch, $db)
         //     while (!empty($ranges)) {
         //       $range = array_shift($ranges);
         //       $pageUrl = getPageUrl($state, $type, $category, $range);
-        //       $html = getHtmlDomParser($pageUrl, "div.search-page-container");
+        //       $html = getHtmlElement($pageUrl, "div.search-page-container");
         //       $count = getPropertyCount($html);
 
         //       if ($count > 0 && $count <= 820) {
@@ -202,11 +202,11 @@ function getPageUrl($state, $type, $category, $range = [0, 0], $currentPage = 0)
   return $url;
 }
 
-function getPropertyCount($htmlDomParser)
+function getPropertyCount($html)
 {
   $count = 0;
 
-  $countElement = $htmlDomParser->findOne("div.ListHeader__NarrowViewWrapping-srp__sc-1rsgqpl-1.idxSRv.search-subtitle span.result-count");
+  $countElement = $html->findOne("div.ListHeader__NarrowViewWrapping-srp__sc-1rsgqpl-1.idxSRv.search-subtitle span.result-count");
   if (!($countElement instanceof \voku\helper\SimpleHtmlDomBlank)) {
     $count = $countElement->text();
     $count = str_replace(",", "", $count);
@@ -232,7 +232,7 @@ function scrapeProperties($db, $count, $state, $type, $category, $range = [0, 0]
 
   while ($currentPage <= $maxPage) {
     $pageUrl = getPageUrl($state, $type, $category, $range, $currentPage);
-    $html = getHtmlDomParser($pageUrl, "script[id=__NEXT_DATA__]");
+    $html = getHtmlElement($pageUrl, "script[id=__NEXT_DATA__]");
 
     if ($html !== '' || !($html instanceof \voku\helper\SimpleHtmlDomBlank)) {
       $jsonString = $html->text();
@@ -383,11 +383,11 @@ function sendCurlRequest($url)
   return $response;
 }
 
-function getHtmlDomParser($url, $element)
+function getHtmlElement($url, $element)
 {
   $retryCount = 0;
   $maxRetries = 5;
-  $htmlDomParser = '';
+  $html = '';
 
   while ($retryCount < $maxRetries) {
     $response = sendCurlRequest($url);
@@ -408,7 +408,7 @@ function getHtmlDomParser($url, $element)
     }
   }
 
-  return $htmlDomParser;
+  return $html;
 }
 
 // Divide states into batches of 5

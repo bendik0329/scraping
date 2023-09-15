@@ -26,6 +26,9 @@ $startIndex = intval($argv[1]);
 function _main($batch, $db)
 {
   $total = 0;
+  $data = array();
+  $homeType = HOME_STATUS;
+
   foreach ($batch as $state) {
     foreach (LISTING_TYPE as $type) {
       foreach (CATEGORY as $category) {
@@ -33,69 +36,92 @@ function _main($batch, $db)
         $html = getHtmlElement($pageUrl, "div.search-page-container");
         $count = getPropertyCount($html);
 
-        if ($count > 0 && $count <= 820) {
-          scrapeProperties($db, $count, $state, $type, $category);
-          $total += $count;
-        } elseif ($count > 820) {
-          $start = 0;
-          $end = 7500;
-          $ranges = [[$start, $end]];
+        $data[] = array(
+          "state" => $state,
+          "type" => $homeType[$type],
+          "category" => $category,
+          "count" => $count,
+        );
 
-          while (!empty($ranges)) {
-            $range = array_shift($ranges);
-            $pageUrl = getPageUrl($state, $type, $category, $range);
-            $html = getHtmlElement($pageUrl, "div.search-page-container");
-            $count = getPropertyCount($html);
+        echo "state: $state, type: $type, category: $category, count: $count \n";
+        $total += $count;
+        // if ($count > 0 && $count <= 820) {
+        //   scrapeProperties($db, $count, $state, $type, $category);
+        //   $total += $count;
+        // } elseif ($count > 820) {
+        //   $start = 0;
+        //   $end = 7500;
+        //   $ranges = [[$start, $end]];
 
-            if ($count > 0 && $count <= 820) {
-              scrapeProperties($db, $count, $state, $type, $category, $range);
-              $total += $count;
-            } elseif ($count > 820) {
-              $mid = $range[0] + floor(($range[1] - $range[0]) / 2);
-              $ranges[] = [$range[0], $mid];
-              $ranges[] = [$mid + 1, $range[1]];
-            }
-          }
+        //   while (!empty($ranges)) {
+        //     $range = array_shift($ranges);
+        //     $pageUrl = getPageUrl($state, $type, $category, $range);
+        //     $html = getHtmlElement($pageUrl, "div.search-page-container");
+        //     $count = getPropertyCount($html);
 
-          $range = [7501, 0];
-          $pageUrl = getPageUrl($state, $type, $category, $range);
-          $html = getHtmlElement($pageUrl, "div.search-page-container");
-          $count = getPropertyCount($html);
+        //     if ($count > 0 && $count <= 820) {
+        //       scrapeProperties($db, $count, $state, $type, $category, $range);
+        //       $total += $count;
+        //     } elseif ($count > 820) {
+        //       $mid = $range[0] + floor(($range[1] - $range[0]) / 2);
+        //       $ranges[] = [$range[0], $mid];
+        //       $ranges[] = [$mid + 1, $range[1]];
+        //     }
+        //   }
 
-          if ($count > 0 && $count <= 820) {
-            scrapeProperties($db, $count, $state, $type, $category, $range);
-            $total += $count;
-          } elseif ($count > 820) {
-            $start = 7501;
-            $mid = $start + 2500;
-            $end = 0;
-            $ranges = [[$start, $mid], [$mid + 1, $end]];
+        //   $range = [7501, 0];
+        //   $pageUrl = getPageUrl($state, $type, $category, $range);
+        //   $html = getHtmlElement($pageUrl, "div.search-page-container");
+        //   $count = getPropertyCount($html);
 
-            while (!empty($ranges)) {
-              $range = array_shift($ranges);
-              $pageUrl = getPageUrl($state, $type, $category, $range);
-              $html = getHtmlElement($pageUrl, "div.search-page-container");
-              $count = getPropertyCount($html);
+        //   if ($count > 0 && $count <= 820) {
+        //     scrapeProperties($db, $count, $state, $type, $category, $range);
+        //     $total += $count;
+        //   } elseif ($count > 820) {
+        //     $start = 7501;
+        //     $mid = $start + 2500;
+        //     $end = 0;
+        //     $ranges = [[$start, $mid], [$mid + 1, $end]];
 
-              if ($count > 0 && $count <= 820) {
-                scrapeProperties($db, $count, $state, $type, $category, $range);
-                $total += $count;
-              } elseif ($count > 820) {
-                if ($range[1] === 0) {
-                  $mid = $range[0] + 2500;
-                } else {
-                  $mid = $range[0] + floor(($range[1] - $range[0]) / 2);
-                }
+        //     while (!empty($ranges)) {
+        //       $range = array_shift($ranges);
+        //       $pageUrl = getPageUrl($state, $type, $category, $range);
+        //       $html = getHtmlElement($pageUrl, "div.search-page-container");
+        //       $count = getPropertyCount($html);
 
-                $ranges[] = [$range[0], $mid];
-                $ranges[] = [$mid + 1, $range[1]];
-              }
-            }
-          }
-        }
+        //       if ($count > 0 && $count <= 820) {
+        //         scrapeProperties($db, $count, $state, $type, $category, $range);
+        //         $total += $count;
+        //       } elseif ($count > 820) {
+        //         if ($range[1] === 0) {
+        //           $mid = $range[0] + 2500;
+        //         } else {
+        //           $mid = $range[0] + floor(($range[1] - $range[0]) / 2);
+        //         }
+
+        //         $ranges[] = [$range[0], $mid];
+        //         $ranges[] = [$mid + 1, $range[1]];
+        //       }
+        //     }
+        //   }
+        // }
       }
     }
   }
+
+  echo "Total Count: $total \n";
+
+  $filename = 'data.csv';
+  $file = fopen($filename, 'w');
+
+  $header = array('State', 'Type', 'Category', 'Count');
+  fputcsv($file, $header);
+
+  foreach ($data as $row) {
+    fputcsv($file, $row);
+  }
+
+  fclose($file);
 }
 
 function getPageUrl($state, $type, $category, $range = [0, 0], $currentPage = 0)
@@ -388,7 +414,7 @@ function getHtmlElement($url, $element)
 }
 
 // Divide states into batches of 5
-$stateBatches = array_chunk(STATE_LIST, 5);
+$stateBatches = array_chunk(STATE_LIST, 50);
 
 // Get the batch to scrape based on the startIndex
 $batchToScrape = isset($stateBatches[$startIndex]) ? $stateBatches[$startIndex] : [];

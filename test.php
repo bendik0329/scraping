@@ -26,91 +26,76 @@ $startIndex = intval($argv[1]);
 function _main($batch, $db)
 {
   $total = 0;
-  $data = array();
-  $homeType = HOME_STATUS;
   foreach ($batch as $state) {
     foreach (LISTING_TYPE as $type) {
       foreach (CATEGORY as $category) {
         $pageUrl = getPageUrl($state, $type, $category);
-        $html = sendCurlRequest($pageUrl);
-        $htmlDomParser = HtmlDomParser::str_get_html($html);
+        $html = getHtmlElement($pageUrl, "div.search-page-container");
+        $count = getPropertyCount($html);
 
-        $count = getPropertyCount($htmlDomParser);
+        if ($count > 0 && $count <= 820) {
+          scrapeProperties($db, $count, $state, $type, $category);
+          $total += $count;
+        } elseif ($count > 820) {
+          $start = 0;
+          $end = 7500;
+          $ranges = [[$start, $end]];
 
-        $data[] = array(
-          "state" => $state,
-          "type" => $homeType[$type],
-          "category" => $category,
-          "count" => $count,
-        );
+          while (!empty($ranges)) {
+            $range = array_shift($ranges);
+            $pageUrl = getPageUrl($state, $type, $category, $range);
+            $html = getHtmlElement($pageUrl, "div.search-page-container");
+            $count = getPropertyCount($html);
 
-        echo "state: $state, type: $type, category: $category, count: $count \n";
-        $total += $count;
-        // if ($count > 0 && $count <= 820) {
-        //   // scrapeProperties($htmlDomParser, $db, $count, $state, $type, $category);
-        //   echo "count: $count \n";
-        //   $total += $count;
-        // } elseif ($count > 820) {
-        //   $start = 0;
-        //   $end = 7500;
-        //   $ranges = [[$start, $end]];
+            if ($count > 0 && $count <= 820) {
+              scrapeProperties($db, $count, $state, $type, $category, $range);
+              $total += $count;
+            } elseif ($count > 820) {
+              $mid = $range[0] + floor(($range[1] - $range[0]) / 2);
+              $ranges[] = [$range[0], $mid];
+              $ranges[] = [$mid + 1, $range[1]];
+            }
+          }
 
-        //   while (!empty($ranges)) {
-        //     $range = array_shift($ranges);
-        //     $pageUrl = getPageUrl($state, $type, $category, $range);
-        //     $html = sendCurlRequest($pageUrl);
-        //     $htmlDomParser = HtmlDomParser::str_get_html($html);
+          $range = [7501, 0];
+          $pageUrl = getPageUrl($state, $type, $category, $range);
+          $html = getHtmlElement($pageUrl, "div.search-page-container");
+          $count = getPropertyCount($html);
 
-        //     $count = getPropertyCount($htmlDomParser);
+          if ($count > 0 && $count <= 820) {
+            scrapeProperties($db, $count, $state, $type, $category, $range);
+            $total += $count;
+          } elseif ($count > 820) {
+            $start = 7501;
+            $mid = $start + 2500;
+            $end = 0;
+            $ranges = [[$start, $mid], [$mid + 1, $end]];
 
-        //     if ($count > 0 && $count <= 820) {
-        //       // scrapeProperties($htmlDomParser, $db, $count, $state, $type, $category, $range);
-        //       echo "count: $count \n";
-        //       $total += $count;
-        //     } elseif ($count > 820) {
-        //       $mid = $range[0] + floor(($range[1] - $range[0]) / 2);
-        //       $ranges[] = [$range[0], $mid];
-        //       $ranges[] = [$mid + 1, $range[1]];
-        //     }
-        //   }
+            while (!empty($ranges)) {
+              $range = array_shift($ranges);
+              $pageUrl = getPageUrl($state, $type, $category, $range);
+              $html = getHtmlElement($pageUrl, "div.search-page-container");
+              $count = getPropertyCount($html);
 
-        //   $start = 7501;
-        //   $end = 0;
-        //   $range = [$start, $end];
+              if ($count > 0 && $count <= 820) {
+                scrapeProperties($db, $count, $state, $type, $category, $range);
+                $total += $count;
+              } elseif ($count > 820) {
+                if ($range[1] === 0) {
+                  $mid = $range[0] + 2500;
+                } else {
+                  $mid = $range[0] + floor(($range[1] - $range[0]) / 2);
+                }
 
-        //   $pageUrl = getPageUrl($state, $type, $category, $range);
-        //   $html = sendCurlRequest($pageUrl);
-        //   $htmlDomParser = HtmlDomParser::str_get_html($html);
-
-        //   $count = getPropertyCount($htmlDomParser);
-        //   // scrapeProperties($htmlDomParser, $db, $count, $state, $type, $category, $range);
-        //   echo "last count: $count \n";
-        //   if ($count > 820) {
-        //     echo "state: $state \n";
-        //     echo "state: $type \n";
-        //     echo "state: $category \n";
-        //   }
-        //   $total += $count;
-        // }
+                $ranges[] = [$range[0], $mid];
+                $ranges[] = [$mid + 1, $range[1]];
+              }
+            }
+          }
+        }
       }
     }
   }
-
-  echo "Total Count: $total \n";
-
-  $filename = 'data.csv';
-  $file = fopen($filename, 'w');
-
-  // Write the CSV header
-  $header = array('State', 'Type', 'Category', 'Count');
-  fputcsv($file, $header);
-
-  // Write the data rows
-  foreach ($data as $row) {
-    fputcsv($file, $row);
-  }
-
-  fclose($file);
 }
 
 function getPageUrl($state, $type, $category, $range = [0, 0], $currentPage = 0)
@@ -191,11 +176,11 @@ function getPageUrl($state, $type, $category, $range = [0, 0], $currentPage = 0)
   return $url;
 }
 
-function getPropertyCount($htmlDomParser)
+function getPropertyCount($html)
 {
   $count = 0;
 
-  $countElement = $htmlDomParser->findOne("div.ListHeader__NarrowViewWrapping-srp__sc-1rsgqpl-1.idxSRv.search-subtitle span.result-count");
+  $countElement = $html->findOne("div.ListHeader__NarrowViewWrapping-srp__sc-1rsgqpl-1.idxSRv.search-subtitle span.result-count");
   if (!($countElement instanceof \voku\helper\SimpleHtmlDomBlank)) {
     $count = $countElement->text();
     $count = str_replace(",", "", $count);
@@ -211,7 +196,7 @@ function getPropertyCount($htmlDomParser)
   return $count;
 }
 
-function scrapeProperties($htmlDomParser, $db, $count, $state, $type, $category, $range = [0, 0])
+function scrapeProperties($db, $count, $state, $type, $category, $range = [0, 0])
 {
   global $apiKey, $tableName;
   $itemsPerPage = 41;
@@ -220,15 +205,11 @@ function scrapeProperties($htmlDomParser, $db, $count, $state, $type, $category,
   $homeStatus = HOME_STATUS;
 
   while ($currentPage <= $maxPage) {
-    if ($currentPage > 1) {
-      $pageUrl = getPageUrl($state, $type, $category, $range, $currentPage);
-      $html = sendCurlRequest($pageUrl);
-      $htmlDomParser = HtmlDomParser::str_get_html($html);
-    }
+    $pageUrl = getPageUrl($state, $type, $category, $range, $currentPage);
+    $html = getHtmlElement($pageUrl, "script[id=__NEXT_DATA__]");
 
-    $listElement = $htmlDomParser->findOne("script[id=__NEXT_DATA__]");
-    if ($listElement !== '' || !($listElement instanceof \voku\helper\SimpleHtmlDomBlank)) {
-      $jsonString = $listElement->text();
+    if ($html !== '' || !($html instanceof \voku\helper\SimpleHtmlDomBlank)) {
+      $jsonString = $html->text();
       $data = json_decode($jsonString, true);
       // $jsonData = json_encode($data, JSON_PRETTY_PRINT);
       // $filePath = "file-$currentPage.json";
@@ -350,6 +331,8 @@ function scrapeProperties($htmlDomParser, $db, $count, $state, $type, $category,
                   echo "Error inserting $tableName table: \n";
                   echo $sql . "\n";
                 }
+              } else {
+                echo "$zpid already exists \n";
               }
             }
           }
@@ -374,7 +357,7 @@ function sendCurlRequest($url)
   return $response;
 }
 
-function retryCurlRequest($url)
+function getHtmlElement($url, $element)
 {
   $retryCount = 0;
   $maxRetries = 5;
@@ -387,14 +370,16 @@ function retryCurlRequest($url)
       $htmlDomParser = HtmlDomParser::str_get_html($response);
     } catch (Exception $e) {
       echo "Html Dom Parser Error at " . $url . "\n";
+      $html = "";
       break;
     }
 
-    $html = $htmlDomParser->findOne("script[id=__NEXT_DATA__]");
+    $html = $htmlDomParser->findOne($element);
     if ($html instanceof \voku\helper\SimpleHtmlDomBlank) {
       sleep(2);
       $retryCount++;
     } else {
+      $html = "";
       break;
     }
   }
@@ -403,7 +388,7 @@ function retryCurlRequest($url)
 }
 
 // Divide states into batches of 5
-$stateBatches = array_chunk(STATE_LIST, 50);
+$stateBatches = array_chunk(STATE_LIST, 5);
 
 // Get the batch to scrape based on the startIndex
 $batchToScrape = isset($stateBatches[$startIndex]) ? $stateBatches[$startIndex] : [];

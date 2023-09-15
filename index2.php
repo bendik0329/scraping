@@ -76,9 +76,6 @@ function _main($batch, $db)
       }
     }
   }
-
-  print_r("total count->>" . $total);
-  print_r("\n");
 }
 
 function getPageUrl($state, $type, $category, $range = [0, 0], $currentPage = 0)

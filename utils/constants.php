@@ -72,10 +72,10 @@ const LISTING_TYPE = [
 ];
 
 const HOME_STATUS = [
-  "fore" => "foreclosures", 
-  "auc" => "auctions", 
-  "pmf" => "foreclosed", 
-  "pf" => "pre-foreclosures"
+  "fore" => "Foreclosures", 
+  "auc" => "Auctions", 
+  "pmf" => "Foreclosed", 
+  "pf" => "Pre-foreclosures"
 ];
 
 const CATEGORY = [

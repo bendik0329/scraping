@@ -182,6 +182,7 @@ function scrapeProperties($htmlDomParser, $db, $count, $state, $type, $category,
   $itemsPerPage = 41;
   $currentPage = 1;
   $maxPage = ceil($count / $itemsPerPage);
+  $homeStatus = HOME_STATUS;
 
   while ($currentPage <= $maxPage) {
     if ($currentPage > 1) {
@@ -195,7 +196,7 @@ function scrapeProperties($htmlDomParser, $db, $count, $state, $type, $category,
       $jsonString = $listElement->text();
       $data = json_decode($jsonString, true);
       // $jsonData = json_encode($data, JSON_PRETTY_PRINT);
-      // $filePath = 'file.json';
+      // $filePath = "file-$currentPage.json";
       // file_put_contents($filePath, $jsonData);
 
       // exit();
@@ -220,25 +221,26 @@ function scrapeProperties($htmlDomParser, $db, $count, $state, $type, $category,
                   "paramRange2" => $range[1],
                   "paramPage" => $currentPage,
                   "category" => $category,
-                  "street" => isset($item["hdpData"]["homeInfo"]["streetAddress"]) ? $item["hdpData"]["homeInfo"]["streetAddress"] : "",
-                  "city" => isset($item["hdpData"]["homeInfo"]["city"]) ? $item["hdpData"]["homeInfo"]["city"] : "",
-                  "state" => isset($item["hdpData"]["homeInfo"]["state"]) ? $item["hdpData"]["homeInfo"]["state"] : "",
-                  "zipcode" => isset($item["hdpData"]["homeInfo"]["zipcode"]) ? $item["hdpData"]["homeInfo"]["zipcode"] : "",
+                  "street" => isset($item["addressStreet"]) ? $item["addressStreet"] : "",
+                  "city" => isset($item["addressCity"]) ? $item["addressCity"] : "",
+                  "state" => isset($item["addressState"]) ? $item["addressState"] : "",
+                  "zipcode" => isset($item["addressZipcode"]) ? $item["addressZipcode"] : "",
                   "country" => isset($item["hdpData"]["homeInfo"]["country"]) ? $item["hdpData"]["homeInfo"]["country"] : "",
-                  "latitude" => isset($item["hdpData"]["homeInfo"]["latitude"]) ? $item["hdpData"]["homeInfo"]["latitude"] : "",
-                  "longitude" => isset($item["hdpData"]["homeInfo"]["longitude"]) ? $item["hdpData"]["homeInfo"]["longitude"] : "",
+                  "latitude" => isset($item["latLong"]["latitude"]) ? $item["latLong"]["latitude"] : "",
+                  "longitude" => isset($item["latLong"]["longitude"]) ? $item["latLong"]["longitude"] : "",
                   "currency" => isset($item["hdpData"]["homeInfo"]["currency"]) ? $item["hdpData"]["homeInfo"]["currency"] : "",
-                  "price" => isset($item["hdpData"]["homeInfo"]["price"]) ? $item["hdpData"]["homeInfo"]["price"] : 0,
+                  "price" => isset($item["unformattedPrice"]) ? $item["unformattedPrice"] : 0,
                   "zestimate" => isset($item["hdpData"]["homeInfo"]["zestimate"]) ? $item["hdpData"]["homeInfo"]["zestimate"] : 0,
                   "rentZestimate" => isset($item["hdpData"]["homeInfo"]["rentZestimate"]) ? $item["hdpData"]["homeInfo"]["rentZestimate"] : 0,
-                  "bedrooms" => isset($item["hdpData"]["homeInfo"]["bedrooms"]) ? $item["hdpData"]["homeInfo"]["bedrooms"] : 0,
-                  "bathrooms" => isset($item["hdpData"]["homeInfo"]["bathrooms"]) ? $item["hdpData"]["homeInfo"]["bathrooms"] : 0,
-                  "livingArea" => isset($item["hdpData"]["homeInfo"]["livingArea"]) ? $item["hdpData"]["homeInfo"]["livingArea"] : 0,
+                  "bedrooms" => isset($item["beds"]) ? $item["beds"] : 0,
+                  "bathrooms" => isset($item["baths"]) ? $item["baths"] : 0,
+                  "livingArea" => isset($item["area"]) ? $item["area"] : 0,
                   "lotAreaUnit" => isset($item["hdpData"]["homeInfo"]["lotAreaUnit"]) ? $item["hdpData"]["homeInfo"]["lotAreaUnit"] : "",
                   "lotAreaValue" => isset($item["hdpData"]["homeInfo"]["lotAreaValue"]) ? $item["hdpData"]["homeInfo"]["lotAreaValue"] : 0,
                   "homeType" => isset($item["hdpData"]["homeInfo"]["homeType"]) ? $item["hdpData"]["homeInfo"]["homeType"] : "",
+                  "homeStatus" => $homeStatus[$type],
                   "daysOnZillow" => isset($item["hdpData"]["homeInfo"]["daysOnZillow"]) ? $item["hdpData"]["homeInfo"]["daysOnZillow"] : 0,
-                  "brokerName" => isset($item["hdpData"]["homeInfo"]["brokerName"]) ? $item["hdpData"]["homeInfo"]["brokerName"] : "",
+                  "brokerName" => isset($item["brokerName"]) ? $item["brokerName"] : "",
                 );
 
                 $sql = "
@@ -270,6 +272,7 @@ function scrapeProperties($htmlDomParser, $db, $count, $state, $type, $category,
                     lotAreaUnit,
                     lotAreaValue,
                     homeType,
+                    homeStatus,
                     daysOnZillow,
                     brokerName,
                     createdAt
@@ -302,6 +305,7 @@ function scrapeProperties($htmlDomParser, $db, $count, $state, $type, $category,
                     '" . $db->makeSafe($result["lotAreaUnit"]) . "',
                     '" . $db->makeSafe($result["lotAreaValue"]) . "',
                     '" . $db->makeSafe($result["homeType"]) . "',
+                    '" . $db->makeSafe($result["homeStatus"]) . "',
                     '" . $db->makeSafe($result["daysOnZillow"]) . "',
                     '" . $db->makeSafe($result["brokerName"]) . "',
                     '" . date('Y-m-d H:i:s') . "'

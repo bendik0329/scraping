@@ -50,6 +50,7 @@ if ($db->numrows($tableExists) === 0) {
     `lotAreaUnit` VARCHAR ( 50 ),
     `lotAreaValue` FLOAT,
     `homeType` VARCHAR ( 50 ),
+    `homeStatus` VARCHAR ( 50 ),
     `daysOnZillow` INT ( 0 ),
     `brokerName` VARCHAR ( 255 ),
     `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 

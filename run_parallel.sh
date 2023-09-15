@@ -2,7 +2,6 @@
 
 # load .env file
 source .env
-echo "BATCH_COUNT: $BATCH_COUNT"
 
 # Run init file
 echo "Initialize Database..."

@@ -186,6 +186,8 @@ function scrapeProperties($htmlDomParser, $db, $count, $state, $type, $category,
   $currentPage = 1;
   $maxPage = ceil($count / $itemsPerPage);
 
+  $homeStatus = HOME_STATUS;
+
   while ($currentPage <= $maxPage) {
     if ($currentPage != 1) {
       $pageUrl = getPageUrl($state, $type, $category, $range, $currentPage);
@@ -203,25 +205,97 @@ function scrapeProperties($htmlDomParser, $db, $count, $state, $type, $category,
 
         if (is_array($list) && count($list) > 0) {
           foreach ($list as $item) {
-            $sql = "
-              INSERT INTO temp
-              (
-                zpid,
-                detailUrl,
-                imgSrc,
-                createdAt
-              )
-              VALUES
-              (
-                '" . $db->makeSafe($item["zpid"]) . "',
-                '" . $db->makeSafe($item["detailUrl"]) . "',
-                '" . $db->makeSafe($item["imgSrc"]) . "',
-                '" . date('Y-m-d H:i:s') . "'
-              )";
+            $zpid = isset($item["zpid"]) ? $item["zpid"] : "";
+            if ($zpid !== "") {
+              $exists = $db->query("SELECT * FROM $tableName WHERE zpid=$zpid");
+              if ($db->numrows($exists) === 0) {
+                $result = array(
+                  "zpid" => $zpid,
+                  "url" => isset($item["detailUrl"]) ? $item["detailUrl"] : "",
+                  "image" => isset($item["imgSrc"]) ? $item["imgSrc"] : "",
+                  "homeStatus" => $homeStatus[$type],
+                  "street" => isset($item["hdpData"]["homeInfo"]["streetAddress"]) ? $item["hdpData"]["homeInfo"]["streetAddress"] : "",
+                  "city" => isset($item["hdpData"]["homeInfo"]["city"]) ? $item["hdpData"]["homeInfo"]["city"] : "",
+                  "state" => isset($item["hdpData"]["homeInfo"]["state"]) ? $item["hdpData"]["homeInfo"]["state"] : "",
+                  "zipcode" => isset($item["hdpData"]["homeInfo"]["zipcode"]) ? $item["hdpData"]["homeInfo"]["zipcode"] : "",
+                  "country" => isset($item["hdpData"]["homeInfo"]["country"]) ? $item["hdpData"]["homeInfo"]["country"] : "",
+                  "latitude" => isset($item["hdpData"]["homeInfo"]["latitude"]) ? $item["hdpData"]["homeInfo"]["latitude"] : "",
+                  "longitude" => isset($item["hdpData"]["homeInfo"]["longitude"]) ? $item["hdpData"]["homeInfo"]["longitude"] : "",
+                  "currency" => isset($item["hdpData"]["homeInfo"]["currency"]) ? $item["hdpData"]["homeInfo"]["currency"] : "",
+                  "price" => isset($item["hdpData"]["homeInfo"]["price"]) ? $item["hdpData"]["homeInfo"]["price"] : 0,
+                  "zestimate" => isset($item["hdpData"]["homeInfo"]["zestimate"]) ? $item["hdpData"]["homeInfo"]["zestimate"] : 0,
+                  "rentZestimate" => isset($item["hdpData"]["homeInfo"]["rentZestimate"]) ? $item["hdpData"]["homeInfo"]["rentZestimate"] : 0,
+                  "bedrooms" => isset($item["hdpData"]["homeInfo"]["bedrooms"]) ? $item["hdpData"]["homeInfo"]["bedrooms"] : 0,
+                  "bathrooms" => isset($item["hdpData"]["homeInfo"]["bathrooms"]) ? $item["hdpData"]["homeInfo"]["bathrooms"] : 0,
+                  "livingArea" => isset($item["hdpData"]["homeInfo"]["livingArea"]) ? $item["hdpData"]["homeInfo"]["livingArea"] : 0,
+                  "lotAreaUnit" => isset($item["hdpData"]["homeInfo"]["lotAreaUnit"]) ? $item["hdpData"]["homeInfo"]["lotAreaUnit"] : "",
+                  "lotAreaValue" => isset($item["hdpData"]["homeInfo"]["lotAreaValue"]) ? $item["hdpData"]["homeInfo"]["lotAreaValue"] : 0,
+                  "homeType" => isset($item["hdpData"]["homeInfo"]["homeType"]) ? $item["hdpData"]["homeInfo"]["homeType"] : "",
+                  "daysOnZillow" => isset($item["hdpData"]["homeInfo"]["daysOnZillow"]) ? $item["hdpData"]["homeInfo"]["daysOnZillow"] : 0,
+                  "brokerName" => isset($item["hdpData"]["homeInfo"]["brokerName"]) ? $item["hdpData"]["homeInfo"]["brokerName"] : "",
+                );
 
-            if (!$db->query($sql)) {
-              echo "Error inserting temp table: \n";
-              echo $sql . "\n";
+                $sql = "
+                  INSERT INTO temp
+                  (
+                    zpid
+                    url
+                    image
+                    homeStatus
+                    street
+                    city
+                    state
+                    zipcode
+                    country
+                    latitude
+                    longitude
+                    currency
+                    price
+                    zestimate
+                    rentZestimate
+                    bedrooms
+                    bathrooms
+                    livingArea
+                    lotAreaUnits
+                    lotAreaValue
+                    homeType
+                    daysOnZillow
+                    brokerName
+                    createdAt
+                  )
+                  VALUES
+                  (
+                    '" . $db->makeSafe($result["zpid"]) . "',
+                    '" . $db->makeSafe($result["url"]) . "',
+                    '" . $db->makeSafe($result["image"]) . "',
+                    '" . $db->makeSafe($result["homeStatus"]) . "',
+                    '" . $db->makeSafe($result["street"]) . "',
+                    '" . $db->makeSafe($result["city"]) . "',
+                    '" . $db->makeSafe($result["state"]) . "',
+                    '" . $db->makeSafe($result["zipcode"]) . "',
+                    '" . $db->makeSafe($result["country"]) . "',
+                    '" . $db->makeSafe($result["latitude"]) . "',
+                    '" . $db->makeSafe($result["longitude"]) . "',
+                    '" . $db->makeSafe($result["currency"]) . "',
+                    '" . $db->makeSafe($result["price"]) . "',
+                    '" . $db->makeSafe($result["zestimate"]) . "',
+                    '" . $db->makeSafe($result["rentZestimate"]) . "',
+                    '" . $db->makeSafe($result["bedrooms"]) . "',
+                    '" . $db->makeSafe($result["bathrooms"]) . "',
+                    '" . $db->makeSafe($result["livingArea"]) . "',
+                    '" . $db->makeSafe($result["lotAreaUnits"]) . "',
+                    '" . $db->makeSafe($result["lotAreaValue"]) . "',
+                    '" . $db->makeSafe($result["homeType"]) . "',
+                    '" . $db->makeSafe($result["daysOnZillow"]) . "',
+                    '" . $db->makeSafe($result["brokerName"]) . "',
+                    '" . date('Y-m-d H:i:s') . "'
+                  )";
+
+                if (!$db->query($sql)) {
+                  echo "Error inserting temp table: \n";
+                  echo $sql . "\n";
+                }
+              }
             }
           }
         }
@@ -274,7 +348,7 @@ function retryCurlRequest($url)
 }
 
 // Divide states into batches of 5
-$stateBatches = array_chunk(STATE_LIST, 2);
+$stateBatches = array_chunk(STATE_LIST, 1);
 
 // Get the batch to scrape based on the startIndex
 $batchToScrape = isset($stateBatches[$startIndex]) ? $stateBatches[$startIndex] : [];

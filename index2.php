@@ -370,7 +370,6 @@ function getHtmlElement($url, $element)
       $htmlDomParser = HtmlDomParser::str_get_html($response);
     } catch (Exception $e) {
       echo "Html Dom Parser Error at " . $url . "\n";
-      $html = "";
       break;
     }
 
@@ -379,7 +378,6 @@ function getHtmlElement($url, $element)
       sleep(2);
       $retryCount++;
     } else {
-      $html = "";
       break;
     }
   }

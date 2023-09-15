@@ -10,7 +10,7 @@ echo "BATCH_COUNT: $BATCH_COUNT"
 
 # Run 10 parallel instances
 echo "Running 10 parallel scraping instances..."
-for i in {0..($BATCH_COUNT-1)}; do
+for i in {0..$BATCH_COUNT-1}; do
   php main.php $i &
 done
 

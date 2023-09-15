@@ -24,6 +24,8 @@ if (!$db->connect($host, $username, $password, $dbname)) {
 
 $startIndex = intval($argv[1]);
 
+echo "index->>$startIndex \n";
+
 function _main($batch, $db)
 {
   $total = 0;

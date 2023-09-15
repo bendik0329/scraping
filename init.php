@@ -24,10 +24,15 @@ $tableExists = $db->query("SHOW TABLES LIKE '$tableName'");
 if ($db->numrows($tableExists) === 0) {
   $createSql = "CREATE TABLE IF NOT EXISTS $tableName (
     `id` INT ( 0 ) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    `zpid` INT ( 0 ) NOT NULL UNIQUE,
-    `url` VARCHAR ( 255 ) NOT NULL,
+    `zpid` INT ( 0 ) NOT NULL,
+    `url` VARCHAR ( 255 ),
     `image` TEXT,
-    `homeStatus` VARCHAR ( 50 ),
+    `paramState` VARCHAR ( 50 ),
+    `paramType` VARCHAR ( 50 ),
+    `paramCategory` VARCHAR ( 50 ),
+    `paramRange1` VARCHAR ( 50 ),
+    `paramRange2` VARCHAR ( 50 ),
+    `paramPage` VARCHAR ( 50 ),
     `street` VARCHAR ( 50 ),
     `city` VARCHAR ( 50 ),
     `state` VARCHAR ( 50 ),

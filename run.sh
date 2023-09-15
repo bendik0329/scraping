@@ -5,8 +5,8 @@ source .env
 echo "BATCH_COUNT: $BATCH_COUNT"
 
 # Run init file
-# echo "Initialize Database..."
-# php initialize.php
+echo "Initialize Database..."
+php initialize.php
 
 # Run 10 parallel instances
 echo "Running 10 parallel scraping instances..."
@@ -19,5 +19,5 @@ echo "Waiting for all instances to finish..."
 wait
 
 # Download Images
-# echo "Downloading Images..."
-# php downloads.php
+echo "Downloading Images..."
+php downloads.php

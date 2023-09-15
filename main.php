@@ -24,82 +24,78 @@ if (!$db->connect($host, $username, $password, $dbname)) {
 
 $startIndex = intval($argv[1]);
 
-echo "index->>$startIndex \n";
-
 function _main($batch, $db)
 {
-  global $startIndex;
   $total = 0;
   foreach ($batch as $state) {
-    echo "index->>$startIndex, state->>$state \n";
-    // foreach (LISTING_TYPE as $type) {
-    //   foreach (CATEGORY as $category) {
-    //     $pageUrl = getPageUrl($state, $type, $category);
-    //     $html = getHtmlElement($pageUrl, "div.search-page-container");
-    //     $count = getPropertyCount($html);
+    foreach (LISTING_TYPE as $type) {
+      foreach (CATEGORY as $category) {
+        $pageUrl = getPageUrl($state, $type, $category);
+        $html = getHtmlElement($pageUrl, "div.search-page-container");
+        $count = getPropertyCount($html);
 
-    //     if ($count > 0 && $count <= 820) {
-    //       scrapeProperties($db, $count, $state, $type, $category);
-    //       $total += $count;
-    //     } elseif ($count > 820) {
-    //       $start = 0;
-    //       $end = 7500;
-    //       $ranges = [[$start, $end]];
+        if ($count > 0 && $count <= 820) {
+          scrapeProperties($db, $count, $state, $type, $category);
+          $total += $count;
+        } elseif ($count > 820) {
+          $start = 0;
+          $end = 7500;
+          $ranges = [[$start, $end]];
 
-    //       while (!empty($ranges)) {
-    //         $range = array_shift($ranges);
-    //         $pageUrl = getPageUrl($state, $type, $category, $range);
-    //         $html = getHtmlElement($pageUrl, "div.search-page-container");
-    //         $count = getPropertyCount($html);
+          while (!empty($ranges)) {
+            $range = array_shift($ranges);
+            $pageUrl = getPageUrl($state, $type, $category, $range);
+            $html = getHtmlElement($pageUrl, "div.search-page-container");
+            $count = getPropertyCount($html);
 
-    //         if ($count > 0 && $count <= 820) {
-    //           scrapeProperties($db, $count, $state, $type, $category, $range);
-    //           $total += $count;
-    //         } elseif ($count > 820) {
-    //           $mid = $range[0] + floor(($range[1] - $range[0]) / 2);
-    //           $ranges[] = [$range[0], $mid];
-    //           $ranges[] = [$mid + 1, $range[1]];
-    //         }
-    //       }
+            if ($count > 0 && $count <= 820) {
+              scrapeProperties($db, $count, $state, $type, $category, $range);
+              $total += $count;
+            } elseif ($count > 820) {
+              $mid = $range[0] + floor(($range[1] - $range[0]) / 2);
+              $ranges[] = [$range[0], $mid];
+              $ranges[] = [$mid + 1, $range[1]];
+            }
+          }
 
-    //       $range = [7501, 0];
-    //       $pageUrl = getPageUrl($state, $type, $category, $range);
-    //       $html = getHtmlElement($pageUrl, "div.search-page-container");
-    //       $count = getPropertyCount($html);
+          $range = [7501, 0];
+          $pageUrl = getPageUrl($state, $type, $category, $range);
+          $html = getHtmlElement($pageUrl, "div.search-page-container");
+          $count = getPropertyCount($html);
 
-    //       if ($count > 0 && $count <= 820) {
-    //         scrapeProperties($db, $count, $state, $type, $category, $range);
-    //         $total += $count;
-    //       } elseif ($count > 820) {
-    //         $start = 7501;
-    //         $mid = $start + 2500;
-    //         $end = 0;
-    //         $ranges = [[$start, $mid], [$mid + 1, $end]];
+          if ($count > 0 && $count <= 820) {
+            scrapeProperties($db, $count, $state, $type, $category, $range);
+            $total += $count;
+          } elseif ($count > 820) {
+            $start = 7501;
+            $mid = $start + 2500;
+            $end = 0;
+            $ranges = [[$start, $mid], [$mid + 1, $end]];
 
-    //         while (!empty($ranges)) {
-    //           $range = array_shift($ranges);
-    //           $pageUrl = getPageUrl($state, $type, $category, $range);
-    //           $html = getHtmlElement($pageUrl, "div.search-page-container");
-    //           $count = getPropertyCount($html);
+            while (!empty($ranges)) {
+              $range = array_shift($ranges);
+              $pageUrl = getPageUrl($state, $type, $category, $range);
+              $html = getHtmlElement($pageUrl, "div.search-page-container");
+              $count = getPropertyCount($html);
 
-    //           if ($count > 0 && $count <= 820) {
-    //             scrapeProperties($db, $count, $state, $type, $category, $range);
-    //             $total += $count;
-    //           } elseif ($count > 820) {
-    //             if ($range[1] === 0) {
-    //               $mid = $range[0] + 2500;
-    //             } else {
-    //               $mid = $range[0] + floor(($range[1] - $range[0]) / 2);
-    //             }
+              if ($count > 0 && $count <= 820) {
+                scrapeProperties($db, $count, $state, $type, $category, $range);
+                $total += $count;
+              } elseif ($count > 820) {
+                if ($range[1] === 0) {
+                  $mid = $range[0] + 2500;
+                } else {
+                  $mid = $range[0] + floor(($range[1] - $range[0]) / 2);
+                }
 
-    //             $ranges[] = [$range[0], $mid];
-    //             $ranges[] = [$mid + 1, $range[1]];
-    //           }
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
+                $ranges[] = [$range[0], $mid];
+                $ranges[] = [$mid + 1, $range[1]];
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }
 

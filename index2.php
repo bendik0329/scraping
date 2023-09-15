@@ -238,29 +238,29 @@ function scrapeProperties($htmlDomParser, $db, $count, $state, $type, $category,
                 $sql = "
                   INSERT INTO temp
                   (
-                    zpid
-                    url
-                    image
-                    homeStatus
-                    street
-                    city
-                    state
-                    zipcode
-                    country
-                    latitude
-                    longitude
-                    currency
-                    price
-                    zestimate
-                    rentZestimate
-                    bedrooms
-                    bathrooms
-                    livingArea
-                    lotAreaUnit
-                    lotAreaValue
-                    homeType
-                    daysOnZillow
-                    brokerName
+                    zpid,
+                    url,
+                    image,
+                    homeStatus,
+                    street,
+                    city,
+                    state,
+                    zipcode,
+                    country,
+                    latitude,
+                    longitude,
+                    currency,
+                    price,
+                    zestimate,
+                    rentZestimate,
+                    bedrooms,
+                    bathrooms,
+                    livingArea,
+                    lotAreaUnit,
+                    lotAreaValue,
+                    homeType,
+                    daysOnZillow,
+                    brokerName,
                     createdAt
                   )
                   VALUES

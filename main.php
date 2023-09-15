@@ -28,9 +28,10 @@ echo "index->>$startIndex \n";
 
 function _main($batch, $db)
 {
+  global $startIndex;
   $total = 0;
   foreach ($batch as $state) {
-    echo "state->>$state \n";
+    echo "index->>$startIndex, state->>$state \n";
     // foreach (LISTING_TYPE as $type) {
     //   foreach (CATEGORY as $category) {
     //     $pageUrl = getPageUrl($state, $type, $category);

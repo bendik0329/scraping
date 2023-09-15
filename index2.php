@@ -236,7 +236,7 @@ function scrapeProperties($htmlDomParser, $db, $count, $state, $type, $category,
                 );
 
                 $sql = "
-                  INSERT INTO temp
+                  INSERT INTO $tableName
                   (
                     zpid,
                     url,
@@ -292,7 +292,7 @@ function scrapeProperties($htmlDomParser, $db, $count, $state, $type, $category,
                   )";
 
                 if (!$db->query($sql)) {
-                  echo "Error inserting temp table: \n";
+                  echo "Error inserting $tableName table: \n";
                   echo $sql . "\n";
                 }
               }

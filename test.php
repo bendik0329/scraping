@@ -26,6 +26,8 @@ $startIndex = intval($argv[1]);
 function _main($batch, $db)
 {
   $total = 0;
+  $data = array();
+  $homeType = HOME_STATUS;
   foreach ($batch as $state) {
     foreach (LISTING_TYPE as $type) {
       foreach (CATEGORY as $category) {
@@ -34,6 +36,13 @@ function _main($batch, $db)
         $htmlDomParser = HtmlDomParser::str_get_html($html);
 
         $count = getPropertyCount($htmlDomParser);
+
+        $data[] = array(
+          "state" => $state,
+          "type" => $homeType[$type],
+          "category" => $category,
+          "count" => $count,
+        );
 
         echo "state: $state, type: $type, category: $category, count: $count \n";
         $total += $count;
@@ -88,6 +97,20 @@ function _main($batch, $db)
   }
 
   echo "Total Count: $total \n";
+
+  $filename = 'data.csv';
+  $file = fopen($filename, 'w');
+
+  // Write the CSV header
+  $header = array('State', 'Type', 'Category', 'Count');
+  fputcsv($file, $header);
+
+  // Write the data rows
+  foreach ($data as $row) {
+    fputcsv($file, $row);
+  }
+
+  fclose($file);
 }
 
 function getPageUrl($state, $type, $category, $range = [0, 0], $currentPage = 0)

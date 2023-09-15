@@ -196,9 +196,14 @@ function scrapeProperties($htmlDomParser, $db, $count, $state, $type, $category,
     if ($listElement !== '' || !($listElement instanceof \voku\helper\SimpleHtmlDomBlank)) {
       $jsonString = $listElement->text();
       $data = json_decode($jsonString, true);
+      // $jsonData = json_encode($data, JSON_PRETTY_PRINT);
+      // $filePath = 'file.json';
+      // file_put_contents($filePath, $jsonData);
 
-      if (isset($data['props']['pageProps']['searchPageState']['cat1']['searchResults']['listResults'])) {
-        $list = $data['props']['pageProps']['searchPageState']['cat1']['searchResults']['listResults'];
+      // exit();
+
+      if (isset($data['props']['pageProps']['searchPageState'][$category]['searchResults']['listResults'])) {
+        $list = $data['props']['pageProps']['searchPageState'][$category]['searchResults']['listResults'];
 
         if (is_array($list) && count($list) > 0) {
           foreach ($list as $item) {

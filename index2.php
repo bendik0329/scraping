@@ -256,7 +256,7 @@ function scrapeProperties($htmlDomParser, $db, $count, $state, $type, $category,
                     bedrooms
                     bathrooms
                     livingArea
-                    lotAreaUnits
+                    lotAreaUnit
                     lotAreaValue
                     homeType
                     daysOnZillow
@@ -283,7 +283,7 @@ function scrapeProperties($htmlDomParser, $db, $count, $state, $type, $category,
                     '" . $db->makeSafe($result["bedrooms"]) . "',
                     '" . $db->makeSafe($result["bathrooms"]) . "',
                     '" . $db->makeSafe($result["livingArea"]) . "',
-                    '" . $db->makeSafe($result["lotAreaUnits"]) . "',
+                    '" . $db->makeSafe($result["lotAreaUnit"]) . "',
                     '" . $db->makeSafe($result["lotAreaValue"]) . "',
                     '" . $db->makeSafe($result["homeType"]) . "',
                     '" . $db->makeSafe($result["daysOnZillow"]) . "',

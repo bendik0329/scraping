@@ -42,7 +42,7 @@ if ($db->numrows($tableExists) === 0) {
     `bedrooms` FLOAT,
     `bathrooms` FLOAT,
     `livingArea` FLOAT,
-    `lotAreaUnits` VARCHAR ( 50 ),
+    `lotAreaUnit` VARCHAR ( 50 ),
     `lotAreaValue` FLOAT,
     `homeType` VARCHAR ( 50 ),
     `daysOnZillow` INT ( 0 ),
